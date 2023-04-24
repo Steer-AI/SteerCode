@@ -1,0 +1,47 @@
+{
+  "type": "module",
+  "name": "cognitic-website",
+  "version": "0.0.1",
+  "private": false,
+  "scripts": {
+    "dev": "vite dev --open",
+    "dev:vercel": "vercel dev",
+    "build": "yarn partytown && vite build",
+    "build:vercel": "yarn build && rimraf ./.vercel/output/**/*.js.map",
+    "partytown": "partytown copylib static/~partytown",
+    "preview": "vite preview",
+    "format:changes": "git diff --name-only HEAD | grep '\\.\\(js\\|ts\\|svelte\\|css\\|html\\)$' | sed 's/apps\\/singular-web/./g' | xargs prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write",
+    "lint": "yarn format:changes && eslint \"src\" && git add . && git update-index",
+    "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write ./**/*.{js,ts,svelte}"
+  },
+  "devDependencies": {
+    "@builder.io/partytown": "^0.7.0",
+    "@formkit/auto-animate": "^1.0.0-beta.6",
+    "@popperjs/core": "^2.11.6",
+    "@rgossiaux/svelte-headlessui": "^1.0.2",
+    "@segment/analytics-next": "^1.51.6",
+    "@sentry/browser": "^7.44.2",
+    "@sentry/svelte": "^7.16.0",
+    "@sentry/sveltekit": "^7.44.2",
+    "@sentry/tracing": "^7.16.0",
+    "@sentry/vite-plugin": "^0.4.0",
+    "@sveltejs/adapter-vercel": "next",
+    "@sveltejs/kit": "next",
+    "@vercel/edge-config": "^0.1.5",
+    "autoprefixer": "^9.8.8",
+    "cssnano": "^6.0.0",
+    "dotenv": "^16.0.1",
+    "eslint-config-custom": "workspace:*",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "svelte": "^3.58.0",
+    "svelte-preprocess": "^5.0.3",
+    "tailwindcss": "^3.3.1",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.1"
+  },
+  "dependencies": {
+
+  }
+}

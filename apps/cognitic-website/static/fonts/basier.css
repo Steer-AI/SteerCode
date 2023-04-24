@@ -1,0 +1,44 @@
+@font-face {
+  font-weight: 400;
+  font-style: normal;
+  font-family: 'Basier Square Regular';
+  src: url('/fonts/BasierSquareRegular/BasierSquare-Regular.otf')
+    format('openType');
+}
+@font-face {
+  font-weight: 500;
+  font-style: normal;
+  font-family: 'Basier Square Regular';
+  src: url('/fonts/BasierSquareRegular/BasierSquare-Medium.otf')
+    format('openType');
+}
+@font-face {
+  font-weight: 600;
+  font-style: normal;
+  font-family: 'Basier Square Regular';
+  src: url('/fonts/BasierSquareRegular/BasierSquare-SemiBold.otf')
+    format('openType');
+}
+
+/* Basier Square Mono */
+@font-face {
+  font-weight: 400;
+  font-style: normal;
+  font-family: 'Basier Square Mono';
+  src: url('/fonts/BasierSquareMono/BasierSquareMono-Regular.otf')
+    format('openType');
+}
+@font-face {
+  font-weight: 500;
+  font-style: normal;
+  font-family: 'Basier Square Mono';
+  src: url('/fonts/BasierSquareMono/BasierSquareMono-Medium.otf')
+    format('openType');
+}
+@font-face {
+  font-weight: 600;
+  font-style: normal;
+  font-family: 'Basier Square Mono';
+  src: url('/fonts/BasierSquareMono/BasierSquareMono-SemiBold.otf')
+    format('openType');
+}
