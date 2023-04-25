@@ -37,7 +37,7 @@
   }
 
   .primary:not(:disabled) {
-    @apply bg-primary text-content-primary hover:bg-primary-lighter;
+    @apply bg-primary text-content-inverse hover:bg-primary-lighter;
   }
   .primary:disabled {
     @apply bg-background-primaryDisabled text-background-primary;

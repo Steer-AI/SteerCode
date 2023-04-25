@@ -9,6 +9,7 @@
   import Divider from '$lib/shared/components/Divider.svelte';
   import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
   import MessagingIcon from '$lib/shared/components/Icons/MessagingIcon.svelte';
+  import Tooltip from '$lib/shared/components/Tooltip.svelte';
   import { createEventDispatcher } from 'svelte';
 
   export let conversation: Conversation;
@@ -18,32 +19,38 @@
 </script>
 
 <li
-  class="items group flex h-10 items-center px-3 {selected
-    ? 'bg-background-secondaryActive'
-    : 'bg-background-secondary hover:bg-background-secondaryHover'}"
+  class="items group flex items-center px-3 {selected
+    ? 'bg-background-primaryActive'
+    : 'bg-background-primary hover:bg-background-primaryHover'}"
 >
   <a
     href="/chat/{conversation.id}"
-    class="relative flex flex-1 items-center overflow-hidden"
+    class="relative flex h-10 flex-1 items-center overflow-hidden"
+    title={conversation.agent_role}
   >
-    <MessagingIcon class="mr-1 h-4 w-4" />
-    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
-      >{conversation.name}</span
-    >
+    <MessagingIcon class="mr-2 h-4 w-4" />
+    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
+      {conversation.agent_role}
+    </span>
     <div
-      class="absolute right-0 z-10 h-full w-8 bg-gradient-to-l {selected
-        ? 'from-background-secondaryActive'
-        : 'from-background-secondary group-hover:from-background-secondaryHover'}"
+      class="absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l {selected
+        ? 'from-background-primaryActive'
+        : 'from-background-primary group-hover:from-background-primaryHover'}"
     />
   </a>
 
-  <button
-    class:hidden={!selected}
-    class="text-content-secondary hover:text-content-primary"
-    on:click={(e) =>
-      dispatch('delete', { original: e, conversationId: conversation.id })}
-  >
-    <BinIcon class="h-4 w-4" />
-  </button>
+  <Tooltip>
+    <button
+      slot="trigger"
+      class:hidden={!selected}
+      class="text-content-secondary hover:text-content-primary"
+      on:click={(e) =>
+        dispatch('delete', { original: e, conversationId: conversation.id })}
+    >
+      <BinIcon class="h-4 w-4" />
+      <div class="sr-only">Delete conversation</div>
+    </button>
+    <svelte:fragment slot="tooltip">Delete conversation</svelte:fragment>
+  </Tooltip>
 </li>
 <Divider class="last:hidden" />

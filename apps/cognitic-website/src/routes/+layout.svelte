@@ -1,8 +1,5 @@
 <script lang="ts">
-  import PartytownSetup from '../lib/shared/layouts/PartytownSetup.svelte';
-  import type { LayoutData } from './$types';
-
-  export let data: LayoutData;
+  import PartytownSetup from '../lib/shared/layout/PartytownSetup.svelte';
 </script>
 
 <PartytownSetup />

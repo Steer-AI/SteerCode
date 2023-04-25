@@ -8,7 +8,7 @@
   <Divider />
 
   <span
-    class="bg-background-secondary text-content-secondary flex h-14 w-full items-center px-6"
+    class="bg-background-primary text-content-secondary flex h-14 w-full items-center px-6"
   >
     <a
       href="https://twitter.com/singular_xyz"

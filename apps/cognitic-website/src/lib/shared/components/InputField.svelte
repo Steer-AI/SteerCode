@@ -10,7 +10,6 @@
   export let autofocus = false;
   export let labelClass = '';
   export let size: 'medium' | 'large' = 'medium';
-  export let elevated: boolean = false;
   export let input: HTMLInputElement = undefined;
 
   export let eltId = 'input_' + counter++;
@@ -47,9 +46,7 @@
       bind:this={input}
       class="h-full {$$props.class} {size} {size === 'medium'
         ? 'body-small placeholder:body-small'
-        : ''} {size === 'large'
-        ? 'body-regular placeholder:body-regular'
-        : ''} {elevated ? 'elevated' : ''}"
+        : ''} {size === 'large' ? 'body-regular placeholder:body-regular' : ''}"
       style="
         padding-left: {prefixIconWidth ? prefixIconWidth + 14 : 6}px;
         padding-right: {sufixIconWidth ? sufixIconWidth + 14 : 6}px;
@@ -64,6 +61,7 @@
       on:keydown
       on:keyup
       on:invalid
+      on:submit
     />
     {#if hasSufixIcon}
       <div class="icon right-2" bind:clientWidth={sufixIconWidth}>
@@ -75,40 +73,17 @@
 
 <style lang="postcss">
   input {
-    @apply border-background-850 bg-background-850 text-content-primary appearance-none border-b text-left disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  input.elevated {
-    @apply border-background-750 bg-background-750;
+    @apply border-stroke-primary bg-background-secondary text-content-primary appearance-none border-b text-left disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   input:hover {
-    @apply bg-background-850;
+    @apply bg-background-secondaryActive;
   }
 
-  input.elevated:hover {
-    @apply bg-background-650;
-  }
-  /* 
-  input.medium,
-  input.medium::placeholder {
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 16px;
-  }
-  input.large,
-  input.large::placeholder {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 20px;
-  } */
   input::placeholder {
     @apply text-content-tertiary;
   }
 
-  /* label > div:focus-within .icon {
-    @apply text-content-primary;
-  } */
   .icon {
     @apply text-content-tertiary absolute top-1/2 -translate-y-1/2;
   }

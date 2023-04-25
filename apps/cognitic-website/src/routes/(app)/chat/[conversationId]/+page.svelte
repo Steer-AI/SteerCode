@@ -1,28 +1,18 @@
 <script lang="ts">
-  import { afterNavigate, goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import ConversationMain from '$lib/features/ConversationThread/layout/ConversationMain.svelte';
+  import TaskSidebar from '$lib/features/ConversationThread/layout/TaskSidebar.svelte';
   import { conversationsStore } from '$lib/features/ConversationsSidebar/stores/conversations';
-  import type { Conversation } from '$lib/models/types/conversation.type';
+  import Error from '$lib/shared/layout/Error.svelte';
 
-  let conversation: Conversation;
-
-  afterNavigate((navigation) => {
-    console.log('afterNavigate', navigation);
-    const conversationId = navigation.to?.params?.conversationId;
-    if (!conversationId) {
-      goto('/'); // TODO: redirect to create new conversation
-      return;
-    }
-    const _c = conversationsStore.getById(conversationId);
-    if (!_c) {
-      goto('/'); // TODO: redirect to create new conversation
-      return;
-    }
-    conversation = _c;
-  });
+  $: conversation = conversationsStore.getById($page.params.conversationId);
 </script>
 
-{#if conversation}
-  <section>
-    CONVERSATION {conversation.name}
-  </section>
-{/if}
+<div class="flex min-h-full">
+  {#if $conversation}
+    <TaskSidebar conversation={$conversation} />
+    <ConversationMain conversation={$conversation} />
+  {:else}
+    <Error status="404" summary="Conversation not found" />
+  {/if}
+</div>

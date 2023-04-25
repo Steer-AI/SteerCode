@@ -7,6 +7,6 @@
   role="separator"
   class:bg-stroke-primary={variant === 'primary'}
   class:bg-stroke-secondary={variant === 'secondary'}
-  class="{vertical ? 'w-px' : 'h-px'} {$$props.class}"
+  class="{vertical ? 'w-px' : 'h-px'} {$$props.class || ''}"
   style={$$props.style}
 />

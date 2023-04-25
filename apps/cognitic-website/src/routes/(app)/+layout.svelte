@@ -1,65 +1,41 @@
 <script lang="ts">
-  import { navigating } from '$app/stores';
   import ConversationsSidebar from '$lib/features/ConversationsSidebar/layout/Sidebar.svelte';
-  import Footer from '$lib/shared/layouts/Footer.svelte';
-  import Header from '$lib/shared/layouts/Header.svelte';
+  import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
+  import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
+  import Footer from '$lib/shared/layout/Footer.svelte';
+  import Header from '$lib/shared/layout/Header.svelte';
 
-  import { fade } from 'svelte/transition';
+  let sidebarOpen = false;
 </script>
 
-{#if $navigating}
-  <div
-    role="progressbar"
-    class="loader absolute top-0"
-    style="width: 60vw; --translateX: 40vw"
-    in:fade={{ duration: 100, delay: 400 }}
-  />
-{/if}
-
 <div class="main-template">
-  <Header style="grid-area: header" />
+  <Header style="grid-area: header" bind:sidebarOpen />
 
-  <ConversationsSidebar style="grid-area: leftSidebar" />
+  <ConversationsSidebar
+    class="overflow-hidden {sidebarOpen
+      ? 'w-[257px] opacity-100'
+      : 'w-0 opacity-0'}"
+    style="grid-area: leftSidebar"
+  />
 
-  <main class="overflow-scroll px-6" style="grid-area: main">
+  <main style="grid-area: main; min-width: min(100vw, 500px)">
     <slot />
   </main>
 
   <Footer style="grid-area: footer" />
 </div>
 
+<SettingsModal />
+<NotificationWrapper />
+
 <style lang="postcss">
-  @keyframes progress-load {
-    0% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(var(--translateX));
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-
-  .loader {
-    position: fixed;
-    animation-duration: 1500ms;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-name: progress-load;
-    z-index: 2;
-    @apply bg-primary h-0.5;
-  }
-
   .main-template {
-    @apply grid min-h-screen;
+    @apply grid min-h-screen overflow-hidden;
     grid-template-areas:
       'header header header'
-      'pageHeader pageHeader pageHeader'
       'leftSidebar main rightSidebar'
-      'pageFooter pageFooter pageFooter'
       'footer footer footer';
     grid-template-columns: min-content 1fr min-content;
-    grid-template-rows: min-content min-content 1fr min-content min-content;
+    grid-template-rows: min-content 1fr min-content;
   }
 </style>

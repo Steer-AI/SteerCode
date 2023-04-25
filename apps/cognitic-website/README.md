@@ -14,17 +14,17 @@ sveltekit documentation: https://kit.svelte.dev/docs/introduction
 │   │   │   └── XYZ
 │   │   │       ├── components      // components for feature XYZ (e.g. card, menu button, countdown, ...)
 │   │   │       ├── layouts         // layout for feature XYZ (e.g. table, sidebar, menu, ...)
-│   │   │       ├── stores          // stores for feature XYZ (e.g. user store, cart store, ...)
+│   │   │       ├── stores          // stores for feature XYZ (e.g. agent store, conversation store, ...)
 │   │   │       └── utils           // utility functions for feature XYZ
 │   │   ├── models
-│   │   │   ├── classes             // ORM classes (e.g. User model, Collection model, ...)
-│   │   │   ├── enums               // enums (e.g. Aggregator, Marketplace, Rarity, Period, ...)
+│   │   │   ├── classes             // ORM classes (e.g. User model, Agent model, ...)
+│   │   │   ├── enums               // enums (e.g. Status, Phase, ...)
 │   │   │   ├── interfaces          // ???
-│   │   │   └── types               // Data types (e.g. Order, Asset, Collection, ...)
+│   │   │   └── types               // Data types (e.g. User, Settings, Conversation, ...)
 │   │   ├── shared
-│   │   │   ├── components          // shared app components (e.g. buttons, inputs, tooltips, ...)
+│   │   │   ├── components          // shared app components (e.g. button, input, tooltip, ...)
 │   │   │   ├── layouts             // shared app layout (e.g. header, footer, ...)
-│   │   │   ├── stores              // shared app stores (e.g. user store, cart store, data feed store, ...)
+│   │   │   ├── stores              // shared app stores (e.g. user store, settings store, ...)
 │   │   │   └── utils               // shared utility functions
 │   ├── routes
 │   │   ├── XYZ

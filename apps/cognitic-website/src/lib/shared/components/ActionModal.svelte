@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from './Button.svelte';
-  import Dialog from '../layouts/Dialog.svelte';
+  import Dialog from '../layout/Dialog.svelte';
 
   export let title: string;
   export let description: string;
