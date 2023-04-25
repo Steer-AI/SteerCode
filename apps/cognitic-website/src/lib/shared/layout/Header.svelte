@@ -7,11 +7,18 @@
 
 <header class="sticky top-0" style={$$props.style}>
   <span class="bg-background-primary flex h-14 items-center px-6">
-    <button class="mr-3 block" on:click={() => (sidebarOpen = !sidebarOpen)}>
-      <ActivityFeedIcon class="h-8 w-8" />
-    </button>
+    <div class="flex-1">
+      <button
+        class="mr-3 block md:hidden"
+        on:click={() => (sidebarOpen = !sidebarOpen)}
+      >
+        <ActivityFeedIcon class="h-8 w-8" />
+      </button>
+    </div>
 
-    <a href="/" class="headline-large mx-auto">Cognitic</a>
+    <a href="/" class="headline-large mx-auto">SuperGPT</a>
+
+    <div class="flex-1" />
   </span>
 
   <Divider />

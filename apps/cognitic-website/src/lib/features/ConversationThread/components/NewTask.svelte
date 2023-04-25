@@ -31,10 +31,11 @@
   }
 </script>
 
-<div class="new-task-wrapper mx-3 mt-4 flex">
+<div class="new-task-wrapper flex flex-1">
   <InputField
     bind:this={inputComp}
     bind:value={taskName}
+    size="large"
     placeholder="Task name"
     labelClass="overflow-hidden {editMode ? 'flex-1' : 'w-0'}"
     class="w-full"
@@ -46,8 +47,8 @@
   />
 
   <Button
-    variant="tertiary"
-    size="small"
+    variant="secondary"
+    size="medium"
     class={editMode ? '' : 'flex-1 overflow-hidden whitespace-nowrap'}
     on:click={handleButtonClick}
   >

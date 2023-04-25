@@ -10,8 +10,10 @@
 
 <div class="flex min-h-full">
   {#if $conversation}
-    <TaskSidebar conversation={$conversation} />
-    <ConversationMain conversation={$conversation} />
+    {#key $conversation.id}
+      <TaskSidebar conversation={$conversation} />
+      <ConversationMain conversation={$conversation} />
+    {/key}
   {:else}
     <Error status="404" summary="Conversation not found" />
   {/if}

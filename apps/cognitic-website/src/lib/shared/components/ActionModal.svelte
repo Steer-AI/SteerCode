@@ -10,7 +10,7 @@
 </script>
 
 <Dialog
-  {dialogEl}
+  bind:dialogEl
   on:close
   class={$$props.class}
   style={$$props.style}

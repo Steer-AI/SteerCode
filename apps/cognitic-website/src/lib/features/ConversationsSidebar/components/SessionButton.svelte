@@ -26,11 +26,11 @@
   <a
     href="/chat/{conversation.id}"
     class="relative flex h-10 flex-1 items-center overflow-hidden"
-    title={conversation.agent_role}
+    title={conversation.agent_name}
   >
     <MessagingIcon class="mr-2 h-4 w-4" />
     <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
-      {conversation.agent_role}
+      {conversation.agent_name}
     </span>
     <div
       class="absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l {selected

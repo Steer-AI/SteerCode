@@ -1,18 +1,19 @@
 <script lang="ts">
   import type { Conversation } from '$lib/models/types/conversation.type';
   import Divider from '$lib/shared/components/Divider.svelte';
+  import { fade } from 'svelte/transition';
 
   export let conversation: Conversation;
 </script>
 
 <!--  conversation thread -->
-<section class="flex-1 overflow-hidden">
+<section class="flex-1 overflow-hidden" in:fade>
   <!-- agent role -->
   <h3
-    title={conversation.agent_role}
+    title={conversation.agent_name}
     class="bg-background-primary headline-large relative flex h-14 flex-1 cursor-default items-center overflow-hidden overflow-ellipsis whitespace-nowrap px-3"
   >
-    {conversation.agent_role}
+    {conversation.agent_name}
 
     <div
       class="from-background-primary absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l"
@@ -32,7 +33,8 @@
   <Divider />
 
   <!-- agent messages / progress -->
-  <div>
+  <div class="my-1.5 px-3">
+    TODO
     <!-- TODO: implement -->
   </div>
 </section>

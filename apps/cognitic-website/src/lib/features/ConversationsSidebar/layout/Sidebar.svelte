@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import { modalOpen } from '$lib/features/SettingsModal/stores/modal';
   import Button from '$lib/shared/components/Button.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
@@ -27,7 +26,11 @@
 <aside class="flex {$$props.class}" style={$$props.style}>
   <div class="bg-background-primary flex w-64 flex-col">
     <div class="flex h-14 flex-shrink-0 items-center px-3">
-      <Button variant="secondary" class="w-full" size="medium">
+      <Button
+        variant="secondary"
+        class="w-full whitespace-nowrap"
+        size="medium"
+      >
         <PlusIcon class="mr-1 h-3 w-3" />
         New Session
       </Button>

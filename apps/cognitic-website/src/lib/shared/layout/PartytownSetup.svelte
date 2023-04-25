@@ -51,6 +51,7 @@
 <svelte:head>
   <!-- Config options -->
   <!-- Config options -->
+  <!-- Config options -->
   <script>
     partytown = {
       forward: [],
@@ -58,6 +59,7 @@
     };
   </script>
 
+  <!-- `partytownSnippet` is inserted here -->
   <!-- `partytownSnippet` is inserted here -->
   <!-- `partytownSnippet` is inserted here -->
   <script bind:this={scriptEl}></script>

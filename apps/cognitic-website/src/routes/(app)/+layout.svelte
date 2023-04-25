@@ -5,11 +5,13 @@
   import Footer from '$lib/shared/layout/Footer.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
 
-  let sidebarOpen = false;
+  let sidebarOpen = true;
 </script>
 
+<svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
+
 <div class="main-template">
-  <Header style="grid-area: header" bind:sidebarOpen />
+  <Header style="grid-area: header; max-width: 100vw" bind:sidebarOpen />
 
   <ConversationsSidebar
     class="overflow-hidden {sidebarOpen
@@ -18,11 +20,11 @@
     style="grid-area: leftSidebar"
   />
 
-  <main style="grid-area: main; min-width: min(100vw, 500px)">
+  <main style="grid-area: main; min-width: min(100vw, 511px)">
     <slot />
   </main>
 
-  <Footer style="grid-area: footer" />
+  <Footer style="grid-area: footer; max-width: 100vw" />
 </div>
 
 <SettingsModal />
@@ -33,7 +35,7 @@
     @apply grid min-h-screen overflow-hidden;
     grid-template-areas:
       'header header header'
-      'leftSidebar main rightSidebar'
+      'leftSidebar main main'
       'footer footer footer';
     grid-template-columns: min-content 1fr min-content;
     grid-template-rows: min-content 1fr min-content;
