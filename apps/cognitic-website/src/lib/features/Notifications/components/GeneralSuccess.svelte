@@ -12,6 +12,6 @@
 >
   <DoneIcon class="text-success mr-2 h-4 w-4" />
   <span class="body-regular text-content-primary">
-    {notification.text}
+    {notification.message}
   </span>
 </div>

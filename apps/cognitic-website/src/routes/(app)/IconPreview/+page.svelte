@@ -72,8 +72,6 @@
     WalletIcon,
     WarningIcon
   ];
-
-  $: console.log(icons);
 </script>
 
 <h1 class="headline-large m-6">Icons</h1>

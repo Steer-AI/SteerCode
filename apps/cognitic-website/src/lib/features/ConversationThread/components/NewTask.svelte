@@ -6,6 +6,8 @@
 
 <script lang="ts">
   import Button from '$lib/shared/components/Button.svelte';
+  import CloseIcon from '$lib/shared/components/Icons/CloseIcon.svelte';
+  import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
   import InputField from '$lib/shared/components/InputField.svelte';
   import { createEventDispatcher } from 'svelte';
@@ -35,10 +37,9 @@
   <InputField
     bind:this={inputComp}
     bind:value={taskName}
-    size="large"
     placeholder="Task name"
-    labelClass="overflow-hidden {editMode ? 'flex-1' : 'w-0'}"
-    class="w-full"
+    labelClass="overflow-hidden h-8 {editMode ? 'flex-1' : 'w-0'}"
+    class="body-regular placeholder:body-regular w-full"
     on:keyup={(e) => {
       if (e.key === 'Enter') {
         handleButtonClick();
@@ -52,8 +53,16 @@
     class={editMode ? '' : 'flex-1 overflow-hidden whitespace-nowrap'}
     on:click={handleButtonClick}
   >
-    <PlusIcon class="{editMode ? '' : 'mr-1'} h-3 w-3" />
-    {!editMode ? 'Add task' : ''}
+    {#if editMode && !taskName}
+      <CloseIcon class="h-3 w-3" />
+    {:else if editMode && taskName}
+      <DoneIcon class="h-3 w-3" />
+    {:else if editMode}
+      <PlusIcon class="h-3 w-3" />
+    {:else}
+      <PlusIcon class="mr-1 h-3 w-3" />
+      Add task
+    {/if}
   </Button>
 </div>
 

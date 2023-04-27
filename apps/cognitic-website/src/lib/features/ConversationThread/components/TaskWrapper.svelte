@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Task } from '$lib/models/types/conversation.type';
+  import type { Task } from '$lib/models/types/task.type';
   import Divider from '$lib/shared/components/Divider.svelte';
   import ClockIcon from '$lib/shared/components/Icons/ClockIcon.svelte';
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
@@ -21,9 +21,9 @@
 </script>
 
 <div
-  class="task-wrapper bg-background-secondary group relative mx-3 mt-4 grid items-center px-3 py-1.5"
+  class="task-wrapper bg-background-secondary group relative mx-3 mt-4 grid items-start px-3 py-1.5"
 >
-  <p class="body-small text-content-primary">{task.name}</p>
+  <p class="body-small text-content-primary">{task.description}</p>
 
   <div class="ml-2">
     {#if task.status === 'completed'}
@@ -54,10 +54,12 @@
 
   {#if task.status === 'waiting'}
     <Tooltip
-      class="bg-background-secondary absolute -right-1 -top-2 hidden items-center rounded-md p-1 group-hover:flex"
+      class="bg-background-secondary border-stroke-secondary absolute -right-2 -top-3 hidden items-center rounded-sm border p-1 group-hover:flex"
     >
       <button slot="trigger" on:click={() => dispatch('delete', task)}>
-        <BinIcon class="text-content-tertiary hover:text-error h-4 w-4" />
+        <BinIcon
+          class="text-content-tertiary hover:text-content-primary h-4 w-4"
+        />
       </button>
       <svelte:fragment slot="tooltip">Delete task</svelte:fragment>
     </Tooltip>

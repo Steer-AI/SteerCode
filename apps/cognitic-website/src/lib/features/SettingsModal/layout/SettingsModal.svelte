@@ -19,7 +19,7 @@
 
     notificationStore.addNotification({
       type: NotificationType.GeneralSuccess,
-      text: 'Settings saved',
+      message: 'Settings saved',
       removeAfter: 3000
     });
   }

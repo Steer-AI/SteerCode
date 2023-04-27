@@ -1,11 +1,13 @@
-import type { NotificationType, Position } from '$lib/models/enums/notifications';
+import type {
+  NotificationType,
+  Position
+} from '$lib/models/enums/notifications';
 import { writable } from 'svelte/store';
-
 
 export type DefaultNotificationOptions = {
   id?: string;
   position?: Position;
-  text: string;
+  message: string;
   type: NotificationType;
   removeAfter?: number;
 } & Record<string, any>;

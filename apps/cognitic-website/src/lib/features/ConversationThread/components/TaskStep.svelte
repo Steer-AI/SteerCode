@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TaskStep } from '$lib/models/types/conversation.type';
+  import type { TaskStep } from '$lib/models/types/task.type';
   import ClockIcon from '$lib/shared/components/Icons/ClockIcon.svelte';
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import WarningIcon from '$lib/shared/components/Icons/WarningIcon.svelte';
@@ -17,7 +17,7 @@
 <div
   class="task-wrapper bg-background-secondary relative my-2 grid py-1.5 pl-3"
 >
-  <p class="body-small text-content-primarySub">{step.name}</p>
+  <p class="body-small text-content-primarySub">{step.description}</p>
 
   <div class="">
     {#if step.status === 'completed'}

@@ -3,103 +3,63 @@
 </script>
 
 <script lang="ts">
-  import { onMount } from 'svelte';
-
-  export let value: string | null | number = '';
-  export let placeholder = 'Search...';
-  export let autofocus = false;
-  export let labelClass = '';
-  export let size: 'medium' | 'large' = 'medium';
-  export let input: HTMLInputElement = undefined;
-
+  export let value: string | number | undefined = undefined;
+  export let labelClass = 'flex items-center';
   export let eltId = 'input_' + counter++;
 
   export function focus() {
-    input.focus();
+    inputEl.focus();
   }
-
-  onMount(() => {
-    autofocus && input.focus();
-  });
 
   const hasPrefixIcon = $$slots['prefix-icon'] !== undefined;
   const hasSufixIcon = $$slots['sufix-icon'] !== undefined;
 
-  export let prefixIconWidth: number = 0;
-  export let sufixIconWidth: number = 0;
+  let inputEl: HTMLInputElement;
 </script>
 
-<label class="relative block {labelClass}" for={eltId}>
+<label class="input-wrapper relative {labelClass}" for={eltId}>
   <slot name="label" />
-  <div
-    class="relative flex items-center"
-    class:h-8={size === 'large'}
-    class:h-6={size === 'medium'}
-  >
-    {#if hasPrefixIcon}
-      <div class="icon left-2" bind:clientWidth={prefixIconWidth}>
-        <slot name="prefix-icon" />
-      </div>
-    {/if}
-    <input
-      id={eltId}
-      bind:this={input}
-      class="h-full {$$props.class} {size} {size === 'medium'
-        ? 'body-small placeholder:body-small'
-        : ''} {size === 'large' ? 'body-regular placeholder:body-regular' : ''}"
-      style="
-        padding-left: {prefixIconWidth ? prefixIconWidth + 14 : 6}px;
-        padding-right: {sufixIconWidth ? sufixIconWidth + 14 : 6}px;
-      "
-      {...$$props.inputProps}
-      {placeholder}
-      bind:value
-      on:blur
-      on:focus
-      on:change
-      on:input
-      on:keydown
-      on:keyup
-      on:invalid
-      on:submit
-    />
-    {#if hasSufixIcon}
-      <div class="icon right-2" bind:clientWidth={sufixIconWidth}>
-        <slot name="sufix-icon" />
-      </div>
-    {/if}
-  </div>
+  {#if hasPrefixIcon}
+    <div class="text-content-tertiary absolute left-2 top-1/2 -translate-y-1/2">
+      <slot name="prefix-icon" />
+    </div>
+  {/if}
+  <input
+    id={eltId}
+    bind:this={inputEl}
+    {...$$restProps}
+    bind:value
+    on:blur
+    on:focus
+    on:change
+    on:input
+    on:keydown
+    on:keyup
+    on:invalid
+    on:submit
+  />
+  {#if hasSufixIcon}
+    <div
+      class="text-content-tertiary absolute right-2 top-1/2 -translate-y-1/2"
+    >
+      <slot name="sufix-icon" />
+    </div>
+  {/if}
 </label>
 
 <style lang="postcss">
-  input {
-    @apply border-stroke-primary bg-background-secondary text-content-primary appearance-none border-b text-left disabled:cursor-not-allowed disabled:opacity-50;
+  .input-wrapper input {
+    @apply border-stroke-primary bg-background-secondary hover:enabled:bg-background-secondaryActive text-content-primary placeholder:text-content-tertiary focus:border-b-primary caret-primary appearance-none border-b text-left outline-none ring-0 ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  input:hover {
-    @apply bg-background-secondaryActive;
-  }
-
-  input::placeholder {
-    @apply text-content-tertiary;
-  }
-
-  .icon {
-    @apply text-content-tertiary absolute top-1/2 -translate-y-1/2;
-  }
-
-  input:focus {
-    @apply !border-b-primary caret-primary border-b outline-none ring-0 ring-offset-0;
-  }
-
-  input[type='number'] {
+  .input-wrapper input[type='number'] {
     -moz-appearance: textfield;
     appearance: textfield;
     margin: 0;
   }
 
-  input[type='number']::-webkit-inner-spin-button,
-  input[type='number']::-webkit-outer-spin-button {
+  .input-wrapper input[type='number']::-webkit-inner-spin-button,
+  .input-wrapper input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }

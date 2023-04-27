@@ -2,17 +2,17 @@
   import { page } from '$app/stores';
   import ConversationMain from '$lib/features/ConversationThread/layout/ConversationMain.svelte';
   import TaskSidebar from '$lib/features/ConversationThread/layout/TaskSidebar.svelte';
-  import { conversationsStore } from '$lib/features/ConversationsSidebar/stores/conversations';
+  import { agentStore } from '$lib/shared/stores/agents';
   import Error from '$lib/shared/layout/Error.svelte';
 
-  $: conversation = conversationsStore.getById($page.params.conversationId);
+  $: agent = agentStore.getById($page.params.agentId);
 </script>
 
-<div class="flex min-h-full">
-  {#if $conversation}
-    {#key $conversation.id}
-      <TaskSidebar conversation={$conversation} />
-      <ConversationMain conversation={$conversation} />
+<div class="flex h-full">
+  {#if $agent}
+    {#key $agent.value.id}
+      <TaskSidebar agent={$agent} />
+      <ConversationMain agent={$agent} />
     {/key}
   {:else}
     <Error status="404" summary="Conversation not found" />

@@ -14,13 +14,13 @@ sveltekit documentation: https://kit.svelte.dev/docs/introduction
 │   │   │   └── XYZ
 │   │   │       ├── components      // components for feature XYZ (e.g. card, menu button, countdown, ...)
 │   │   │       ├── layouts         // layout for feature XYZ (e.g. table, sidebar, menu, ...)
-│   │   │       ├── stores          // stores for feature XYZ (e.g. agent store, conversation store, ...)
+│   │   │       ├── stores          // stores for feature XYZ (e.g. agent store, agent store, ...)
 │   │   │       └── utils           // utility functions for feature XYZ
 │   │   ├── models
 │   │   │   ├── classes             // ORM classes (e.g. User model, Agent model, ...)
 │   │   │   ├── enums               // enums (e.g. Status, Phase, ...)
-│   │   │   ├── interfaces          // ???
-│   │   │   └── types               // Data types (e.g. User, Settings, Conversation, ...)
+│   │   │   ├── interfaces          // interfaces (e.g. IUser interface, IAgent interface, ...)
+│   │   │   └── types               // Data types (e.g. User, Settings, Agent, ...)
 │   │   ├── shared
 │   │   │   ├── components          // shared app components (e.g. button, input, tooltip, ...)
 │   │   │   ├── layouts             // shared app layout (e.g. header, footer, ...)

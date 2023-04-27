@@ -14,9 +14,10 @@
   export let disabled: boolean | undefined = false;
   export let labelClassName: string = '';
   export let size: 'small' | 'large' = 'large';
+  export let hiddenInputName: string | undefined = undefined;
 </script>
 
-<div class="flex items-center">
+<div class="flex items-center {$$props.class || ''}">
   {#if label}
     <p class="label-small text-content-tertiary pr-2 {labelClassName}">
       {label}
@@ -45,6 +46,10 @@
       class:toggle-off={!active}
     />
   </Switch>
+
+  {#if hiddenInputName}
+    <input type="hidden" name={hiddenInputName} value={active} />
+  {/if}
 </div>
 
 <style>

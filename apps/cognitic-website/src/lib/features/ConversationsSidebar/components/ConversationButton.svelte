@@ -1,18 +1,19 @@
 <script context="module" lang="ts">
   export type DispatchEvents = {
-    delete: { original: MouseEvent; conversationId: string };
+    delete: { original: MouseEvent; agent: Agent };
   };
 </script>
 
 <script lang="ts">
-  import type { Conversation } from '$lib/models/types/conversation.type';
+  import type { Agent } from '$lib/models/classes/Agent.class';
+
   import Divider from '$lib/shared/components/Divider.svelte';
   import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
   import MessagingIcon from '$lib/shared/components/Icons/MessagingIcon.svelte';
   import Tooltip from '$lib/shared/components/Tooltip.svelte';
   import { createEventDispatcher } from 'svelte';
 
-  export let conversation: Conversation;
+  export let agent: Agent;
   export let selected: boolean;
 
   const dispatch = createEventDispatcher<DispatchEvents>();
@@ -24,13 +25,13 @@
     : 'bg-background-primary hover:bg-background-primaryHover'}"
 >
   <a
-    href="/chat/{conversation.id}"
+    href="/chat/{$agent.id}"
     class="relative flex h-10 flex-1 items-center overflow-hidden"
-    title={conversation.agent_name}
+    title={$agent.name}
   >
     <MessagingIcon class="mr-2 h-4 w-4" />
     <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
-      {conversation.agent_name}
+      {$agent.name}
     </span>
     <div
       class="absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l {selected
@@ -42,15 +43,13 @@
   <Tooltip>
     <button
       slot="trigger"
-      class:hidden={!selected}
-      class="text-content-secondary hover:text-content-primary"
-      on:click={(e) =>
-        dispatch('delete', { original: e, conversationId: conversation.id })}
+      class="text-content-secondary hover:text-content-primary hidden group-hover:block"
+      on:click={(e) => dispatch('delete', { original: e, agent })}
     >
       <BinIcon class="h-4 w-4" />
-      <div class="sr-only">Delete conversation</div>
+      <div class="sr-only">Delete agent</div>
     </button>
-    <svelte:fragment slot="tooltip">Delete conversation</svelte:fragment>
+    <svelte:fragment slot="tooltip">Delete agent</svelte:fragment>
   </Tooltip>
 </li>
 <Divider class="last:hidden" />

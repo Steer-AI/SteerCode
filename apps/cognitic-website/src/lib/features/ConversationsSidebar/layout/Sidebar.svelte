@@ -7,19 +7,35 @@
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import { onMount } from 'svelte';
-  import SessionButton, {
+  import ConversationButton, {
     type DispatchEvents
-  } from '../components/SessionButton.svelte';
-  import { conversationsStore } from '../stores/conversations';
+  } from '../components/ConversationButton.svelte';
+  import { agentStore } from '$lib/shared/stores/agents';
+  import ActionModal from '$lib/shared/components/ActionModal.svelte';
+  import type { Agent } from '$lib/models/classes/Agent.class';
 
-  function handleSessionDelete(e: CustomEvent<DispatchEvents['delete']>) {
-    conversationsStore.remove(e.detail.conversationId);
-    goto('/');
+  let dialogEl: HTMLDialogElement;
+  let agentToDelete: Agent | null = null;
+
+  function handleAgentDelete(e: CustomEvent<DispatchEvents['delete']>) {
+    agentToDelete = e.detail.agent;
+    dialogEl.showModal();
+  }
+
+  function handleConfirmClose() {
+    if (agentToDelete === null) {
+      return;
+    }
+    if (dialogEl.returnValue === 'confirm') {
+      agentStore.remove(agentToDelete.value.id);
+      goto('/');
+    }
+    agentToDelete = null;
   }
 
   onMount(() => {
     // TODO: refetch if user log in
-    conversationsStore.fetchFromServer();
+    agentStore.fetchFromServer();
   });
 </script>
 
@@ -30,6 +46,8 @@
         variant="secondary"
         class="w-full whitespace-nowrap"
         size="medium"
+        as="a"
+        href="/"
       >
         <PlusIcon class="mr-1 h-3 w-3" />
         New Session
@@ -41,11 +59,11 @@
     <!-- scrollable list of chat sessions -->
     <section class="flex-1 overflow-y-scroll">
       <ul class="my-2">
-        {#each $conversationsStore as conversation (conversation.id)}
-          <SessionButton
-            {conversation}
-            selected={$page.params.conversationId === conversation.id}
-            on:delete={handleSessionDelete}
+        {#each $agentStore as agent (agent.value.id)}
+          <ConversationButton
+            {agent}
+            selected={$page.params.agentId === agent.value.id}
+            on:delete={handleAgentDelete}
           />
         {/each}
       </ul>
@@ -69,6 +87,17 @@
 
   <Divider vertical />
 </aside>
+
+<ActionModal
+  bind:dialogEl
+  title="Delete Agent?"
+  description="Confirm you want to delete following agent: <br/> <b style='margin-top: 8px'>{agentToDelete
+    ?.value?.name || ''}</b>"
+  confirmText="Yes"
+  cancelText="No"
+  class="max-w-sm"
+  on:close={handleConfirmClose}
+/>
 
 <style lang="postcss">
   aside {

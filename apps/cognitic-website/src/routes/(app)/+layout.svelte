@@ -20,7 +20,10 @@
     style="grid-area: leftSidebar"
   />
 
-  <main style="grid-area: main; min-width: min(100vw, 511px)">
+  <main
+    style="grid-area: main; min-width: min(100vw, 511px)"
+    class="overflow-hidden"
+  >
     <slot />
   </main>
 
@@ -32,7 +35,7 @@
 
 <style lang="postcss">
   .main-template {
-    @apply grid min-h-screen overflow-hidden;
+    @apply grid max-h-screen min-h-screen overflow-hidden;
     grid-template-areas:
       'header header header'
       'leftSidebar main main'
