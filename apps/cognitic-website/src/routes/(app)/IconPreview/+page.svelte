@@ -13,6 +13,7 @@
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import ExpandIcon from '$lib/shared/components/Icons/ExpandIcon.svelte';
   import FullscreenIcon from '$lib/shared/components/Icons/FullscreenIcon.svelte';
+  import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
   import GlobeIcon from '$lib/shared/components/Icons/GlobeIcon.svelte';
   import HeartIcon from '$lib/shared/components/Icons/HeartIcon.svelte';
   import InfoIcon from '$lib/shared/components/Icons/InfoIcon.svelte';
@@ -50,6 +51,7 @@
     DoneIcon,
     ExpandIcon,
     FullscreenIcon,
+    GitHubIcon,
     GlobeIcon,
     HeartIcon,
     InfoIcon,
