@@ -4,4 +4,8 @@
 
 <PartytownSetup />
 
+<svelte:head>
+  <title>SuperGPT</title>
+</svelte:head>
+
 <slot />

@@ -2,18 +2,21 @@ import type { Settings } from '$lib/models/types/settings.type';
 import { writable } from 'svelte/store';
 
 function createSettingsStore() {
-    // TODO: implement
-    const settings = writable<Settings>({})
+  // TODO: implement
+  const settings = writable<Settings>({
+    openaiAPIKey: null,
+    openaiModel: 'gpt-3.5-turbo',
+    temperature: 0.9
+  });
 
-    function updateSettings(newValue: Settings) {
-        settings.set(newValue)
-    }
-    
-    return {
+  function updateSettings(newValue: Settings) {
+    settings.set(newValue);
+  }
 
-        subscribe: settings.subscribe,
-        updateSettings,
-    }
+  return {
+    subscribe: settings.subscribe,
+    updateSettings
+  };
 }
 
-const settingsStore = createSettingsStore()
+export const settingsStore = createSettingsStore();

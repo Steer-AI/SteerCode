@@ -1,6 +1,7 @@
 import { Log } from '$lib/core/services/logging';
 import {
   deleteAgentTask,
+  getAgent,
   postApproveAgent,
   putNewTasks,
   putStopAgent
@@ -118,5 +119,16 @@ export class Agent implements Readable<AgentDTO> {
     }
 
     return success;
+  }
+
+  @withLogger()
+  async fetchAgentState(): Promise<AgentDTO | null> {
+    const response = await getAgent(this.value.id);
+    if (response) {
+      this.value.status = response.status;
+      this.value.tasks = response.tasks;
+      this.store.set(this.value);
+    }
+    return response;
   }
 }

@@ -49,12 +49,6 @@ module.exports = {
         darker: '#D9262D'
       },
 
-      degraded: {
-        lighter: '#FFA966',
-        DEFAULT: '#FF8C33',
-        darker: '#F26E0D'
-      },
-
       success: {
         lighter: '#6BC77F',
         DEFAULT: '#46B95F',

@@ -3,19 +3,20 @@ import { deleteAgent, getAgents, postNewAgent } from '$lib/data/agentQueries';
 import { notificationStore } from '$lib/features/Notifications/store/notifications';
 import { Agent } from '$lib/models/classes/Agent.class';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
-import type { AgentDTO, NewAgentDTO } from '$lib/models/types/agent.type';
+import type { NewAgentDTO } from '$lib/models/types/agent.type';
+import type { DataStore } from '$lib/models/types/store.type';
 import { derived, writable, type Readable } from 'svelte/store';
 
-function createAgentsStore() {
+function createAgentsStore(): DataStore<Agent, NewAgentDTO> {
   const _agents = writable<Agent[]>([]);
 
   async function remove(id: string): Promise<boolean> {
     Log.DEBUG('createAgentsStore.remove', id);
-    let removedAgent: AgentDTO | null = null;
+    let removedAgent: Agent | null = null;
 
     // optimistic update
     _agents.update((conversations) => {
-      const index = conversations.findIndex((agent) => agent.id === id);
+      const index = conversations.findIndex((agent) => agent.value.id === id);
       if (index === -1) return conversations;
       removedAgent = conversations[index];
       conversations.splice(index, 1);
@@ -65,8 +66,9 @@ function createAgentsStore() {
       return null;
     }
 
+    const newAgent = new Agent(resp);
     _agents.update((agents) => {
-      agents.push(resp);
+      agents.push(newAgent);
       return agents;
     });
     notificationStore.addNotification({
@@ -75,7 +77,7 @@ function createAgentsStore() {
       removeAfter: 5000,
       position: Position.BottomRight
     });
-    return new Agent(resp);
+    return newAgent;
   }
 
   async function fetchFromServer(): Promise<void> {

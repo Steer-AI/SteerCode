@@ -7,7 +7,7 @@
   import autoAnimate from '@formkit/auto-animate';
   import ActionModal from '$lib/shared/components/ActionModal.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
-  import { NotificationType } from '$lib/models/enums/notifications';
+  import { NotificationType, Position } from '$lib/models/enums/notifications';
   import type { Task } from '$lib/models/types/task.type';
   import type { Agent } from '$lib/models/classes/Agent.class';
 
@@ -16,8 +16,16 @@
   let dialogEl: HTMLDialogElement;
   let taskToDelete: Task | null = null;
 
-  function handleAddNewTask(taskName: string) {
-    agent.addTask(taskName);
+  async function handleAddNewTask(taskName: string) {
+    const success = await agent.addTask(taskName);
+    if (!success) {
+      notificationStore.addNotification({
+        type: NotificationType.GeneralError,
+        placement: Position.BottomRight,
+        message: `Failed to add task "${taskName}"`,
+        removeAfter: 3000
+      });
+    }
   }
 
   function handleDeleteTask(task: Task) {

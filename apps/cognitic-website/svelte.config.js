@@ -23,11 +23,6 @@ const config = {
   },
   kit: {
     adapter: adapter({
-      // if true, will deploy the app using edge functions
-      // (https://vercel.com/docs/concepts/functions/edge-functions)
-      // rather than serverless functions
-      edge: true,
-
       // an array of dependencies that esbuild should treat
       // as external when bundling functions
       external: [],

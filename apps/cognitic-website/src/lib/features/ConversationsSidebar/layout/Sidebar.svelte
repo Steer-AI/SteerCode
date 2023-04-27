@@ -13,6 +13,11 @@
   import { agentStore } from '$lib/shared/stores/agents';
   import ActionModal from '$lib/shared/components/ActionModal.svelte';
   import type { Agent } from '$lib/models/classes/Agent.class';
+  import type { DataStore } from '$lib/models/types/store.type';
+  import { AGENT_MODE } from '$lib/shared/utils/constants';
+  import { conversationsStore } from '$lib/shared/stores/conversations';
+
+  const store: DataStore = AGENT_MODE ? agentStore : conversationsStore;
 
   let dialogEl: HTMLDialogElement;
   let agentToDelete: Agent | null = null;
@@ -27,7 +32,7 @@
       return;
     }
     if (dialogEl.returnValue === 'confirm') {
-      agentStore.remove(agentToDelete.value.id);
+      store.remove(agentToDelete.value.id);
       goto('/');
     }
     agentToDelete = null;
@@ -35,7 +40,7 @@
 
   onMount(() => {
     // TODO: refetch if user log in
-    agentStore.fetchFromServer();
+    store.fetchFromServer();
   });
 </script>
 
@@ -59,7 +64,7 @@
     <!-- scrollable list of chat sessions -->
     <section class="flex-1 overflow-y-scroll">
       <ul class="my-2">
-        {#each $agentStore as agent (agent.value.id)}
+        {#each $store as agent (agent.value.id)}
           <ConversationButton
             {agent}
             selected={$page.params.agentId === agent.value.id}
@@ -90,9 +95,11 @@
 
 <ActionModal
   bind:dialogEl
-  title="Delete Agent?"
-  description="Confirm you want to delete following agent: <br/> <b style='margin-top: 8px'>{agentToDelete
-    ?.value?.name || ''}</b>"
+  title="Delete {AGENT_MODE ? 'Agent' : 'Conversation'}?"
+  description="Confirm you want to delete following {AGENT_MODE
+    ? 'agent'
+    : 'conversation'}: <br/> <b style='margin-top: 8px'>{agentToDelete?.value
+    ?.name || ''}</b>"
   confirmText="Yes"
   cancelText="No"
   class="max-w-sm"

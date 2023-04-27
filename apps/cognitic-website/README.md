@@ -40,16 +40,19 @@ https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
 
 - [Svelte](https://svelte.dev/)
 - [Sveltekit](https://kit.svelte.dev/)
-- [RXJS](https://rxjs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 
-### Dev guideline
+### TODO:
 
-https://www.npmjs.com/package/@sentry/sveltekit
-https://github.com/getsentry/sentry-javascript/issues/6692
+- API requests
+- Settings
+- Auth/login
+- Sentry setup
+- Tracking/ Analytics setup
+- i18n localization
+- Agent message log history (result of tasks)
 
-
-# local build and deploy
+# local build and deploy to vercel
 
 ```
 vercel build --prod

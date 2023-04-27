@@ -19,6 +19,7 @@ export function getAgents(): Promise<AgentDTO[]> {
           name: 'Jarvis 2',
           goal: 'Make as much profit as possible. You have a limit of $1000 and you want to turn it into the highest possible amount of profit in the least possible time.',
           role: 'Business specialist',
+          result: null,
           status: 'running',
           tasks: [
             {
@@ -113,6 +114,7 @@ export function getAgents(): Promise<AgentDTO[]> {
           name: 'Jarvis',
           goal: 'Create a poem about climate change',
           role: 'Writer',
+          result: null,
           status: 'waiting',
           tasks: [
             {
@@ -199,6 +201,7 @@ export function postNewAgent(agent: NewAgentDTO): Promise<AgentDTO | null> {
         goal: agent.goal,
         role: agent.role,
         status: 'waiting',
+        result: null,
         tasks: agent.tasks.map((t) => {
           return {
             id: uuidv4(),

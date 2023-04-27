@@ -16,6 +16,7 @@ export type AgentDTO = {
   name: string;
   role: string;
   goal: string;
+  result: string | null;
   status: Status;
   tasks: Task[];
 };
