@@ -39,7 +39,7 @@
     bind:value={taskName}
     placeholder="Task name"
     labelClass="overflow-hidden h-8 {editMode ? 'flex-1' : 'w-0'}"
-    class="body-regular placeholder:body-regular w-full"
+    class="body-regular placeholder:body-regular"
     on:keyup={(e) => {
       if (e.key === 'Enter') {
         handleButtonClick();

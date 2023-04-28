@@ -1,7 +1,16 @@
 <script lang="ts">
   import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
+  import Markdown, {
+    marked,
+    highlightCode,
+    getHljs,
+    getLang
+  } from 'markdown-hljs';
+
   export let type: ChatCompletionRequestMessageRoleEnum;
   export let message: string;
+
+  $: markedDown = Markdown(message);
 </script>
 
 <div class="chat {type === 'user' ? 'chat-end' : 'chat-start'} justify-end">
@@ -21,15 +30,17 @@
     {type === 'user' ? 'Me' : 'Bot'}
   </div>
   <div
-    class="chat-bubble text-content-primary {type === 'user'
+    class="chat-bubble text-content-primary flex flex-col gap-3 {type === 'user'
       ? 'bg-background-secondary'
       : 'bg-background-secondaryActive'}"
   >
-    {message}
+    {@html markedDown}
   </div>
 </div>
 
-<style>
+<style lang="postcss">
+  /* https://highlightjs.tiddlyhost.com/ */
+  @import './themes/vs2015.css';
   .chat {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -57,7 +68,6 @@
 
   .chat-bubble {
     position: relative;
-    display: block;
     width: -moz-fit-content;
     width: fit-content;
     padding: 0.5rem 1rem;

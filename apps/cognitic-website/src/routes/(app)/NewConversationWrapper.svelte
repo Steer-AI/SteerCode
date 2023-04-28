@@ -59,7 +59,7 @@
         bind:value={newConversation.name}
         name="name"
         placeholder="Your agent name. e.g. Jarvis"
-        class="body-regular h-8 w-full px-3"
+        class="body-regular h-8 px-3"
         labelClass="flex items-start flex-col"
         required
       >
@@ -71,7 +71,7 @@
       <TextAreaField
         bind:value={newConversation.system_prompt}
         name="goal"
-        placeholder="What is your agent's goal? e.g. Research and summarize top 10 tech startups in the world in current year"
+        placeholder="How your agent should behave? e.g. You are a Medical expert. You can answer questions about desiases and symptoms. You can help in diagnosing the patient."
         class="body-regular w-full p-3"
         style="min-height: 128px; max-height: 768px;"
         on:input={(e) => {

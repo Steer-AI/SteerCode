@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const TEMPERATURE = request.headers.get('x-openai-temperature') || '0.9';
 
     if (!API_KEY) {
-      throw new Error('Apen AI API key missing');
+      throw new Error('AI API key missing');
     }
 
     const requestData = await request.json();
@@ -118,9 +118,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err) {
-    console.error(err);
     return json(
-      { error: 'There was an error processing your request' },
+      { error: err.message || 'There was an error processing your request' },
       { status: 500 }
     );
   }

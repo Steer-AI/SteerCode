@@ -15,7 +15,7 @@ const openConnection = async () => {
     const request = window.indexedDB.open('conversations', 3);
 
     request.onupgradeneeded = (event) => {
-      const db = event.target.result;
+      const db = event.target!.result as IDBDatabase;
       // create the object store
       const objectStore = db.createObjectStore('conversations', {
         keyPath: 'id'
@@ -24,7 +24,7 @@ const openConnection = async () => {
 
     request.onsuccess = (event) => {
       Log.DEBUG('Opened indexedDB database', event);
-      resolve(event.target.result);
+      resolve(event.target!.result as IDBDatabase);
     };
     request.onerror = (event) => {
       Log.ERROR('Error opening indexedDB database', event);
@@ -124,7 +124,7 @@ export async function getAllConversations(): Promise<ConversationDTO[]> {
     const conversations: ConversationDTO[] = [];
 
     store.openCursor().onsuccess = (event) => {
-      const cursor = event.target.result;
+      const cursor = event.target!.result as IDBCursorWithValue | null;
       if (cursor) {
         const conversation = cursor.value as ConversationDTO;
         conversations.push(conversation);

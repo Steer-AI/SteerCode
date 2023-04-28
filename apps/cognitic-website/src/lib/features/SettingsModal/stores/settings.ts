@@ -2,9 +2,13 @@ import type { Settings } from '$lib/models/types/settings.type';
 import { writable } from 'svelte/store';
 
 function createSettingsStore() {
-  // TODO: implement
+  const APIKeyFromLS =
+    typeof window !== 'undefined'
+      ? window.localStorage.getItem('OPENAI_API_KEY')
+      : '';
+
   const settings = writable<Settings>({
-    openaiAPIKey: null,
+    openaiAPIKey: APIKeyFromLS || '',
     openaiModel: 'gpt-3.5-turbo',
     temperature: 0.9
   });

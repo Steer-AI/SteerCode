@@ -1,8 +1,7 @@
 import type { CreateChatCompletionRequest } from 'openai';
 
 export type Settings = {
-  // TODO: implement model
-  openaiAPIKey: string | null;
+  openaiAPIKey: string;
   openaiModel: CreateChatCompletionRequest['model'];
   temperature: number;
 };

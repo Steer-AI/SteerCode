@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
+  import { NotificationType, Position } from '$lib/models/enums/notifications';
   import Button from '$lib/shared/components/Button.svelte';
   import SearchIcon from '$lib/shared/components/Icons/SearchIcon.svelte';
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
@@ -46,7 +48,7 @@
 
     query = '';
 
-    eventSource.addEventListener('error', handleError);
+    eventSource.addEventListener('error', (e) => handleError(e));
 
     eventSource.addEventListener('message', (e) => {
       scrollToBottom();
@@ -72,11 +74,23 @@
     scrollToBottom();
   };
 
-  function handleError<T>(err: T) {
+  function handleError<T = any>(err: T) {
     loading = false;
     query = '';
     answer = '';
-    console.error(err);
+    let msg = 'An error occurred while processing your request.';
+    try {
+      const errMessage = JSON.parse(err.data);
+      msg = errMessage.error;
+    } catch (err) {
+      console.error(err);
+    }
+    notificationStore.addNotification({
+      type: NotificationType.GeneralError,
+      position: Position.BottomRight,
+      removeAfter: 5000,
+      message: msg
+    });
   }
 </script>
 

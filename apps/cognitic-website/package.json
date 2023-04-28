@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "gpt3-tokenizer": "^1.1.5",
+    "markdown-hljs": "^0.1.11",
     "openai": "^3.2.1",
     "sse.js": "^0.6.1"
   }

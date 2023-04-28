@@ -94,7 +94,7 @@
         bind:value={newAgent.name}
         name="name"
         placeholder="Your agent name. e.g. Jarvis"
-        class="body-regular h-8 w-full px-3"
+        class="body-regular h-8 px-3"
         labelClass="flex items-start flex-col"
         required
       >
