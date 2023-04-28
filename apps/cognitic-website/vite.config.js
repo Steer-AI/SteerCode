@@ -25,7 +25,7 @@ const config = ({ mode }) => {
         authToken: process.env.SENTRY_AUTH_TOKEN,
         org: 'sentry',
         debug: false,
-        project: 'cognitic',
+        project: process.env.SENTRY_PROJECT_NAME,
         // Specify the directory containing build artifacts
         include: ['./.svelte-kit/output/client'],
         setCommits: {
