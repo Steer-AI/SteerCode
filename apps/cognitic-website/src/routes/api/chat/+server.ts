@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       method: 'POST',
       body: JSON.stringify({
-        input: reqMessages[reqMessages.length - 1].content
+        input: messagesToPassToOpenAI[messagesToPassToOpenAI.length - 1].content
       })
     });
     if (!moderationRes.ok) {

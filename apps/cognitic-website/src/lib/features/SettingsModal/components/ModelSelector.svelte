@@ -15,6 +15,7 @@
   selected={{ label: value, value }}
   on:change={({ detail }) => (value = detail.value)}
   {options}
+  listboxClass="w-full"
 >
   <p slot="label" class="label-small text-content-tertiary mr-3">
     Select a model

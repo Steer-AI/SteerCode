@@ -27,6 +27,7 @@
     "@sentry/vite-plugin": "^0.4.0",
     "@sveltejs/adapter-vercel": "^2.4.3",
     "@sveltejs/kit": "^1.15.8",
+    "@tailwindcss/typography": "^0.5.9",
     "@types/uuid": "^9.0.1",
     "@vercel/edge-config": "^0.1.5",
     "autoprefixer": "^9.8.8",
@@ -46,8 +47,9 @@
   },
   "dependencies": {
     "gpt3-tokenizer": "^1.1.5",
-    "markdown-hljs": "^0.1.11",
+    "highlight.js": "^11.7.0",
     "openai": "^3.2.1",
-    "sse.js": "^0.6.1"
+    "sse.js": "^0.6.1",
+    "svelte-markdown": "^0.2.3"
   }
 }

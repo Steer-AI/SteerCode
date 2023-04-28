@@ -12,6 +12,7 @@
   import ModelSelector from '../components/ModelSelector.svelte';
   import ApiKeyInput from '../components/ApiKeyInput.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
+  import InputField from '$lib/shared/components/InputField.svelte';
 
   let dialogEl: HTMLDialogElement;
 
@@ -52,6 +53,12 @@
     </p>
     <ApiKeyInput bind:value={newSettings.openaiAPIKey} />
     <ModelSelector bind:value={newSettings.openaiModel} />
+    <InputField
+      class="body-regular !bg-background-secondaryHover h-8 px-3"
+      labelClass="flex items-start flex-col"
+      bind:value={newSettings.openaiModel}
+    />
+
     <TemperatureSwitcher bind:value={newSettings.temperature} />
   </div>
 

@@ -1,21 +1,29 @@
 <script lang="ts">
   import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-  import Markdown, {
-    marked,
-    highlightCode,
-    getHljs,
-    getLang
-  } from 'markdown-hljs';
+  import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import SvelteMarkdown from 'svelte-markdown';
+  import CodeRendered from './CodeRendered.svelte';
 
+  export let senderName: string;
   export let type: ChatCompletionRequestMessageRoleEnum;
   export let message: string;
+  export let deletable: boolean = false;
 
-  $: markedDown = Markdown(message);
+  const dispatch = createEventDispatcher();
 </script>
 
 <div class="chat {type === 'user' ? 'chat-end' : 'chat-start'} justify-end">
   <div class="chat-image avatar">
-    <div class="w-10 overflow-hidden rounded-full">
+    <div class="group w-10 overflow-hidden rounded-full">
+      {#if deletable}
+        <button
+          class="bg-background-primary absolute inset-0 hidden items-center justify-center bg-opacity-20 group-hover:flex"
+          on:click={() => dispatch('delete')}
+        >
+          <BinIcon class="text-error h-6 w-6" />
+        </button>
+      {/if}
       <img
         src="https://ui-avatars.com/api/?name={type === 'user'
           ? 'Me'
@@ -27,20 +35,26 @@
     </div>
   </div>
   <div class="chat-header label-mini">
-    {type === 'user' ? 'Me' : 'Bot'}
+    {senderName}
   </div>
   <div
-    class="chat-bubble text-content-primary flex flex-col gap-3 {type === 'user'
+    class="prose prose-invert chat-bubble text-content-primary overflow-y-auto {type ===
+    'user'
       ? 'bg-background-secondary'
       : 'bg-background-secondaryActive'}"
   >
-    {@html markedDown}
+    <SvelteMarkdown
+      source={message}
+      renderers={{
+        code: CodeRendered
+      }}
+    />
   </div>
 </div>
 
 <style lang="postcss">
   /* https://highlightjs.tiddlyhost.com/ */
-  @import './themes/vs2015.css';
+  @import './styles/vs2015.css';
   .chat {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

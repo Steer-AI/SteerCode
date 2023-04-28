@@ -4,6 +4,7 @@
   import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import Button from '$lib/shared/components/Button.svelte';
+  import Divider from '$lib/shared/components/Divider.svelte';
   import SearchIcon from '$lib/shared/components/Icons/SearchIcon.svelte';
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
@@ -94,28 +95,60 @@
   }
 </script>
 
-<section class="flex h-full w-full flex-col items-center pt-4">
-  <div class="flex w-full flex-1 flex-col gap-4 overflow-y-auto px-6">
+<section class="flex h-full w-full flex-col items-center">
+  <div class="flex h-14 w-full items-center justify-between px-6">
+    <h3 class="text-content-secondary headline-small" />
+
+    <Button
+      variant="tertiary"
+      size="medium"
+      disabled={$agent.messages.length === 0}
+      on:click={() => {
+        agent.deleteAllMessages();
+      }}
+    >
+      Clear Chat
+    </Button>
+  </div>
+  <Divider class="w-full" />
+
+  <div class="mt-4 flex w-full flex-1 flex-col gap-4 overflow-y-auto px-6">
     <div class="flex flex-col gap-2">
       {#if $agent.system_prompt}
         <ChatMessage
+          senderName={agent.value.name}
           type="assistant"
           message="I will use the following prompt: {$agent.system_prompt}"
         />
       {/if}
       <ChatMessage
+        senderName={agent.value.name}
         type="assistant"
         message="Hello, ask me anything you want!"
       />
 
-      {#each $agent.messages as message}
-        <ChatMessage type={message.role} message={message.content} />
+      {#each $agent.messages as message, i}
+        <ChatMessage
+          senderName={message.role === 'user' ? 'Me' : agent.value.name}
+          type={message.role}
+          message={message.content}
+          on:delete={() => agent.deleteMessageByIndex(i)}
+          deletable={true}
+        />
       {/each}
       {#if answer}
-        <ChatMessage type="assistant" message={answer} />
+        <ChatMessage
+          senderName={agent.value.name}
+          type="assistant"
+          message={answer}
+        />
       {/if}
       {#if loading}
-        <ChatMessage type="assistant" message="Loading.." />
+        <ChatMessage
+          senderName={agent.value.name}
+          type="assistant"
+          message="Loading.."
+        />
       {/if}
     </div>
     <div class="" bind:this={scrollToDiv} />
@@ -138,6 +171,8 @@
         e.target.style.height = e.target.scrollHeight + 'px';
       }}
       on:keydown={(e) => {
+        if (loading || answer) return;
+
         if (e.key === 'Enter' && !e.shiftKey) {
           handleSubmit();
         }
@@ -149,7 +184,7 @@
       type="submit"
       size="medium"
       class="w-24"
-      disabled={loading}
+      disabled={loading || answer}
     >
       <SearchIcon class="mr-2 h-4 w-4" />
       Send

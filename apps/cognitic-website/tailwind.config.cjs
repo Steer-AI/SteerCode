@@ -5,8 +5,7 @@ module.exports = {
     './components/**/*.{js,ts,html,svelte}',
     './src/**/*.{js,ts,html,svelte}'
   ],
-  safelist: [
-  ],
+  safelist: [],
   theme: {
     fontFamily: {
       basier: ['Basier Square Regular', 'Roboto'],
@@ -26,7 +25,7 @@ module.exports = {
 
       stroke: {
         primary: '#1F1F28',
-        secondary: '#2D2D39',
+        secondary: '#2D2D39'
       },
 
       content: {
@@ -53,9 +52,8 @@ module.exports = {
         lighter: '#6BC77F',
         DEFAULT: '#46B95F',
         darker: '#38944C'
-      },
-    }
+      }
+    },      
   },
-  variants: {},
-  plugins: []
+  plugins: [require('@tailwindcss/typography')]
 };

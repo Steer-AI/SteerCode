@@ -42,7 +42,50 @@ export class Conversation implements Readable<ConversationDTO> {
     const success = await updateConversation(this.value);
 
     if (!success) {
-      Log.DEBUG('Agent.addTask', 'failed to add task. Restore snapshot');
+      Log.DEBUG(
+        'Conversation.addMessage',
+        'failed to add message. Restore snapshot'
+      );
+      this._restore('messages', snapshot);
+    }
+
+    return success;
+  }
+
+  @withLogger()
+  async deleteMessageByIndex(index: number): Promise<boolean> {
+    const snapshot = [...this.value.messages];
+
+    this.value.messages = this.value.messages.filter((_, i) => i !== index);
+    this.store.set(this.value);
+
+    const success = await updateConversation(this.value);
+
+    if (!success) {
+      Log.DEBUG(
+        'Conversation.deleteMessage',
+        'failed to delete message. Restore snapshot'
+      );
+      this._restore('messages', snapshot);
+    }
+
+    return success;
+  }
+
+  @withLogger()
+  async deleteAllMessages(): Promise<boolean> {
+    const snapshot = [...this.value.messages];
+
+    this.value.messages = [];
+    this.store.set(this.value);
+
+    const success = await updateConversation(this.value);
+
+    if (!success) {
+      Log.DEBUG(
+        'Conversation.deleteAllMessages',
+        'failed to delete all messages. Restore snapshot'
+      );
       this._restore('messages', snapshot);
     }
 

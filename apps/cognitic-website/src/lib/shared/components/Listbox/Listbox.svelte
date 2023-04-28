@@ -80,7 +80,7 @@
       style="{inverted
         ? 'bottom: calc(100% + 8px)'
         : 'top: calc(100% + 8px)'}; {optionsStyle}"
-      class="bg-background-secondary absolute right-0"
+      class="bg-background-secondary absolute right-0 w-full"
     >
       {#each options as opt (opt.value)}
         <ListboxOption
