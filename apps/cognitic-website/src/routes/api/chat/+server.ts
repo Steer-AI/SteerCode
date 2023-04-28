@@ -56,11 +56,6 @@ export const POST: RequestHandler = async ({ request }) => {
       messagesToPassToOpenAI.unshift(msg);
     }
 
-    reqMessages.forEach((msg) => {
-      const tokens = getTokens(msg.content);
-      tokenCount += tokens;
-    });
-
     const moderationRes = await fetch('https://api.openai.com/v1/moderations', {
       headers: {
         'Content-Type': 'application/json',
