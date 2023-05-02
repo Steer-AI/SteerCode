@@ -6,13 +6,14 @@ import type {
 import { v4 as uuidv4 } from 'uuid';
 
 // create a new indexedDB database
+let db: IDBDatabase | null = null;
 
-let connection: Promise<IDBDatabase> | null = null
+async function openConnection(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    if (db) {
+      return resolve(db);
+    }
 
-const openConnection = async () => {
-  if (connection) return connection;
-
-  connection = new Promise<IDBDatabase>((resolve, reject) => {
     if (typeof window === 'undefined') return reject('No window object');
     if (!window.indexedDB) return reject('No indexedDB object');
 
@@ -28,16 +29,17 @@ const openConnection = async () => {
 
     request.onsuccess = (event) => {
       Log.DEBUG('Opened indexedDB database', event);
-      resolve(event.target!.result as IDBDatabase);
+
+      db = event.target!.result as IDBDatabase;
+      resolve(db);
     };
+
     request.onerror = (event) => {
       Log.ERROR('Error opening indexedDB database', event);
       reject(event);
     };
   });
-  
-  return connection;
-};
+}
 
 export async function updateConversation(
   conversation: ConversationDTO
@@ -46,12 +48,6 @@ export async function updateConversation(
   const tx = db.transaction('conversations', 'readwrite');
   const store = tx.objectStore('conversations');
   const query = store.put(conversation);
-
-  // close the database once the
-  // transaction completes
-  tx.oncomplete = function () {
-    db.close();
-  };
 
   return new Promise((resolve) => {
     query.onsuccess = () => {
@@ -77,12 +73,6 @@ export async function addConversation(
   const store = tx.objectStore('conversations');
   const query = store.add(toAdd);
 
-  // close the database once the
-  // transaction completes
-  tx.oncomplete = function () {
-    db.close();
-  };
-
   return new Promise((resolve) => {
     query.onsuccess = () => {
       resolve(toAdd);
@@ -99,12 +89,6 @@ export async function deleteConversation(id: string): Promise<boolean> {
   const store = tx.objectStore('conversations');
   const query = store.delete(id);
 
-  // close the database once the
-  // transaction completes
-  tx.oncomplete = function () {
-    db.close();
-  };
-
   return new Promise((resolve) => {
     query.onsuccess = () => {
       resolve(true);
@@ -119,12 +103,6 @@ export async function getAllConversations(): Promise<ConversationDTO[]> {
   const db = await openConnection();
   const tx = db.transaction('conversations', 'readonly');
   const store = tx.objectStore('conversations');
-
-  // close the database once the
-  // transaction completes
-  tx.oncomplete = function () {
-    db.close();
-  };
 
   return new Promise((resolve) => {
     const conversations: ConversationDTO[] = [];

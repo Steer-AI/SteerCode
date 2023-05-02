@@ -1,5 +1,7 @@
 const DEBUG_LOGGING =
-  typeof window !== 'undefined' ? localStorage.getItem('DEBUG_LOGGING') : false;
+  typeof window !== 'undefined'
+    ? localStorage.getItem('DEBUG_LOGGING') === 'true'
+    : false;
 
 export class Log {
   static DEBUG(message: string, ...args: unknown[]) {
