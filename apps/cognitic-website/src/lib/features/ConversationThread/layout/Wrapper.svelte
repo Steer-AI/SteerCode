@@ -22,15 +22,20 @@
   let answer: string = '';
   let loading: boolean = false;
   let scrollToDiv: HTMLDivElement;
+  let chatAreaDiv: HTMLDivElement;
 
-  function scrollToBottom() {
-    setTimeout(function () {
-      scrollToDiv.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest'
-      });
-    }, 100);
+  function scrollToBottom(force: boolean = false) {
+    if (!scrollToDiv || !chatAreaDiv) return;
+    // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
+    if (chatAreaDiv.scrollTop > -200 || force) {
+      setTimeout(function () {
+        scrollToDiv.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 100);
+    }
   }
 
   const handleSubmit = async () => {
@@ -73,7 +78,6 @@
         }
 
         const completionResponse = JSON.parse(e.data);
-        console.log({ completionResponse });
         const content =
           completionResponse.msg || completionResponse.choices[0].delta.content;
 
@@ -111,7 +115,7 @@
 
   onMount(() => {
     trackPage('Conversation', { conversationId: agent.value.id });
-    scrollToBottom();
+    scrollToBottom(true);
   });
 </script>
 
@@ -133,7 +137,12 @@
   </div>
   <Divider class="w-full" />
 
-  <div class="mt-4 flex w-full flex-1 flex-col gap-4 overflow-y-auto px-6">
+  <div
+    class="mt-4 flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
+    bind:this={chatAreaDiv}
+  >
+    <div class="" bind:this={scrollToDiv} />
+
     <div class="flex flex-col gap-2">
       {#if $agent.system_prompt}
         <ChatMessage
@@ -181,7 +190,6 @@
         />
       {/if}
     </div>
-    <div class="" bind:this={scrollToDiv} />
   </div>
 
   <form
@@ -218,7 +226,7 @@
       disabled={loading || answer === ''}
     >
       <SearchIcon class="mr-2 h-4 w-4" />
-      {$_('conversation.send')}
+      {$_('conversation.sendButton')}
     </Button>
   </form>
 </section>
