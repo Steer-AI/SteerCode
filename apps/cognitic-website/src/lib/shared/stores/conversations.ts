@@ -51,7 +51,7 @@ function createConversationsStore(): DataStore<
     if (success) {
       notificationStore.addNotification({
         type: NotificationType.GeneralSuccess,
-        message: 'Agent delete',
+        message: 'Agent deleted',
         removeAfter: 5000,
         position: Position.BottomRight
       });

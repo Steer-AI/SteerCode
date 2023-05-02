@@ -1,6 +1,7 @@
 <script lang="ts">
   import Divider from '../components/Divider.svelte';
   import ActivityFeedIcon from '../components/Icons/ActivityFeedIcon.svelte';
+  import LogoIcon from '../components/Icons/LogoIcon.svelte';
 
   export let sidebarOpen = true;
 </script>
@@ -16,7 +17,11 @@
       </button>
     </div>
 
-    <a href="/" class="headline-large mx-auto">SuperGPT</a>
+    <a href="/" class="headline-large mx-auto flex items-center">
+      <!-- LOGO -->
+      <LogoIcon class="mr-1 h-6 w-6" />
+      SuperGPT
+    </a>
 
     <div class="flex-1" />
   </span>

@@ -5,9 +5,7 @@
   export let value: string;
   const options: Option<string>[] = [
     { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
-    { label: 'gpt-4', value: 'gpt-4' },
-    { label: 'text-davinci-003', value: 'text-davinci-003' },
-    { label: 'code-davinci-002', value: 'code-davinci-002' }
+    { label: 'gpt-4', value: 'gpt-4' }
   ];
 </script>
 

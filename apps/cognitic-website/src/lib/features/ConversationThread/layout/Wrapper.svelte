@@ -110,6 +110,7 @@
 
   onMount(() => {
     trackPage('Conversation', { conversationId: agent.value.id });
+    scrollToBottom();
   });
 </script>
 
@@ -200,6 +201,7 @@
         if (loading || answer) return;
 
         if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
           handleSubmit();
         }
       }}

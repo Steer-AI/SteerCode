@@ -4,6 +4,7 @@
   import { createEventDispatcher } from 'svelte';
   import SvelteMarkdown from 'svelte-markdown';
   import CodeRendered from './CodeRendered.svelte';
+  import LogoIcon from '$lib/shared/components/Icons/LogoIcon.svelte';
 
   export let senderName: string;
   export let type: ChatCompletionRequestMessageRoleEnum;
@@ -24,14 +25,18 @@
           <BinIcon class="text-error h-6 w-6" />
         </button>
       {/if}
-      <img
-        src="https://ui-avatars.com/api/?name={type === 'user'
-          ? 'Me'
-          : 'B'}&size=40&background={type === 'user'
-          ? '46B95F'
-          : 'FFDC00'}&color=000"
-        alt="{type} avatar"
-      />
+      {#if type === 'user'}
+        <img
+          src="https://ui-avatars.com/api/?name=Me&size=40&background=FFDC00&color=000"
+          alt="{type} avatar"
+        />
+      {:else}
+        <div
+          class="bg-background-secondaryActive flex h-10 w-10 items-center justify-center"
+        >
+          <LogoIcon class="h-6 w-6" />
+        </div>
+      {/if}
     </div>
   </div>
   <div class="chat-header label-mini">

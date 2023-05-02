@@ -17,7 +17,6 @@
   export let options: T[];
   export let disabled: boolean = false;
   export let listboxClass = '';
-  export let labelClass = '';
   export let buttonClass = 'h-6';
   export let optionsStyle = '';
   export let inverted: boolean = false;

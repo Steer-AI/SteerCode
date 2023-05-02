@@ -1,0 +1,18 @@
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <style>
+    circle.x {
+      fill: "#151515";
+    }
+    @media (prefers-color-scheme: dark) {
+      circle.x {
+        fill: white;
+      }
+    }
+  </style>
+
+  <circle cx="206.373" cy="108.565" r="44.565" class="x"/>
+  <circle cx="374.314" cy="174.709" r="80.291" fill="#FD0054"/>  
+  <circle cx="142.574" cy="292.925" r="97.576" class="x" />
+  <circle cx="338.661" cy="372.673" r="63.796" class="x"/>
+</svg>

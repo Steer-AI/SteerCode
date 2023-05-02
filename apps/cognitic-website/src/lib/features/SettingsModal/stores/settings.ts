@@ -10,7 +10,7 @@ function createSettingsStore() {
   const settings = writable<Settings>({
     openaiAPIKey: APIKeyFromLS || '',
     openaiModel: 'gpt-3.5-turbo',
-    temperature: 0.9
+    temperature: 0.3
   });
 
   function updateSettings(newValue: Settings) {

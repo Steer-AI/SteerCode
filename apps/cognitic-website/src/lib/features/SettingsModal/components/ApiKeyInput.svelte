@@ -22,9 +22,9 @@
     on:click={() => {
       inputType = inputType === 'text' ? 'password' : 'text';
     }}
-    class:text-content-secondary={inputType === 'password'}
-    class:text-primary={inputType === 'text'}
-    class="hover:text-content-primary z-10"
+    class="{inputType === 'password'
+      ? 'text-content-secondary hover:text-content-primary'
+      : 'text-primary'} z-10"
   >
     <EyeIcon class="h-4 w-4" />
   </button>
