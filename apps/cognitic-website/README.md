@@ -44,6 +44,10 @@ https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
 
 ### TODO:
 - Auth/login
+- get conversations from backend
+- get conversation history from backend
+- send new message to backend
+- new home screen ... show new conversation
 
 
 ## local build and deploy to vercel

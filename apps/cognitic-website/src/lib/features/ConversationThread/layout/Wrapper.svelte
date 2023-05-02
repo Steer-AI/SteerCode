@@ -15,6 +15,7 @@
   import * as Sentry from '@sentry/svelte';
   import { BACKEND_CHAT_URL } from '$lib/shared/utils/constants';
   import { _ } from 'svelte-i18n';
+  import Page from '../../../../routes/(app)/+page.svelte';
 
   export let agent: Conversation;
 
@@ -38,14 +39,14 @@
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (insertMessage: boolean = true) => {
     trackEvent('New message', {
       message: query,
       conversationId: agent.value.id
     });
 
     loading = true;
-    agent.addMessage({ role: 'user', content: query });
+    if (insertMessage) agent.addMessage({ role: 'user', content: query });
 
     const settings = get(settingsStore);
 
@@ -58,8 +59,7 @@
       },
       payload: JSON.stringify({
         conversation_id: agent.value.id,
-        messages: agent.value.messages,
-        system_prompt: agent.value.system_prompt
+        messages: agent.value.messages
       })
     });
 
@@ -115,7 +115,13 @@
 
   onMount(() => {
     trackPage('Conversation', { conversationId: agent.value.id });
-    scrollToBottom(true);
+    const m = agent.value.messages;
+    if (m.length > 0 && m[m.length - 1].role === 'user') {
+      query = m[m.length - 1].content;
+      handleSubmit(false);
+    } else {
+      scrollToBottom(true);
+    }
   });
 </script>
 
@@ -144,13 +150,6 @@
     <div class="" bind:this={scrollToDiv} />
 
     <div class="flex flex-col gap-2">
-      {#if $agent.system_prompt}
-        <ChatMessage
-          senderName={agent.value.name}
-          type="assistant"
-          message="{$_('conversation.message.prompt')} {$agent.system_prompt}"
-        />
-      {/if}
       <ChatMessage
         senderName={agent.value.name}
         type="assistant"

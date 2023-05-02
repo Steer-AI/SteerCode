@@ -64,8 +64,8 @@ export async function addConversation(
 ): Promise<ConversationDTO | null> {
   const toAdd: ConversationDTO = {
     id: uuidv4(),
-    ...conversation,
-    messages: []
+    name: 'New Conversation', // TODO:get conversation name from API
+    messages: [{ role: 'user', content: conversation.message }]
   };
 
   const db = await openConnection();

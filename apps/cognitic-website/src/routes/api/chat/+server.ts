@@ -32,8 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const reqMessages: ChatCompletionRequestMessage[] = requestData.messages;
-    const systemPrompt =
-      requestData.system_prompt || defaultSystemFallbackPrompt;
+    const systemPrompt = defaultSystemFallbackPrompt;
 
     if (!reqMessages) {
       throw new Error('no messages provided');
