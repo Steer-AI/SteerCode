@@ -11,6 +11,7 @@
   import type { Snapshot } from './$types';
   import type { NewConversationDTO } from '$lib/models/types/conversation.type';
   import { conversationsStore } from '$lib/shared/stores/conversations';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   const defaultValues: NewConversationDTO = {
     name: '',
@@ -31,6 +32,11 @@
     const agent = await conversationsStore.add(newConversation);
     pendingRequest = false;
     if (!agent) return;
+    trackEvent('Create conversation', {
+      system_prompt: agent.value.system_prompt,
+      name: agent.value.name,
+      conversationId: agent.value.id
+    });
     goto(`/chat/${agent.value.id}`);
   }
 

@@ -13,6 +13,7 @@
   import ApiKeyInput from '../components/ApiKeyInput.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
   import InputField from '$lib/shared/components/InputField.svelte';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   let dialogEl: HTMLDialogElement;
 
@@ -32,6 +33,11 @@
       type: NotificationType.GeneralSuccess,
       message: 'Settings saved',
       removeAfter: 3000
+    });
+
+    trackEvent('Save settings', {
+      model: newSettings.openaiModel,
+      temperature: newSettings.temperature
     });
   }
 </script>

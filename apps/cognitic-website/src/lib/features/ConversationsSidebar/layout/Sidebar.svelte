@@ -16,6 +16,7 @@
   import type { DataStore } from '$lib/models/types/store.type';
   import { AGENT_MODE } from '$lib/shared/utils/constants';
   import { conversationsStore } from '$lib/shared/stores/conversations';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   const store: DataStore = AGENT_MODE ? agentStore : conversationsStore;
 
@@ -31,10 +32,18 @@
     if (agentToDelete === null) {
       return;
     }
+
     if (dialogEl.returnValue === 'confirm') {
       store.remove(agentToDelete.value.id);
+
+      trackEvent('Delete Conversation', {
+        goal: agentToDelete.value.goal,
+        conversationId: agentToDelete.value.id
+      });
+
       goto('/');
     }
+
     agentToDelete = null;
   }
 
@@ -53,6 +62,9 @@
         size="medium"
         as="a"
         href="/"
+        on:click={() => {
+          trackEvent('New conversation');
+        }}
       >
         <PlusIcon class="mr-1 h-3 w-3" />
         New Session
@@ -82,7 +94,10 @@
         variant="tertiary"
         class="w-full"
         size="medium"
-        on:click={() => modalOpen.set(true)}
+        on:click={() => {
+          modalOpen.set(true);
+          trackEvent('Open settings');
+        }}
       >
         <SettingsIcon class="mr-1 h-3 w-3" />
         Settings

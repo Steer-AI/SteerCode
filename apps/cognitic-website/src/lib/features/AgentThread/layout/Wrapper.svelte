@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { trackPage } from '$lib/core/services/tracking';
   import ConversationMain from '$lib/features/AgentThread/layout/ConversationMain.svelte';
   import TaskSidebar from '$lib/features/AgentThread/layout/TaskSidebar.svelte';
   import type { Agent } from '$lib/models/classes/Agent.class';
@@ -9,6 +10,8 @@
   let intervalId: ReturnType<typeof setInterval> | null = null;
 
   onMount(() => {
+    trackPage('Conversation', { conversationId: agent.value.id });
+
     agent.fetchAgentState();
 
     intervalId = setInterval(() => {

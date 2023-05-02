@@ -7,9 +7,13 @@
   import Divider from '$lib/shared/components/Divider.svelte';
   import SearchIcon from '$lib/shared/components/Icons/SearchIcon.svelte';
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
+  import { onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
   import { SSE } from 'sse.js';
   import { get } from 'svelte/store';
+  import { trackEvent, trackPage } from '$lib/core/services/tracking';
+  import * as Sentry from '@sentry/svelte';
+  import { BACKEND_CHAT_URL } from '$lib/shared/utils/constants';
 
   export let agent: Conversation;
 
@@ -29,12 +33,17 @@
   }
 
   const handleSubmit = async () => {
+    trackEvent('New message', {
+      message: query,
+      conversationId: agent.value.id
+    });
+
     loading = true;
     agent.addMessage({ role: 'user', content: query });
 
     const settings = get(settingsStore);
 
-    const eventSource = new SSE('/api/chat', {
+    const eventSource = new SSE(BACKEND_CHAT_URL, {
       headers: {
         'Content-Type': 'application/json',
         'x-openai-api-key': settings.openaiAPIKey || '',
@@ -42,6 +51,7 @@
         'x-openai-temperature': settings.temperature.toString()
       },
       payload: JSON.stringify({
+        conversation_id: agent.value.id,
         messages: agent.value.messages,
         system_prompt: agent.value.system_prompt
       })
@@ -62,10 +72,12 @@
         }
 
         const completionResponse = JSON.parse(e.data);
-        const [{ delta }] = completionResponse.choices;
+        console.log({ completionResponse });
+        const content =
+          completionResponse.msg || completionResponse.choices[0].delta.content;
 
-        if (delta.content) {
-          answer = (answer ?? '') + delta.content;
+        if (content) {
+          answer = (answer ?? '') + content;
         }
       } catch (err) {
         handleError(err);
@@ -89,10 +101,16 @@
     notificationStore.addNotification({
       type: NotificationType.GeneralError,
       position: Position.BottomRight,
-      removeAfter: 5000,
+      removeAfter: 10_000, // 10s
       message: msg
     });
+
+    Sentry.captureException(err);
   }
+
+  onMount(() => {
+    trackPage('Conversation', { conversationId: agent.value.id });
+  });
 </script>
 
 <section class="flex h-full w-full flex-col items-center">
@@ -105,6 +123,7 @@
       disabled={$agent.messages.length === 0}
       on:click={() => {
         agent.deleteAllMessages();
+        trackEvent('Clear chat', { conversationId: agent.value.id });
       }}
     >
       Clear Chat
@@ -132,7 +151,14 @@
           senderName={message.role === 'user' ? 'Me' : agent.value.name}
           type={message.role}
           message={message.content}
-          on:delete={() => agent.deleteMessageByIndex(i)}
+          on:delete={() => {
+            agent.deleteMessageByIndex(i);
+            trackEvent('Delete message', {
+              from: message.role,
+              message: message.content,
+              conversationId: agent.value.id
+            });
+          }}
           deletable={true}
         />
       {/each}
@@ -156,7 +182,7 @@
 
   <form
     class="flex w-full flex-shrink-0 items-end gap-4 px-6 py-2"
-    on:submit|preventDefault={() => handleSubmit()}
+    on:submit|preventDefault={handleSubmit}
   >
     <TextAreaField
       placeholder="Enter your question..."
@@ -184,7 +210,7 @@
       type="submit"
       size="medium"
       class="w-24"
-      disabled={loading || answer}
+      disabled={loading || answer === ''}
     >
       <SearchIcon class="mr-2 h-4 w-4" />
       Send

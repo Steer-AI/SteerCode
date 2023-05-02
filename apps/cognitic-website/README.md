@@ -45,10 +45,7 @@ https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
 ### TODO:
 
 - API requests
-- Settings
 - Auth/login
-- Sentry setup
-- Tracking/ Analytics setup
 - i18n localization
 - Agent message log history (result of tasks)
 

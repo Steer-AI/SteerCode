@@ -17,6 +17,7 @@
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
   import Tooltip from '$lib/shared/components/Tooltip.svelte';
   import type { Snapshot } from './$types';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   const defaultValues: NewAgentDTO = {
     name: '',
@@ -41,6 +42,12 @@
     const agent = await agentStore.add(newAgent);
     pendingRequest = false;
     if (!agent) return;
+
+    trackEvent('Create conversation', {
+      goal: agent.value.goal,
+      name: agent.value.name,
+      conversationId: agent.value.id
+    });
     goto(`/chat/${agent.value.id}`);
   }
 

@@ -1,43 +1,67 @@
+import { PUBLIC_ANALYTICS_WRITE_KEY } from '$env/static/public';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 import { Log } from './logging';
-import { PUBLIC_ANALYTICS_API_HOST, PUBLIC_ANALYTICS_WRITE_KEY } from '$env/static/public';
 
 export const analytics = AnalyticsBrowser.load(
   {
-    writeKey: PUBLIC_ANALYTICS_WRITE_KEY,
-    cdnURL: '/api/tracking'
-  },
-  {
-    integrations: {
-      'Segment.io': { apiHost: PUBLIC_ANALYTICS_API_HOST }
-    }
+    writeKey: PUBLIC_ANALYTICS_WRITE_KEY
+    // cdnURL: '/api/tracking'
   }
+  // {
+  //   integrations: {
+  //     'Segment.io': { apiHost: PUBLIC_ANALYTICS_API_HOST }
+  //   }
+  // }
 );
 
-type TrackingOtions = {
-  action: string;
-  value?: string | number | boolean;
-  metainfo?: unknown;
-
-  page?: string;
-  referrer?: string;
-  url?: string;
+type Properties = {
+  [key: string]: number | string | boolean;
 };
 
-export function trackEvent(
-  eventName: string,
-  options: TrackingOtions
-): void {
+export function trackEvent(event: string, properties?: Properties): void {
   if (typeof window === 'undefined') return;
 
   try {
-    options['url'] = options.url || window.location.href;
-    options['page'] = options.page ||  window.location.pathname;
-    options['referrer'] = options.referrer || document.referrer;
-
-    Log.DEBUG('track event', { eventName, options });
-    analytics && analytics.track(eventName, options);
+    // see https://segment.com/docs/connections/spec/track/
+    Log.DEBUG('Track event', { event, properties });
+    analytics && analytics.track(event, properties);
   } catch (e) {
-    Log.ERROR("Tracking failed", e);
+    Log.ERROR('Tracking event failed', e);
+  }
+}
+
+export function trackPage(category: string, properties?: Properties): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    // see https://segment.com/docs/connections/spec/page/
+    Log.DEBUG('track page', { category, properties });
+    analytics && analytics.page(category, '', properties);
+  } catch (e) {
+    Log.ERROR('Tracking page failed', e);
+  }
+}
+
+export function trackIdentify(userId: string, traits?: Properties): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    // see https://segment.com/docs/connections/spec/identify/
+    Log.DEBUG('Track identify', { userId, traits });
+    analytics && analytics.identify(userId, traits);
+  } catch (e) {
+    Log.ERROR('Tracking identify failed', e);
+  }
+}
+
+export function trackScreen(name: string, properties?: Properties): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    // see https://segment.com/docs/connections/spec/screen/
+    Log.DEBUG('Track screen', { name, properties });
+    analytics && analytics.screen(name, properties);
+  } catch (e) {
+    Log.ERROR('Tracking screen failed', e);
   }
 }

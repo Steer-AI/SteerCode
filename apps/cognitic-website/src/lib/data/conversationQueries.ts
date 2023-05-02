@@ -7,8 +7,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 // create a new indexedDB database
 
+let connection: Promise<IDBDatabase> | null = null
+
 const openConnection = async () => {
-  return new Promise<IDBDatabase>((resolve, reject) => {
+  if (connection) return connection;
+
+  connection = new Promise<IDBDatabase>((resolve, reject) => {
     if (typeof window === 'undefined') return reject('No window object');
     if (!window.indexedDB) return reject('No indexedDB object');
 
@@ -31,6 +35,8 @@ const openConnection = async () => {
       reject(event);
     };
   });
+  
+  return connection;
 };
 
 export async function updateConversation(
