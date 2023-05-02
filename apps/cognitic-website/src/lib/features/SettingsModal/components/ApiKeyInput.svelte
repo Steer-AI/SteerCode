@@ -1,6 +1,7 @@
 <script lang="ts">
   import EyeIcon from '$lib/shared/components/Icons/EyeIcon.svelte';
   import InputField from '$lib/shared/components/InputField.svelte';
+  import { _ } from 'svelte-i18n';
 
   export let value: string;
   let inputType: 'text' | 'password' = 'password';
@@ -9,12 +10,12 @@
 <InputField
   bind:value
   type={inputType}
-  placeholder="Your own OpenAI API key"
+  placeholder={$_('settings.apiKeyInput.label')}
   class="body-regular !bg-background-secondaryHover h-8 px-3"
   labelClass="flex items-start flex-col"
 >
   <p slot="label" class="label-small text-content-tertiary flex-shrink-0 pb-2">
-    OpenAI API Key
+    {$_('settings.apiKeyInput.label')}
   </p>
 
   <button

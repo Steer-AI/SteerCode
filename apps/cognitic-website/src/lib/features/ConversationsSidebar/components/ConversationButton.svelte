@@ -1,19 +1,20 @@
 <script context="module" lang="ts">
   export type DispatchEvents = {
-    delete: { original: MouseEvent; agent: Agent };
+    delete: { original: MouseEvent; agent: Conversation };
   };
 </script>
 
 <script lang="ts">
-  import type { Agent } from '$lib/models/classes/Agent.class';
+  import { _ } from 'svelte-i18n';
 
   import Divider from '$lib/shared/components/Divider.svelte';
   import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
   import MessagingIcon from '$lib/shared/components/Icons/MessagingIcon.svelte';
   import Tooltip from '$lib/shared/components/Tooltip.svelte';
   import { createEventDispatcher } from 'svelte';
+  import type { Conversation } from '$lib/models/classes/Conversation.class';
 
-  export let agent: Agent;
+  export let agent: Conversation;
   export let selected: boolean;
 
   const dispatch = createEventDispatcher<DispatchEvents>();
@@ -47,9 +48,11 @@
       on:click={(e) => dispatch('delete', { original: e, agent })}
     >
       <BinIcon class="h-4 w-4" />
-      <div class="sr-only">Delete agent</div>
+      <div class="sr-only">{$_('sidebar.deleteTooltip')}</div>
     </button>
-    <svelte:fragment slot="tooltip">Delete agent</svelte:fragment>
+    <svelte:fragment slot="tooltip"
+      >{$_('sidebar.deleteTooltip')}</svelte:fragment
+    >
   </Tooltip>
 </li>
 <Divider class="last:hidden" />

@@ -8,12 +8,13 @@
   import { get } from 'svelte/store';
   import { modalOpen } from '../stores/modal';
   import { settingsStore } from '../stores/settings';
-  import TemperatureSwitcher from '../components/TemperatureSwitcher.svelte';
+  import TemperatureSlider from '../components/TemperatureSlider.svelte';
   import ModelSelector from '../components/ModelSelector.svelte';
   import ApiKeyInput from '../components/ApiKeyInput.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
   import InputField from '$lib/shared/components/InputField.svelte';
   import { trackEvent } from '$lib/core/services/tracking';
+  import { _ } from 'svelte-i18n';
 
   let dialogEl: HTMLDialogElement;
 
@@ -31,7 +32,7 @@
     dialogEl.close();
     notificationStore.addNotification({
       type: NotificationType.GeneralSuccess,
-      message: 'Settings saved',
+      message: $_('notifications.settingsSaved'),
       removeAfter: 3000
     });
 
@@ -47,15 +48,16 @@
   on:close={() => modalOpen.set(false)}
   class="w-full max-w-sm"
 >
-  <h3 slot="title" class="headline-small text-content-primary">Settings</h3>
+  <h3 slot="title" class="headline-small text-content-primary">
+    {$_('settings.title')}
+  </h3>
 
   <div
     slot="description"
     class="text-content-secondary body-regular flex flex-col gap-6 py-4"
   >
     <p class="text-content-secondary mb-4">
-      You can change the settings for the AI model here. The settings will apply
-      right away to the next generated text.
+      {$_('settings.description')}
     </p>
     <ApiKeyInput bind:value={newSettings.openaiAPIKey} />
     <ModelSelector bind:value={newSettings.openaiModel} />
@@ -65,7 +67,7 @@
       bind:value={newSettings.openaiModel}
     />
 
-    <TemperatureSwitcher bind:value={newSettings.temperature} />
+    <TemperatureSlider bind:value={newSettings.temperature} />
   </div>
 
   <div slot="action">
@@ -76,7 +78,7 @@
       on:click={handleSettingsSave}
       class="ml-auto"
     >
-      Save changes
+      {$_('settings.save')}
     </Button>
   </div>
 </Dialog>

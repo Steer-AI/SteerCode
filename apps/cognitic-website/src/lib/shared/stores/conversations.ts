@@ -9,12 +9,14 @@ import { Conversation } from '$lib/models/classes/Conversation.class';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
 import type { NewConversationDTO } from '$lib/models/types/conversation.type';
 import type { DataStore } from '$lib/models/types/store.type';
-import { derived, writable, type Readable } from 'svelte/store';
+import { _ } from 'svelte-i18n';
+import { derived, get, writable, type Readable } from 'svelte/store';
 
 function createConversationsStore(): DataStore<
   Conversation,
   NewConversationDTO
 > {
+  const _t = get(_);
   const _conversations = writable<Conversation[]>([]);
 
   async function remove(id: string): Promise<boolean> {
@@ -41,7 +43,7 @@ function createConversationsStore(): DataStore<
       });
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
-        message: 'Failed to delete conversation',
+        message: _t('notifications.failedDeleteAgent'),
         removeAfter: 5000,
         position: Position.BottomRight
       });
@@ -51,7 +53,7 @@ function createConversationsStore(): DataStore<
     if (success) {
       notificationStore.addNotification({
         type: NotificationType.GeneralSuccess,
-        message: 'Agent deleted',
+        message: _t('notifications.agentDeleted'),
         removeAfter: 5000,
         position: Position.BottomRight
       });
@@ -70,7 +72,7 @@ function createConversationsStore(): DataStore<
     if (resp === null) {
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
-        message: 'Failed to create conversation',
+        message: _t('notifications.failedCreateAgent'),
         removeAfter: 5000,
         position: Position.BottomRight
       });
@@ -85,7 +87,9 @@ function createConversationsStore(): DataStore<
     });
     notificationStore.addNotification({
       type: NotificationType.GeneralSuccess,
-      message: `Conversation "${conversation.name}" created`,
+      message: _t('notifications.agentCreated', {
+        values: { name: newConv.value.name }
+      }),
       removeAfter: 5000,
       position: Position.BottomRight
     });

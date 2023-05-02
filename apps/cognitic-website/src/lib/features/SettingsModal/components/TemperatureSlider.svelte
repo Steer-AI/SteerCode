@@ -1,13 +1,13 @@
 <script lang="ts">
   import Slider from '$lib/shared/components/Slider/Slider.svelte';
-  import { roundValue } from '$lib/shared/utils/formatters';
+  import { _ } from 'svelte-i18n';
 
   export let value: number;
 </script>
 
 <div class="flex flex-col">
   <p class="label-small text-content-tertiary flex-shrink-0 pb-2">
-    OpenAI model temperature
+    {$_('settings.temperatureSlider.label')}
   </p>
 
   <div class="flex items-center justify-between">

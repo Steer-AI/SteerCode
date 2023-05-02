@@ -43,15 +43,27 @@ https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ### TODO:
-
-- API requests
 - Auth/login
-- i18n localization
-- Agent message log history (result of tasks)
 
-# local build and deploy to vercel
+
+## local build and deploy to vercel
 
 ```
 vercel build --prod
 vercel deploy --prebuilt --prod
 ```
+
+# local deploy
+
+1. update your env variables in `.env` file
+2. run following commands
+```
+yarn install
+cd apps/cognitic-website
+yarn dev
+```
+3. open http://localhost:5173
+4. open browser dev tools and enter following command `localStorage.DEBUG_LOGGING = true`
+
+
+- for additional dev options see `apps/cognitic-website/src/lib/shared/utils/constants.ts`

@@ -12,6 +12,7 @@
   import type { NewConversationDTO } from '$lib/models/types/conversation.type';
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import { trackEvent } from '$lib/core/services/tracking';
+  import { _ } from 'svelte-i18n';
 
   const defaultValues: NewConversationDTO = {
     name: '',
@@ -58,26 +59,26 @@
     on:submit|preventDefault={handleSubmit}
     on:reset={handleReset}
   >
-    <h1 class="headline-large mt-14 text-center">Create new agent</h1>
+    <h1 class="headline-large mt-14 text-center">{$_('newAgent.title')}</h1>
 
     <div class="mx-auto my-14 flex max-w-xl flex-col justify-center gap-6">
       <InputField
         bind:value={newConversation.name}
         name="name"
-        placeholder="Your agent name. e.g. Jarvis"
+        placeholder={$_('newAgent.agentNameInput.placeholder')}
         class="body-regular h-8 px-3"
         labelClass="flex items-start flex-col"
         required
       >
         <div slot="label" class="label-small-plus text-content-secondary mb-2">
-          Agent name
+          {$_('newAgent.agentNameInput.label')}
         </div>
       </InputField>
 
       <TextAreaField
         bind:value={newConversation.system_prompt}
         name="goal"
-        placeholder="How your agent should behave? e.g. You are a Medical expert. You can answer questions about desiases and symptoms. You can help in diagnosing the patient."
+        placeholder={$_('newAgent.agentPromptInput.placeholder')}
         class="body-regular w-full p-3"
         style="min-height: 128px; max-height: 768px;"
         on:input={(e) => {
@@ -90,7 +91,7 @@
         rows={5}
       >
         <div slot="label" class="label-small-plus text-content-secondary mb-2">
-          Agent prompt
+          {$_('newAgent.agentPromptInput.label')}
         </div>
       </TextAreaField>
     </div>
@@ -110,7 +111,7 @@
         <Spinner class="h-4 w-4" />
       {:else}
         <DoneIcon class="mr-1 h-3 w-3" />
-        Create
+        {$_('newAgent.createButton')}
       {/if}
     </Button>
 
@@ -123,7 +124,7 @@
       disabled={pendingRequest}
     >
       <CloseIcon class="mr-1 h-3 w-3" />
-      Cancel
+      {$_('newAgent.cancelButton')}
     </Button>
   </div>
 </section>

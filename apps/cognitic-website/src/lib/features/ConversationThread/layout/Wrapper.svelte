@@ -14,6 +14,7 @@
   import { trackEvent, trackPage } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
   import { BACKEND_CHAT_URL } from '$lib/shared/utils/constants';
+  import { _ } from 'svelte-i18n';
 
   export let agent: Conversation;
 
@@ -91,7 +92,7 @@
     loading = false;
     query = '';
     answer = '';
-    let msg = 'An error occurred while processing your request.';
+    let msg = $_('notifications.chatAPIError');
     try {
       const errMessage = JSON.parse(err.data);
       msg = errMessage.error;
@@ -127,7 +128,7 @@
         trackEvent('Clear chat', { conversationId: agent.value.id });
       }}
     >
-      Clear Chat
+      {$_('conversation.clearButton')}
     </Button>
   </div>
   <Divider class="w-full" />
@@ -138,18 +139,20 @@
         <ChatMessage
           senderName={agent.value.name}
           type="assistant"
-          message="I will use the following prompt: {$agent.system_prompt}"
+          message="{$_('conversation.message.prompt')} {$agent.system_prompt}"
         />
       {/if}
       <ChatMessage
         senderName={agent.value.name}
         type="assistant"
-        message="Hello, ask me anything you want!"
+        message={$_('conversation.message.initialMessage')}
       />
 
       {#each $agent.messages as message, i}
         <ChatMessage
-          senderName={message.role === 'user' ? 'Me' : agent.value.name}
+          senderName={message.role === 'user'
+            ? $_('conversation.message.me')
+            : agent.value.name}
           type={message.role}
           message={message.content}
           on:delete={() => {
@@ -174,7 +177,7 @@
         <ChatMessage
           senderName={agent.value.name}
           type="assistant"
-          message="Loading.."
+          message={$_('conversation.message.loading')}
         />
       {/if}
     </div>
@@ -186,11 +189,11 @@
     on:submit|preventDefault={handleSubmit}
   >
     <TextAreaField
-      placeholder="Enter your question..."
+      placeholder={$_('conversation.messageInput.placeholder')}
       labelClass="flex-1 flex justify-end"
       class="w-full p-3"
       style="min-height: 24px; max-height: 256px;"
-      maxlength={2000}
+      maxlength={3000}
       rows={1}
       bind:value={query}
       on:input={(e) => {
@@ -215,7 +218,7 @@
       disabled={loading || answer === ''}
     >
       <SearchIcon class="mr-2 h-4 w-4" />
-      Send
+      {$_('conversation.send')}
     </Button>
   </form>
 </section>

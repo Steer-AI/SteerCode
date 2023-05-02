@@ -50,6 +50,7 @@
     "highlight.js": "^11.7.0",
     "openai": "^3.2.1",
     "sse.js": "^0.6.1",
+    "svelte-i18n": "^3.6.0",
     "svelte-markdown": "^0.2.3"
   }
 }

@@ -6,6 +6,7 @@
   import CopyIcon from '$lib/shared/components/Icons/CopyIcon.svelte';
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import hljs from 'highlight.js';
+  import { _ } from 'svelte-i18n';
 
   export let lang: string;
   export let text: string;
@@ -29,15 +30,14 @@
 
           notificationStore.addNotification({
             type: NotificationType.GeneralError,
-            message: 'Failed to copy to clipboard',
+            message: $_('notifications.failedCopyClipboard'),
             position: Position.BottomRight
           });
         });
     } else {
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
-        message:
-          'Clipboard API not supported by your browser, please copy the text manually instead',
+        message: $_('notifications.clipboardAPIError'),
         position: Position.BottomRight
       });
     }
@@ -48,7 +48,7 @@
   <div
     class="bg-background-primaryHover flex h-10 w-full items-center justify-between px-4"
   >
-    <span class="ml-2 text-xs font-bold text-white">{lang}</span>
+    <span class="ml-2 text-xs font-bold text-white">{lang || 'plaintext'}</span>
 
     <Button
       variant="tertiary"
@@ -58,10 +58,10 @@
     >
       {#if copied}
         <DoneIcon class="mr-1 h-3 w-3" />
-        Copied
+        {$_('conversation.copied')}
       {:else}
         <CopyIcon class="mr-1 h-3 w-3" />
-        Copy
+        {$_('conversation.copy')}
       {/if}
     </Button>
   </div>

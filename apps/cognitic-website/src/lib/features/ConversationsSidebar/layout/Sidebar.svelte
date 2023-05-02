@@ -6,50 +6,45 @@
   import Divider from '$lib/shared/components/Divider.svelte';
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
-  import { onMount } from 'svelte';
   import ConversationButton, {
     type DispatchEvents
   } from '../components/ConversationButton.svelte';
-  import { agentStore } from '$lib/shared/stores/agents';
   import ActionModal from '$lib/shared/components/ActionModal.svelte';
-  import type { Agent } from '$lib/models/classes/Agent.class';
-  import type { DataStore } from '$lib/models/types/store.type';
-  import { AGENT_MODE } from '$lib/shared/utils/constants';
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import { trackEvent } from '$lib/core/services/tracking';
-
-  const store: DataStore = AGENT_MODE ? agentStore : conversationsStore;
+  import { _ } from 'svelte-i18n';
+  import type { Conversation } from '$lib/models/classes/Conversation.class';
+  import { onMount } from 'svelte';
 
   let dialogEl: HTMLDialogElement;
-  let agentToDelete: Agent | null = null;
+  let conversationToDelete: Conversation | null = null;
 
   function handleAgentDelete(e: CustomEvent<DispatchEvents['delete']>) {
-    agentToDelete = e.detail.agent;
+    conversationToDelete = e.detail.agent;
     dialogEl.showModal();
   }
 
   function handleConfirmClose() {
-    if (agentToDelete === null) {
+    if (conversationToDelete === null) {
       return;
     }
 
     if (dialogEl.returnValue === 'confirm') {
-      store.remove(agentToDelete.value.id);
+      conversationsStore.remove(conversationToDelete.value.id);
 
       trackEvent('Delete Conversation', {
-        goal: agentToDelete.value.goal,
-        conversationId: agentToDelete.value.id
+        goal: conversationToDelete.value.goal,
+        conversationId: conversationToDelete.value.id
       });
 
       goto('/');
     }
 
-    agentToDelete = null;
+    conversationToDelete = null;
   }
 
   onMount(() => {
-    // TODO: refetch if user log in
-    store.fetchFromServer();
+    conversationsStore.fetchFromServer();
   });
 </script>
 
@@ -67,7 +62,7 @@
         }}
       >
         <PlusIcon class="mr-1 h-3 w-3" />
-        New Session
+        {$_('sidebar.newAgent')}
       </Button>
     </div>
 
@@ -76,7 +71,7 @@
     <!-- scrollable list of chat sessions -->
     <section class="flex-1 overflow-y-scroll">
       <ul class="my-2">
-        {#each $store as agent (agent.value.id)}
+        {#each $conversationsStore as agent (agent.value.id)}
           <ConversationButton
             {agent}
             selected={$page.params.agentId === agent.value.id}
@@ -100,7 +95,7 @@
         }}
       >
         <SettingsIcon class="mr-1 h-3 w-3" />
-        Settings
+        {$_('sidebar.settings')}
       </Button>
     </div>
   </div>
@@ -110,13 +105,13 @@
 
 <ActionModal
   bind:dialogEl
-  title="Delete {AGENT_MODE ? 'Agent' : 'Conversation'}?"
-  description="Confirm you want to delete following {AGENT_MODE
-    ? 'agent'
-    : 'conversation'}: <br/> <b style='margin-top: 8px'>{agentToDelete?.value
-    ?.name || ''}</b>"
-  confirmText="Yes"
-  cancelText="No"
+  title={$_('sidebar.deleteConfirmationDialog.title')}
+  description="{$_(
+    'sidebar.deleteConfirmationDialog.description'
+  )} <br/> <b style='margin-top: 8px'>{conversationToDelete?.value?.name ||
+    ''}</b>"
+  confirmText={$_('sidebar.deleteConfirmationDialog.confirmButton')}
+  cancelText={$_('sidebar.deleteConfirmationDialog.cancelButton')}
   class="max-w-sm"
   on:close={handleConfirmClose}
 />

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Listbox from '$lib/shared/components/Listbox/Listbox.svelte';
   import type { Option } from '$lib/shared/components/Listbox/types';
+  import { _ } from 'svelte-i18n';
 
   export let value: string;
   const options: Option<string>[] = [
@@ -15,7 +16,10 @@
   {options}
   listboxClass="w-full"
 >
-  <p slot="label" class="label-small text-content-tertiary mr-3">
-    Select a model
+  <p
+    slot="label"
+    class="label-small text-content-tertiary mr-3 whitespace-nowrap"
+  >
+    {$_('settings.modelSelector.label')}
   </p>
 </Listbox>

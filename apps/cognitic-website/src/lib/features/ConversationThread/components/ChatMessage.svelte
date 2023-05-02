@@ -5,6 +5,7 @@
   import SvelteMarkdown from 'svelte-markdown';
   import CodeRendered from './CodeRendered.svelte';
   import LogoIcon from '$lib/shared/components/Icons/LogoIcon.svelte';
+  import { _ } from 'svelte-i18n';
 
   export let senderName: string;
   export let type: ChatCompletionRequestMessageRoleEnum;
@@ -27,7 +28,9 @@
       {/if}
       {#if type === 'user'}
         <img
-          src="https://ui-avatars.com/api/?name=Me&size=40&background=FFDC00&color=000"
+          src="https://ui-avatars.com/api/?name={$_(
+            'conversation.message.me'
+          )}Me&size=40&background=FFDC00&color=000"
           alt="{type} avatar"
         />
       {:else}

@@ -2,6 +2,8 @@
   import Divider from '../components/Divider.svelte';
   import ActivityFeedIcon from '../components/Icons/ActivityFeedIcon.svelte';
   import LogoIcon from '../components/Icons/LogoIcon.svelte';
+  import { locale, locales } from 'svelte-i18n';
+  import Listbox from '../components/Listbox/Listbox.svelte';
 
   export let sidebarOpen = true;
 </script>
@@ -23,7 +25,20 @@
       SuperGPT
     </a>
 
-    <div class="flex-1" />
+    <div class="flex flex-1 items-center justify-end">
+      <Listbox
+        selected={{ label: $locale || 'unknown', value: $locale }}
+        on:change={(e) => {
+          locale.set(e.detail.value);
+        }}
+        options={$locales.map((l) => {
+          return {
+            label: l,
+            value: l
+          };
+        })}
+      />
+    </div>
   </span>
 
   <Divider />
