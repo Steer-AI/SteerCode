@@ -30,6 +30,7 @@
         selected={{ label: $locale || 'unknown', value: $locale }}
         on:change={(e) => {
           locale.set(e.detail.value);
+          localStorage.setItem('cognitic.locale', e.detail.value);
         }}
         options={$locales.map((l) => {
           return {

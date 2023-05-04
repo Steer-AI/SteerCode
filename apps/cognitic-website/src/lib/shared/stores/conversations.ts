@@ -2,7 +2,8 @@ import { Log } from '$lib/core/services/logging';
 import {
   addConversation,
   deleteConversation,
-  getAllConversations
+  getAllConversations,
+  getConversation
 } from '$lib/data/conversationQueries';
 import { notificationStore } from '$lib/features/Notifications/store/notifications';
 import { Conversation } from '$lib/models/classes/Conversation.class';
@@ -88,7 +89,7 @@ function createConversationsStore(): DataStore<
     notificationStore.addNotification({
       type: NotificationType.GeneralSuccess,
       message: _t('notifications.agentCreated', {
-        values: { name: newConv.value.name }
+        values: { name: newConv.value.title }
       }),
       removeAfter: 5000,
       position: Position.BottomRight
@@ -100,6 +101,23 @@ function createConversationsStore(): DataStore<
     Log.DEBUG('createConversationsStore.fetchFromerver');
     const conversations = await getAllConversations();
     _conversations.set(conversations.map((a) => new Conversation(a)));
+  }
+
+  async function fetchById(id: string): Promise<void> {
+    Log.DEBUG('createConversationsStore.fetchConversationById', id);
+    const conversation = await getConversation(id);
+    if (conversation === null) {
+      Log.ERROR('Error createConversationsStore.fetchConversationById', id);
+    } else {
+      _conversations.update((conversations) => {
+        const index = conversations.findIndex(
+          (conversation) => conversation.value.id === id
+        );
+        if (index === -1) return conversations;
+        conversations[index] = new Conversation(conversation);
+        return conversations;
+      });
+    }
   }
 
   function getById(id: string): Readable<Conversation | null> {
@@ -115,6 +133,7 @@ function createConversationsStore(): DataStore<
     remove,
     add,
     fetchFromServer,
+    fetchById,
     getById
   };
 }

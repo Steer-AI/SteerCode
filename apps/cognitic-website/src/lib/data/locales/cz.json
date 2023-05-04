@@ -43,7 +43,6 @@
             "placeholder": "Sem napište svou otázku..."
         },
         "sendButton": "Odeslat",
-        "clearButton": "Vymazat chat",
         "loadingMessage": "Načítání...",
         "message": {
             "me": "Já",

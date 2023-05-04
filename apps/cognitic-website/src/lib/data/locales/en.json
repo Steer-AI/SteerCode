@@ -47,7 +47,6 @@
             "placeholder": "Type your question here..."
         },
         "sendButton": "Send",
-        "clearButton": "Clear chat",
         "loadingMessage": "Loading...",
         "message": {
             "me": "Me",

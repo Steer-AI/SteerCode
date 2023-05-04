@@ -1,122 +1,119 @@
-import { Log } from '$lib/core/services/logging';
+import {
+  customFetch,
+  responseWithErrorHandeling
+} from '$lib/core/services/request';
 import type {
   ConversationDTO,
   NewConversationDTO
 } from '$lib/models/types/conversation.type';
-import { v4 as uuidv4 } from 'uuid';
 
-// create a new indexedDB database
-let db: IDBDatabase | null = null;
-
-async function openConnection(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    if (db) {
-      return resolve(db);
-    }
-
-    if (typeof window === 'undefined') return reject('No window object');
-    if (!window.indexedDB) return reject('No indexedDB object');
-
-    const request = window.indexedDB.open('conversations', 3);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target!.result as IDBDatabase;
-      // create the object store
-      const objectStore = db.createObjectStore('conversations', {
-        keyPath: 'id'
-      });
-    };
-
-    request.onsuccess = (event) => {
-      Log.DEBUG('Opened indexedDB database', event);
-
-      db = event.target!.result as IDBDatabase;
-      resolve(db);
-    };
-
-    request.onerror = (event) => {
-      Log.ERROR('Error opening indexedDB database', event);
-      reject(event);
-    };
-  });
+export async function deleteMessage(
+  conversationId: string,
+  index: number
+): Promise<boolean> {
+  return responseWithErrorHandeling<boolean>(
+    customFetch(`/chat/conversations/${conversationId}/messages/${index}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    false,
+    `Failed to delete message ${index} from conversation ${conversationId}`
+  );
 }
 
-export async function updateConversation(
-  conversation: ConversationDTO
-): Promise<boolean> {
-  const db = await openConnection();
-  const tx = db.transaction('conversations', 'readwrite');
-  const store = tx.objectStore('conversations');
-  const query = store.put(conversation);
-
-  return new Promise((resolve) => {
-    query.onsuccess = () => {
-      resolve(true);
-    };
-    query.onerror = () => {
-      resolve(false);
-    };
-  });
+export async function getMessages(
+  conversationId: string
+): Promise<ConversationDTO['messages']> {
+  return responseWithErrorHandeling<ConversationDTO['messages']>(
+    customFetch(`/chat/conversations/${conversationId}/messages`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    [],
+    `Failed to get messages for conversation ${conversationId}`
+  );
 }
 
 export async function addConversation(
   conversation: NewConversationDTO
 ): Promise<ConversationDTO | null> {
-  const toAdd: ConversationDTO = {
-    id: uuidv4(),
-    name: 'New Conversation', // TODO:get conversation name from API
-    messages: [{ role: 'user', content: conversation.message }]
-  };
+  const resp = await responseWithErrorHandeling<ConversationDTO | null>(
+    customFetch('/chat/conversations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(conversation)
+    }),
+    null,
+    'Failed to add conversation'
+  );
 
-  const db = await openConnection();
-  const tx = db.transaction('conversations', 'readwrite');
-  const store = tx.objectStore('conversations');
-  const query = store.add(toAdd);
-
-  return new Promise((resolve) => {
-    query.onsuccess = () => {
-      resolve(toAdd);
-    };
-    query.onerror = () => {
-      resolve(null);
-    };
-  });
-}
-
-export async function deleteConversation(id: string): Promise<boolean> {
-  const db = await openConnection();
-  const tx = db.transaction('conversations', 'readwrite');
-  const store = tx.objectStore('conversations');
-  const query = store.delete(id);
-
-  return new Promise((resolve) => {
-    query.onsuccess = () => {
-      resolve(true);
-    };
-    query.onerror = () => {
-      resolve(false);
-    };
-  });
-}
-
-export async function getAllConversations(): Promise<ConversationDTO[]> {
-  const db = await openConnection();
-  const tx = db.transaction('conversations', 'readonly');
-  const store = tx.objectStore('conversations');
-
-  return new Promise((resolve) => {
-    const conversations: ConversationDTO[] = [];
-
-    store.openCursor().onsuccess = (event) => {
-      const cursor = event.target!.result as IDBCursorWithValue | null;
-      if (cursor) {
-        const conversation = cursor.value as ConversationDTO;
-        conversations.push(conversation);
-        // continue next record
-        cursor.continue();
-      } else {
-        resolve(conversations);
+  if (resp !== null && !resp.messages) {
+    resp.messages = [
+      {
+        role: 'user',
+        content: conversation.content,
+        created_at: new Date().toISOString()
       }
-    };
+    ];
+  }
+  return resp;
+}
+
+export async function deleteConversation(
+  conversationId: string
+): Promise<boolean> {
+  return responseWithErrorHandeling<boolean>(
+    customFetch(`/chat/conversations/${conversationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    false,
+    'Failed to delete conversation'
+  );
+}
+
+export async function getConversation(
+  conversationId: string
+): Promise<ConversationDTO | null> {
+  return await responseWithErrorHandeling<ConversationDTO | null>(
+    customFetch(`/chat/conversations/${conversationId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    null,
+    'Failed to get conversation'
+  );
+}
+
+export async function getAllConversations(
+  limit: number = 0,
+  offset: number = 0
+): Promise<ConversationDTO[]> {
+  const resp = await responseWithErrorHandeling<ConversationDTO[]>(
+    customFetch(`/chat/conversations?limit=${limit}&offset=${offset}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    [],
+    'Failed to get conversations'
+  );
+
+  return resp.map((conversation) => {
+    if (!conversation.messages) {
+      conversation.messages = [];
+    }
+    return conversation;
   });
 }

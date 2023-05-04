@@ -1,5 +1,5 @@
 import { Log } from '$lib/core/services/logging';
-import { updateConversation } from '$lib/data/conversationQueries';
+import { deleteMessage, getMessages } from '$lib/data/conversationQueries';
 import { withLogger } from '$lib/shared/utils/decorators';
 import type { ChatCompletionRequestMessage } from 'openai';
 import {
@@ -34,22 +34,12 @@ export class Conversation implements Readable<ConversationDTO> {
 
   @withLogger()
   async addMessage(message: ChatCompletionRequestMessage): Promise<boolean> {
-    const snapshot = [...this.value.messages];
-
-    this.value.messages.push(message);
+    this.value.messages.push({
+      ...message,
+      created_at: new Date().toISOString()
+    });
     this.store.set(this.value);
-
-    const success = await updateConversation(this.value);
-
-    if (!success) {
-      Log.DEBUG(
-        'Conversation.addMessage',
-        'failed to add message. Restore snapshot'
-      );
-      this._restore('messages', snapshot);
-    }
-
-    return success;
+    return true;
   }
 
   @withLogger()
@@ -59,7 +49,7 @@ export class Conversation implements Readable<ConversationDTO> {
     this.value.messages = this.value.messages.filter((_, i) => i !== index);
     this.store.set(this.value);
 
-    const success = await updateConversation(this.value);
+    const success = await deleteMessage(this.value.id, index);
 
     if (!success) {
       Log.DEBUG(
@@ -73,22 +63,10 @@ export class Conversation implements Readable<ConversationDTO> {
   }
 
   @withLogger()
-  async deleteAllMessages(): Promise<boolean> {
-    const snapshot = [...this.value.messages];
-
-    this.value.messages = [];
+  async fetchMessages(): Promise<ConversationDTO['messages']> {
+    const messages = await getMessages(this.value.id);
+    this.value.messages = messages;
     this.store.set(this.value);
-
-    const success = await updateConversation(this.value);
-
-    if (!success) {
-      Log.DEBUG(
-        'Conversation.deleteAllMessages',
-        'failed to delete all messages. Restore snapshot'
-      );
-      this._restore('messages', snapshot);
-    }
-
-    return success;
+    return messages;
   }
 }

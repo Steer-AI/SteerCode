@@ -108,7 +108,7 @@
   title={$_('sidebar.deleteConfirmationDialog.title')}
   description="{$_(
     'sidebar.deleteConfirmationDialog.description'
-  )} <br/> <b style='margin-top: 8px'>{conversationToDelete?.value?.name ||
+  )} <br/> <b style='margin-top: 8px'>{conversationToDelete?.value?.title ||
     ''}</b>"
   confirmText={$_('sidebar.deleteConfirmationDialog.confirmButton')}
   cancelText={$_('sidebar.deleteConfirmationDialog.cancelButton')}

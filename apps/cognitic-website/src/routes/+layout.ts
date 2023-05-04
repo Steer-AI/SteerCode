@@ -13,7 +13,10 @@ export const csr = true;
 
 export const load: LayoutLoad = async () => {
   if (browser) {
-    locale.set(window.navigator.language);
+    const localeFromLS = localStorage.getItem('cognitic.locale');
+    const localeFromNavigator = window.navigator.language;
+    console.log('localeFromLS', localeFromLS, localeFromNavigator);
+    locale.set(localeFromLS || localeFromNavigator);
   }
   await waitLocale();
 };
