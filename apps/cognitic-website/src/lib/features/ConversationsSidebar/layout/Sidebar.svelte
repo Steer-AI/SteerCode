@@ -15,6 +15,12 @@
   import { _ } from 'svelte-i18n';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { onMount } from 'svelte';
+  import {
+    availableRepositories,
+    settingsStore
+  } from '$lib/features/SettingsModal/stores/settings';
+  import Listbox from '$lib/shared/components/Listbox/Listbox.svelte';
+  import { updateSettings } from '$lib/data/settingsQueries';
 
   let dialogEl: HTMLDialogElement;
   let conversationToDelete: Conversation | null = null;
@@ -33,7 +39,6 @@
       conversationsStore.remove(conversationToDelete.value.id);
 
       trackEvent('Delete Conversation', {
-        goal: conversationToDelete.value.goal,
         conversationId: conversationToDelete.value.id
       });
 
@@ -50,6 +55,25 @@
 
 <aside class="flex {$$props.class}" style={$$props.style}>
   <div class="bg-background-primary flex w-64 flex-col">
+    <div class="mx-3 flex h-14 flex-shrink-0 items-center">
+      <Listbox
+        class="w-full"
+        selected={$settingsStore.selectedRepo}
+        on:change={(e) => {
+          settingsStore.updateSettings({
+            ...$settingsStore,
+            selectedRepo: e.detail
+          });
+        }}
+        options={availableRepositories}
+      >
+        <div slot="label" class="text-content-secondary label-small mr-auto">
+          Select a repo
+        </div>
+      </Listbox>
+    </div>
+    <Divider />
+
     <div class="flex h-14 flex-shrink-0 items-center px-3">
       <Button
         variant="secondary"
@@ -82,7 +106,6 @@
     </section>
 
     <Divider />
-
     <!-- Buttons + other info -->
     <div class="mx-3 flex h-14 flex-shrink-0 items-center">
       <Button

@@ -1,10 +1,10 @@
 <script lang="ts">
   import Button from '$lib/shared/components/Button.svelte';
-  import SearchIcon from '$lib/shared/components/Icons/SearchIcon.svelte';
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
   import { createEventDispatcher } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
+  import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
 
   export let agentName: string;
   export let loading: boolean = false;
@@ -33,8 +33,10 @@
 </script>
 
 <section class="flex h-full w-full flex-col items-center">
+  <slot name="title" />
+
   <div
-    class="relative mt-4 flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
+    class="relative mt-4 flex w-full max-w-5xl flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
     bind:this={chatAreaDiv}
   >
     <div class="" bind:this={scrollToDiv} />
@@ -59,7 +61,7 @@
   </div>
 
   <form
-    class="flex w-full flex-shrink-0 items-end gap-4 px-6 py-2"
+    class="relative flex w-full max-w-5xl flex-shrink-0 items-end px-6 py-2"
     on:submit|preventDefault={() => {
       dispatch('submit', query);
       query = '';
@@ -72,6 +74,7 @@
       style="min-height: 24px; max-height: 256px;"
       maxlength={3000}
       rows={1}
+      autofocus
       bind:value={query}
       on:input={(e) => {
         e.target.style.height = 0;
@@ -86,17 +89,23 @@
           query = '';
         }
       }}
-    />
+    >
+      <div
+        slot="maxlength"
+        class="text-content-tertiary mono-small bg-background-secondary absolute bottom-2 right-14 p-1"
+      >
+        {query?.length || 0}/{3000}
+      </div>
+    </TextAreaField>
 
     <Button
       variant="primary"
       type="submit"
       size="medium"
-      class="w-24"
+      class="absolute bottom-4 right-8 rounded-full"
       disabled={loading || submitDisabled}
     >
-      <SearchIcon class="mr-2 h-4 w-4" />
-      {$_('conversation.sendButton')}
+      <SendIcon class="h-4 w-4" />
     </Button>
   </form>
 </section>

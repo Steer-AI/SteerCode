@@ -26,6 +26,7 @@
   import ProtectIcon from '$lib/shared/components/Icons/ProtectIcon.svelte';
   import RefreshIcon from '$lib/shared/components/Icons/RefreshIcon.svelte';
   import SearchIcon from '$lib/shared/components/Icons/SearchIcon.svelte';
+  import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import SortDownIcon from '$lib/shared/components/Icons/SortDownIcon.svelte';
   import SortUpIcon from '$lib/shared/components/Icons/SortUpIcon.svelte';
@@ -64,6 +65,7 @@
     ProtectIcon,
     RefreshIcon,
     SearchIcon,
+    SendIcon,
     SettingsIcon,
     SortDownIcon,
     SortUpIcon,

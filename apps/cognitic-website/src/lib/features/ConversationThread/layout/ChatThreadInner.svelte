@@ -13,6 +13,7 @@
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
+  import Divider from '$lib/shared/components/Divider.svelte';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -124,6 +125,17 @@
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}
 >
+  <svelte:fragment slot="title">
+    <div class="flex h-14 w-full items-center justify-center px-6">
+      <h3 class="text-content-secondary headline-small" />
+      {$_('conversation.chattingTitle', {
+        values: { name: agent.value.repository }
+      })}
+      <h3 />
+    </div>
+    <Divider class="w-full" />
+  </svelte:fragment>
+
   <svelte:fragment>
     {#each $agent.messages as message (message.id)}
       <ChatMessage
@@ -160,10 +172,8 @@
         type="button"
         on:click={() => {
           closeEventSource();
+          agent.addMessage({ role: 'assistant', content: answer });
           answer = '';
-          const lastMessage =
-            agent.value.messages[agent.value.messages.length - 1];
-          agent.deleteMessage(lastMessage);
         }}
       >
         {$_('conversation.stop')}

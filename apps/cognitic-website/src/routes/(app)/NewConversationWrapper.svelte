@@ -6,6 +6,7 @@
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from '$lib/features/ConversationThread/layout/Wrapper.svelte';
   import ChatMessage from '$lib/features/ConversationThread/components/ChatMessage.svelte';
+  import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
 
   // form variables
   let pendingRequest = false;
@@ -18,7 +19,8 @@
     pendingContent = query;
     Log.DEBUG('NewConversation.handleSubmit', query);
     const agent = await conversationsStore.add({
-      content: query
+      content: query,
+      repository: $settingsStore.selectedRepo.value
     });
     pendingRequest = false;
     if (!agent) return;

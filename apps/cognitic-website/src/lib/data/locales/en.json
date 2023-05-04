@@ -1,11 +1,11 @@
 {
     "sidebar": {
-        "newAgent": "New agent",
+        "newAgent": "New conversation",
         "settings": "Settings",
-        "deleteTooltip": "Delete agent",
+        "deleteTooltip": "Delete conversation",
         "deleteConfirmationDialog": {
-            "title": "Delete agent?",
-            "description": "Are you sure you want to delete this agent? This action cannot be undone. Agent name: ",
+            "title": "Delete conversation?",
+            "description": "Are you sure you want to delete this conversation? This action cannot be undone. Conversation name: ",
             "confirmButton": "Yes",
             "cancelButton": "No"
         }
@@ -28,20 +28,6 @@
         }
     },
 
-    "newAgent": {
-        "title": "Create new agent",
-        "agentNameInput": {
-            "label": "Agent name",
-            "placeholder": "Your agent name. e.g. Jarvis"
-        },
-        "agentPromptInput": {
-            "label": "Agent prompt",
-            "placeholder": "How your agent should behave? e.g. You are a Medical expert. You can answer questions about desiases and symptoms. You can help in diagnosing the patient."
-        },
-        "createButton": "Create",
-        "cancelButton": "Cancel"
-    },
-
     "conversation": {
         "messageInput": {
             "placeholder": "Type your question here..."
@@ -56,7 +42,8 @@
         },
         "copy": "Copy",
         "copied": "Copied",
-        "stop": "Stop generating response."
+        "stop": "Stop generating response.",
+        "chattingTitle": "Chatting with {name}"
     },
 
     "notifications": {
