@@ -55,7 +55,8 @@
             "initialMessage": "Hello, I am your agent. How can I help you?"
         },
         "copy": "Copy",
-        "copied": "Copied"
+        "copied": "Copied",
+        "stop": "Stop generating response."
     },
 
     "notifications": {

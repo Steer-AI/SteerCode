@@ -9,10 +9,14 @@ export type NewConversationDTO = {
 export type ConversationDTO = {
   id: string;
   title: string;
-  messages: Array<{
-    content: string;
-    role: ChatCompletionRequestMessageRoleEnum;
-    created_at: string; // datetime string;
-  }>;
+  messages: Array<ChatMessageDTO>;
+  created_at: string; // datetime string;
+};
+
+export type ChatMessageDTO = {
+  id: string; // uuidv4
+  conversation_id: string;
+  content: string;
+  role: ChatCompletionRequestMessageRoleEnum;
   created_at: string; // datetime string;
 };

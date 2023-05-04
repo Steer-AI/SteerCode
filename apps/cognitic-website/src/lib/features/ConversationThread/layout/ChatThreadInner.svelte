@@ -12,35 +12,33 @@
   import { BACKEND_URL } from '$lib/shared/utils/constants';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
+  import Button from '$lib/shared/components/Button.svelte';
 
   export let agent: Conversation;
   let loading: boolean = false;
   let answer: string = '';
-  let scrollToDiv: HTMLDivElement;
-  let chatAreaDiv: HTMLDivElement;
+  let wrapContainer: ConversationWrapper;
+  let eventSource: SSE | null = null;
 
-  async function handleSubmit(query: string, insertMessage: boolean = true) {
+  async function handleSubmit(query: string) {
     trackEvent('New message', {
       message: query,
       conversationId: agent.value.id
     });
-
     loading = true;
-    if (insertMessage) agent.addMessage({ role: 'user', content: query });
-
     const settings = get(settingsStore);
 
-    const eventSource = new SSE(BACKEND_URL + '/chat/stream', {
+    eventSource = new SSE(BACKEND_URL + '/chat/stream', {
       headers: {
         'Content-Type': 'application/json',
         'x-openai-api-key': settings.openaiAPIKey || '',
-        'x-openai-model': settings.openaiModel,
-        'x-openai-temperature': settings.temperature.toString(),
         'X-UID': window.localStorage.getItem('cognitic.uid') || 'TEST'
       },
       payload: JSON.stringify({
         conversation_id: agent.value.id,
-        messages: agent.value.messages
+        messages: agent.value.messages,
+        model: settings.openaiModel,
+        temperature: settings.temperature
       })
     });
 
@@ -53,13 +51,12 @@
         if (e.data === '[DONE]') {
           agent.addMessage({ role: 'assistant', content: answer });
           answer = '';
+          closeEventSource();
           return;
         }
 
         const completionResponse = JSON.parse(e.data);
-        console.log('completionResponse', completionResponse);
-        const content =
-          completionResponse.msg || completionResponse.choices[0].delta.content;
+        const content = completionResponse.msg;
 
         if (content) {
           answer = (answer ?? '') + content;
@@ -68,21 +65,21 @@
         handleError(err);
       }
     });
+    eventSource.addEventListener;
     eventSource.stream();
     scrollToBottom();
   }
 
+  function closeEventSource() {
+    if (eventSource) {
+      eventSource.close();
+      eventSource = null;
+    }
+  }
+
   function scrollToBottom(force: boolean = false) {
-    if (!scrollToDiv || !chatAreaDiv) return;
-    // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
-    if (chatAreaDiv.scrollTop > -200 || force) {
-      setTimeout(function () {
-        scrollToDiv.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-          inline: 'nearest'
-        });
-      }, 100);
+    if (wrapContainer) {
+      wrapContainer.scrollToBottom(force);
     }
   }
 
@@ -110,7 +107,7 @@
   onMount(async () => {
     let m = agent.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
-      handleSubmit('', false);
+      handleSubmit(m[m.length - 1].content);
     } else {
       scrollToBottom(true);
     }
@@ -119,33 +116,58 @@
 
 <ConversationWrapper
   agentName={agent.value.title}
-  on:submit={(e) => handleSubmit(e.detail)}
+  on:submit={(e) => {
+    agent.addMessage({ role: 'user', content: e.detail });
+    handleSubmit(e.detail);
+  }}
   {loading}
   submitDisabled={answer !== ''}
+  bind:this={wrapContainer}
 >
-  {#each $agent.messages as message, i (message.created_at)}
-    <ChatMessage
-      senderName={message.role === 'user'
-        ? $_('conversation.message.me')
-        : agent.value.title}
-      type={message.role}
-      message={message.content}
-      on:delete={() => {
-        agent.deleteMessageByIndex(i);
-        trackEvent('Delete message', {
-          from: message.role,
-          message: message.content,
-          conversationId: agent.value.id
-        });
-      }}
-      deletable={true}
-    />
-  {/each}
-  {#if answer}
-    <ChatMessage
-      senderName={agent.value.title}
-      type="assistant"
-      message={answer}
-    />
-  {/if}
+  <svelte:fragment>
+    {#each $agent.messages as message (message.id)}
+      <ChatMessage
+        senderName={message.role === 'user'
+          ? $_('conversation.message.me')
+          : agent.value.title}
+        type={message.role}
+        message={message.content}
+        on:delete={() => {
+          agent.deleteMessage(message);
+          trackEvent('Delete message', {
+            from: message.role,
+            message: message.content,
+            conversationId: agent.value.id
+          });
+        }}
+        deletable={true}
+      />
+    {/each}
+    {#if answer}
+      <ChatMessage
+        senderName={agent.value.title}
+        type="assistant"
+        message={answer}
+      />
+    {/if}
+  </svelte:fragment>
+
+  <svelte:fragment slot="footer">
+    {#if answer}
+      <Button
+        class="mx-auto"
+        variant="tertiary"
+        type="button"
+        on:click={() => {
+          closeEventSource();
+          answer = '';
+          const lastMessage =
+            agent.value.messages[agent.value.messages.length - 1];
+          agent.deleteMessage(lastMessage);
+        }}
+      >
+        {$_('conversation.stop')}
+      </Button>
+    {/if}
+  </svelte:fragment>
 </ConversationWrapper>

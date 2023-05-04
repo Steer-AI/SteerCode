@@ -9,7 +9,11 @@ import {
   type Unsubscriber,
   type Writable
 } from 'svelte/store';
-import type { ConversationDTO } from '../types/conversation.type';
+import { v4 as uuidv4 } from 'uuid';
+import type {
+  ChatMessageDTO,
+  ConversationDTO
+} from '../types/conversation.type';
 
 export class Conversation implements Readable<ConversationDTO> {
   readonly value: ConversationDTO;
@@ -36,6 +40,8 @@ export class Conversation implements Readable<ConversationDTO> {
   async addMessage(message: ChatCompletionRequestMessage): Promise<boolean> {
     this.value.messages.push({
       ...message,
+      id: uuidv4(),
+      conversation_id: this.value.id,
       created_at: new Date().toISOString()
     });
     this.store.set(this.value);
@@ -43,13 +49,15 @@ export class Conversation implements Readable<ConversationDTO> {
   }
 
   @withLogger()
-  async deleteMessageByIndex(index: number): Promise<boolean> {
+  async deleteMessage(message: ChatMessageDTO): Promise<boolean> {
     const snapshot = [...this.value.messages];
 
-    this.value.messages = this.value.messages.filter((_, i) => i !== index);
+    this.value.messages = this.value.messages.filter(
+      (m) => m.id !== message.id
+    );
     this.store.set(this.value);
 
-    const success = await deleteMessage(this.value.id, index);
+    const success = await deleteMessage(this.value.id, message.id);
 
     if (!success) {
       Log.DEBUG(
@@ -63,7 +71,7 @@ export class Conversation implements Readable<ConversationDTO> {
   }
 
   @withLogger()
-  async fetchMessages(): Promise<ConversationDTO['messages']> {
+  async fetchMessages(): Promise<ChatMessageDTO[]> {
     const messages = await getMessages(this.value.id);
     this.value.messages = messages;
     this.store.set(this.value);

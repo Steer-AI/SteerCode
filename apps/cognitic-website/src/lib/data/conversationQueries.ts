@@ -3,30 +3,31 @@ import {
   responseWithErrorHandeling
 } from '$lib/core/services/request';
 import type {
+  ChatMessageDTO,
   ConversationDTO,
   NewConversationDTO
 } from '$lib/models/types/conversation.type';
 
 export async function deleteMessage(
   conversationId: string,
-  index: number
+  messageId: string
 ): Promise<boolean> {
   return responseWithErrorHandeling<boolean>(
-    customFetch(`/chat/conversations/${conversationId}/messages/${index}`, {
+    customFetch(`/chat/conversations/${conversationId}/messages/${messageId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       }
     }),
     false,
-    `Failed to delete message ${index} from conversation ${conversationId}`
+    `Failed to delete message ${messageId} from conversation ${conversationId}`
   );
 }
 
 export async function getMessages(
   conversationId: string
-): Promise<ConversationDTO['messages']> {
-  return responseWithErrorHandeling<ConversationDTO['messages']>(
+): Promise<ChatMessageDTO[]> {
+  return responseWithErrorHandeling<ChatMessageDTO[]>(
     customFetch(`/chat/conversations/${conversationId}/messages`, {
       method: 'GET',
       headers: {
@@ -52,16 +53,6 @@ export async function addConversation(
     null,
     'Failed to add conversation'
   );
-
-  if (resp !== null && !resp.messages) {
-    resp.messages = [
-      {
-        role: 'user',
-        content: conversation.content,
-        created_at: new Date().toISOString()
-      }
-    ];
-  }
   return resp;
 }
 

@@ -10,19 +10,35 @@
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
 
+  export function scrollToBottom(force: boolean = false) {
+    if (!scrollToDiv || !chatAreaDiv) return;
+    // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
+    if (chatAreaDiv.scrollTop > -200 || force) {
+      setTimeout(function () {
+        scrollToDiv.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 100);
+    }
+  }
+
   const dispatch = createEventDispatcher();
 
-  let query: string = '';
   let scrollToDiv: HTMLDivElement;
   let chatAreaDiv: HTMLDivElement;
+
+  let query: string = '';
 </script>
 
 <section class="flex h-full w-full flex-col items-center">
   <div
-    class="mt-4 flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
+    class="relative mt-4 flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
     bind:this={chatAreaDiv}
   >
     <div class="" bind:this={scrollToDiv} />
+    <slot name="footer" />
 
     <div class="flex flex-col gap-2">
       <ChatMessage
