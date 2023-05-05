@@ -11,13 +11,29 @@
   export let lang: string;
   export let text: string;
 
-  $: highlighted = hljs.highlight(text, {
-    language: lang || 'plaintext'
-  }).value;
+  function highlight(code: string, lang: string | undefined) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight('\n' + code, { language: lang });
+    }
+    return hljs.highlightAuto('\n' + code, [
+      'typescript',
+      'python',
+      'bash',
+      'java',
+      'cpp',
+      'javascript',
+      'go',
+      'ruby',
+      'dart',
+      'rust'
+    ]);
+  }
+
+  $: highlighted = highlight(text, lang);
 
   let copied = false;
 
-  export function copyToClipboard(text: string): void {
+  function copyToClipboard(text: string): void {
     if (navigator.clipboard) {
       navigator.clipboard
         .writeText(text)
@@ -48,7 +64,8 @@
   <div
     class="bg-background-primaryHover flex h-10 w-full items-center justify-between px-4"
   >
-    <span class="ml-2 text-xs font-bold text-white">{lang || 'plaintext'}</span>
+    <span class="ml-2 text-xs font-bold text-white">{highlighted.language}</span
+    >
 
     <Button
       variant="tertiary"
@@ -65,7 +82,7 @@
       {/if}
     </Button>
   </div>
-  <pre class="{lang} hljs">
-    <code>{@html highlighted}</code>
+  <pre class="{highlighted.language} hljs">
+    <code>{@html highlighted.value}</code>
   </pre>
 </div>

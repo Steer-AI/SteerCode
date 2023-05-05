@@ -37,13 +37,12 @@
         "message": {
             "me": "Me",
             "loading": "Loading...",
-            "prompt": "I will use the following prompt: ",
             "initialMessage": "Hello, I am your agent. How can I help you?"
         },
         "copy": "Copy",
         "copied": "Copied",
         "stop": "Stop generating response.",
-        "chattingTitle": "Chatting with {name}"
+        "chattingTitle": "Chat with context of {name} repository. "
     },
 
     "notifications": {

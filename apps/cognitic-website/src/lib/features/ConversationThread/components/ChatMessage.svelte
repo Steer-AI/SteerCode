@@ -53,6 +53,7 @@
   >
     <SvelteMarkdown
       source={message}
+      on:parsed={(x) => console.log('parsed', x)}
       renderers={{
         code: CodeRendered
       }}

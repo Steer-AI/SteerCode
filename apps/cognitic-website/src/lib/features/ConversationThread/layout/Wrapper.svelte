@@ -103,7 +103,7 @@
       type="submit"
       size="medium"
       class="absolute bottom-4 right-8 rounded-full"
-      disabled={loading || submitDisabled}
+      disabled={loading || submitDisabled || !query}
     >
       <SendIcon class="h-4 w-4" />
     </Button>

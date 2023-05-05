@@ -14,6 +14,7 @@
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
+  import LinkIcon from '$lib/shared/components/Icons/LinkIcon.svelte';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -126,12 +127,22 @@
   bind:this={wrapContainer}
 >
   <svelte:fragment slot="title">
-    <div class="flex h-14 w-full items-center justify-center px-6">
-      <h3 class="text-content-secondary headline-small" />
-      {$_('conversation.chattingTitle', {
-        values: { name: agent.value.repository }
-      })}
-      <h3 />
+    <div class="flex h-14 w-full max-w-5xl items-center justify-end px-6">
+      <h3 class="text-content-secondary headline-small">
+        {$_('conversation.chattingTitle', {
+          values: { name: agent.value.repository_name }
+        })}
+      </h3>
+      {#if agent.value.repository_url}
+        <a
+          href={agent.value.repository_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-content-tertiary hover:text-content-primary ml-1"
+        >
+          <LinkIcon class="h-4 w-4" />
+        </a>
+      {/if}
     </div>
     <Divider class="w-full" />
   </svelte:fragment>

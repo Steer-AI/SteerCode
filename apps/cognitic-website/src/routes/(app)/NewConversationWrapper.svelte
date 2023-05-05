@@ -7,6 +7,8 @@
   import ConversationWrapper from '$lib/features/ConversationThread/layout/Wrapper.svelte';
   import ChatMessage from '$lib/features/ConversationThread/components/ChatMessage.svelte';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
+  import type { NewConversationDTO } from '$lib/models/types/conversation.type';
+  import { get } from 'svelte/store';
 
   // form variables
   let pendingRequest = false;
@@ -18,10 +20,13 @@
     pendingRequest = true;
     pendingContent = query;
     Log.DEBUG('NewConversation.handleSubmit', query);
-    const agent = await conversationsStore.add({
+    const settings = get(settingsStore);
+    const toAdd: NewConversationDTO = {
       content: query,
-      repository: $settingsStore.selectedRepo.value
-    });
+      repository_url: settings.selectedRepo.value,
+      repository_name: settings.selectedRepo.label
+    };
+    const agent = await conversationsStore.add(toAdd);
     pendingRequest = false;
     if (!agent) return;
     trackEvent('Create conversation', {
@@ -33,7 +38,7 @@
 </script>
 
 <ConversationWrapper
-  agentName={'Cognitic'}
+  agentName={'SuperGPT'}
   on:submit={(e) => handleSubmit(e.detail)}
   loading={pendingRequest}
 >
