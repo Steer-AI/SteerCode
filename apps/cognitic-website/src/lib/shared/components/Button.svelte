@@ -49,7 +49,7 @@
     @apply border-stroke-secondary text-content-secondary;
   }
   .tertiary:not(:disabled) {
-    @apply border-stroke-secondary text-content-primarySub hover:border-content-primarySub;
+    @apply border-stroke-secondary text-content-secondary hover:border-content-secondary;
   }
   .tertiary:disabled {
     @apply border-stroke-secondary text-content-tertiary;

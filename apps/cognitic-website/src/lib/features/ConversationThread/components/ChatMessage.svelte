@@ -6,6 +6,7 @@
   import CodeRendered from './CodeRendered.svelte';
   import LogoIcon from '$lib/shared/components/Icons/LogoIcon.svelte';
   import { _ } from 'svelte-i18n';
+  import CodeSpanRenderer from './CodeSpanRenderer.svelte';
 
   export let senderName: string;
   export let type: ChatCompletionRequestMessageRoleEnum;
@@ -55,7 +56,8 @@
       source={message}
       on:parsed={(x) => console.log('parsed', x)}
       renderers={{
-        code: CodeRendered
+        code: CodeRendered,
+        codespan: CodeSpanRenderer
       }}
     />
   </div>

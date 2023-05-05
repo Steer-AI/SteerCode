@@ -1,8 +1,5 @@
 module.exports = {
   content: [
-    '../../packages/ui/**/*.{js,ts,html,svelte}',
-    './pages/**/*.{js,ts,html,svelte}',
-    './components/**/*.{js,ts,html,svelte}',
     './src/**/*.{js,ts,html,svelte}'
   ],
   safelist: [],
@@ -30,7 +27,6 @@ module.exports = {
 
       content: {
         primary: '#FFFFFF',
-        primarySub: '#C3C6CA',
         secondary: '#8E929A',
         tertiary: '#737882',
         inverse: '#09090B'

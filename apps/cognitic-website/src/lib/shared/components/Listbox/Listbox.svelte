@@ -55,7 +55,7 @@
         ? 'border-stroke-secondary border '
         : ''} flex w-full items-center justify-between pl-3 pr-2 {open
         ? 'text-content-primary'
-        : 'text-content-primarySub'} {buttonClass}"
+        : 'text-content-secondary'} {buttonClass}"
     >
       <slot name="selected-option-prefix" {selected} />
       <span class="">{text === null ? selected.label : text}</span>
@@ -89,7 +89,7 @@
           class="label-small hover:bg-background-secondaryHover hover:text-content-primary flex h-10 min-w-full cursor-pointer items-center justify-between px-3 {opt.value ===
           selected.value
             ? 'text-content-primary'
-            : 'text-content-primarySub'}"
+            : 'text-content-secondary'}"
         >
           {#if opt.renderComponent}
             <svelte:component

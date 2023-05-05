@@ -128,7 +128,7 @@
 >
   <svelte:fragment slot="title">
     <div class="flex h-14 w-full max-w-5xl items-center justify-end px-6">
-      <h3 class="text-content-secondary headline-small">
+      <h3 class="text-content-tertiary headline-small">
         {$_('conversation.chattingTitle', {
           values: { name: agent.value.repository_name }
         })}

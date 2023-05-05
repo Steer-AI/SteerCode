@@ -1,7 +1,7 @@
 @tailwind components;
 
 @layer components {
-    /* HEADLINE */
+  /* HEADLINE */
   .headline-small,
   .headline-large {
     @apply font-basier font-semibold;
@@ -42,25 +42,15 @@
   }
 
   /* LABEL */
-  .label-mini,
-  .label-mini-plus,
   .label-small,
   .label-small-plus {
     @apply font-basier uppercase;
-  }
-  .label-mini,
-  .label-small {
-    @apply font-normal;
   }
   .label-mini-plus,
   .label-small-plus {
     @apply font-semibold;
   }
-  .label-mini-plus,
-  .label-mini {
-    font-size: 11px;
-    line-height: 16px;
-  }
+
   .label-small-plus,
   .label-small {
     font-size: 12px;
@@ -68,14 +58,12 @@
   }
 
   /* MONO */
-  .mono-mini,
   .mono-small,
   .mono-small-plus,
   .mono-regular,
   .mono-regular-plus {
     @apply font-basierMono;
   }
-  .mono-mini,
   .mono-small,
   .mono-regular {
     @apply font-normal;
@@ -84,10 +72,7 @@
   .mono-regular-plus {
     @apply font-semibold;
   }
-  .mono-mini {
-    font-size: 11px;
-    line-height: 12px;
-  }
+
   .mono-small,
   .mono-small-plus {
     font-size: 12px;

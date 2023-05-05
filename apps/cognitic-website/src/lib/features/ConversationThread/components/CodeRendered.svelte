@@ -83,6 +83,6 @@
     </Button>
   </div>
   <pre class="{highlighted.language} hljs">
-    <code>{@html highlighted.value}</code>
+    <code class="mono-regular">{@html highlighted.value}</code>
   </pre>
 </div>

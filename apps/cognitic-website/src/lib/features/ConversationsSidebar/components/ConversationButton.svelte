@@ -21,7 +21,7 @@
 </script>
 
 <li
-  class="items group flex items-center px-3 {selected
+  class="items text-content-secondary hover:text-content-primary group flex items-center px-3 {selected
     ? 'bg-background-primaryActive'
     : 'bg-background-primary hover:bg-background-primaryHover'}"
 >
@@ -55,4 +55,4 @@
     >
   </Tooltip>
 </li>
-<Divider class="last:hidden" />
+<Divider class="mx-3 last:hidden" />
