@@ -38,16 +38,10 @@
 </script>
 
 <ConversationWrapper
-  agentName={'SuperGPT'}
   on:submit={(e) => handleSubmit(e.detail)}
   loading={pendingRequest}
 >
   {#if pendingContent}
-    <ChatMessage
-      senderName={'ME'}
-      type="user"
-      message={pendingContent}
-      deletable={false}
-    />
+    <ChatMessage type="user" message={pendingContent} deletable={false} />
   {/if}
 </ConversationWrapper>

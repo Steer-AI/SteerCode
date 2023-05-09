@@ -100,7 +100,16 @@ function createConversationsStore(): DataStore<
   async function fetchFromServer(): Promise<void> {
     Log.DEBUG('createConversationsStore.fetchFromerver');
     const conversations = await getAllConversations();
-    _conversations.set(conversations.map((a) => new Conversation(a)));
+    _conversations.update((current) => {
+      return conversations.map((conv) => {
+        const index = current.findIndex((a) => a.value.id === conv.id);
+        if (index === -1) {
+          return new Conversation(conv);
+        } else {
+          return current[index];
+        }
+      });
+    });
   }
 
   async function fetchById(id: string): Promise<void> {
@@ -113,7 +122,10 @@ function createConversationsStore(): DataStore<
         const index = conversations.findIndex(
           (conversation) => conversation.value.id === id
         );
-        if (index === -1) return conversations;
+        if (index === -1) {
+          conversations.push(new Conversation(conversation));
+          return conversations;
+        }
         conversations[index] = new Conversation(conversation);
         return conversations;
       });

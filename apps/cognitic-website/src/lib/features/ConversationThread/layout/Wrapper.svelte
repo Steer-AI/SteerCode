@@ -1,12 +1,10 @@
 <script lang="ts">
-  import Button from '$lib/shared/components/Button.svelte';
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
   import { createEventDispatcher } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
 
-  export let agentName: string;
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
 
@@ -36,24 +34,22 @@
   <slot name="title" />
 
   <div
-    class="relative mt-4 flex w-full max-w-5xl flex-1 flex-col-reverse gap-4 overflow-y-auto px-6"
+    class="relative flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto"
     bind:this={chatAreaDiv}
   >
     <div class="" bind:this={scrollToDiv} />
     <slot name="footer" />
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
       <ChatMessage
-        senderName={agentName}
-        type="assistant"
+        type="system"
         message={$_('conversation.message.initialMessage')}
       />
 
       <slot />
       {#if loading}
         <ChatMessage
-          senderName={agentName}
-          type="assistant"
+          type="system"
           message={$_('conversation.message.loading')}
         />
       {/if}
@@ -61,7 +57,7 @@
   </div>
 
   <form
-    class="relative flex w-full max-w-5xl flex-shrink-0 items-end px-6 py-2"
+    class="relative flex w-full max-w-3xl flex-shrink-0 items-end px-6 py-2"
     on:submit|preventDefault={() => {
       dispatch('submit', query);
       query = '';
@@ -98,14 +94,12 @@
       </div>
     </TextAreaField>
 
-    <Button
-      variant="primary"
+    <button
       type="submit"
-      size="medium"
-      class="absolute bottom-4 right-8 rounded-full"
+      class="text-content-tertiary hover:text-content-primary absolute bottom-4 right-8 cursor-pointer rounded-full p-2"
       disabled={loading || submitDisabled || !query}
     >
       <SendIcon class="h-4 w-4" />
-    </Button>
+    </button>
   </form>
 </section>

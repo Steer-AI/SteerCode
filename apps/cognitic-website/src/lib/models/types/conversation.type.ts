@@ -23,4 +23,5 @@ export type ChatMessageDTO = {
   content: string;
   role: ChatCompletionRequestMessageRoleEnum;
   created_at: string; // datetime string;
+  user_feedback: string | null;
 };

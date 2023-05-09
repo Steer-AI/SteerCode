@@ -15,7 +15,6 @@ export const load: LayoutLoad = async () => {
   if (browser) {
     const localeFromLS = localStorage.getItem('cognitic.locale');
     const localeFromNavigator = window.navigator.language;
-    console.log('localeFromLS', localeFromLS, localeFromNavigator);
     locale.set(localeFromLS || localeFromNavigator);
   }
   await waitLocale();

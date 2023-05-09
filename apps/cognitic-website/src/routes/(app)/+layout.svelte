@@ -2,7 +2,6 @@
   import ConversationsSidebar from '$lib/features/ConversationsSidebar/layout/Sidebar.svelte';
   import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
-  import Footer from '$lib/shared/layout/Footer.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
 
   let sidebarOpen = true;
@@ -26,8 +25,6 @@
   >
     <slot />
   </main>
-
-  <Footer style="grid-area: footer; max-width: 100vw" />
 </div>
 
 <SettingsModal />
@@ -38,9 +35,8 @@
     @apply grid max-h-screen min-h-screen overflow-hidden;
     grid-template-areas:
       'header header header'
-      'leftSidebar main main'
-      'footer footer footer';
-    grid-template-columns: min-content 1fr min-content;
-    grid-template-rows: min-content 1fr min-content;
+      'leftSidebar main main';
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: min-content 1fr;
   }
 </style>

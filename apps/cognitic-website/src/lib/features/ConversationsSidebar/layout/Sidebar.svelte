@@ -1,11 +1,9 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { modalOpen } from '$lib/features/SettingsModal/stores/modal';
   import Button from '$lib/shared/components/Button.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
-  import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import ConversationButton, {
     type DispatchEvents
   } from '../components/ConversationButton.svelte';
@@ -15,12 +13,9 @@
   import { _ } from 'svelte-i18n';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { onMount } from 'svelte';
-  import {
-    availableRepositories,
-    settingsStore
-  } from '$lib/features/SettingsModal/stores/settings';
-  import Listbox from '$lib/shared/components/Listbox/Listbox.svelte';
-  import { updateSettings } from '$lib/data/settingsQueries';
+  import TwitterIcon from '$lib/shared/components/Icons/TwitterIcon.svelte';
+  import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
+  import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
 
   let dialogEl: HTMLDialogElement;
   let conversationToDelete: Conversation | null = null;
@@ -55,26 +50,7 @@
 
 <aside class="flex {$$props.class}" style={$$props.style}>
   <div class="bg-background-primary flex w-64 flex-col">
-    <div class="mx-3 flex h-14 flex-shrink-0 items-center">
-      <Listbox
-        class="w-full"
-        selected={$settingsStore.selectedRepo}
-        on:change={(e) => {
-          settingsStore.updateSettings({
-            ...$settingsStore,
-            selectedRepo: e.detail
-          });
-        }}
-        options={availableRepositories}
-      >
-        <div slot="label" class="text-content-secondary label-small mr-auto">
-          Select a repo
-        </div>
-      </Listbox>
-    </div>
-    <Divider />
-
-    <div class="flex h-14 flex-shrink-0 items-center px-3">
+    <div class="flex h-14 flex-shrink-0 items-center px-4">
       <Button
         variant="secondary"
         class="w-full whitespace-nowrap"
@@ -90,11 +66,9 @@
       </Button>
     </div>
 
-    <Divider />
-
     <!-- scrollable list of chat sessions -->
     <section class="flex-1 overflow-y-scroll">
-      <ul class="my-2">
+      <ul>
         {#each $conversationsStore as agent (agent.value.id)}
           <ConversationButton
             {agent}
@@ -106,21 +80,37 @@
     </section>
 
     <Divider />
-    <!-- Buttons + other info -->
-    <div class="mx-3 flex h-14 flex-shrink-0 items-center">
-      <Button
-        variant="tertiary"
-        class="w-full"
-        size="medium"
-        on:click={() => {
-          modalOpen.set(true);
-          trackEvent('Open settings');
-        }}
+
+    <span
+      class="bg-background-primary text-content-secondary flex h-14 w-full items-center justify-center gap-6 px-6"
+    >
+      <a
+        target="_blank"
+        rel="noopener"
+        href="https://twitter.com/singular_xyz"
+        class="hover:text-content-primary"
       >
-        <SettingsIcon class="mr-1 h-3 w-3" />
-        {$_('sidebar.settings')}
-      </Button>
-    </div>
+        <TwitterIcon class="h-5 w-5" />
+      </a>
+
+      <a
+        target="_blank"
+        rel="noopener"
+        href="https://discord.gg/euRB6WkX"
+        class="hover:text-content-primary"
+      >
+        <DiscordIcon class="h-5 w-5" />
+      </a>
+
+      <a
+        target="_blank"
+        rel="noopener"
+        href="https://github.com/cognitic-ai/cognitic"
+        class="hover:text-content-primary"
+      >
+        <GitHubIcon fill="currentColor" class="h-4 w-4" />
+      </a>
+    </span>
   </div>
 
   <Divider vertical />

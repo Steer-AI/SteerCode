@@ -54,6 +54,10 @@
     <p class="headline-large text-content-primary">
       This is a content-primary text color
     </p>
+    <p class="headline-large text-content-primarySub">
+      This is a content-primarySub text color
+    </p>
+
     <p class="headline-large text-content-secondary">
       This is a content-secondary text color
     </p>

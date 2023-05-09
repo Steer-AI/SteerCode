@@ -1,5 +1,9 @@
 import { Log } from '$lib/core/services/logging';
-import { deleteMessage, getMessages } from '$lib/data/conversationQueries';
+import {
+  deleteMessage,
+  getMessages,
+  updateFeedback
+} from '$lib/data/conversationQueries';
 import { withLogger } from '$lib/shared/utils/decorators';
 import type { ChatCompletionRequestMessage } from 'openai';
 import {
@@ -42,7 +46,8 @@ export class Conversation implements Readable<ConversationDTO> {
       ...message,
       id: uuidv4(),
       conversation_id: this.value.id,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      user_feedback: null
     });
     this.store.set(this.value);
     return true;
@@ -63,6 +68,39 @@ export class Conversation implements Readable<ConversationDTO> {
       Log.DEBUG(
         'Conversation.deleteMessage',
         'failed to delete message. Restore snapshot'
+      );
+      this._restore('messages', snapshot);
+    }
+
+    return success;
+  }
+
+  @withLogger()
+  async addFeedback(
+    message: ChatMessageDTO,
+    feedback: string
+  ): Promise<boolean> {
+    const snapshot = [...this.value.messages];
+
+    const index = this.value.messages.findIndex((m) => m.id === message.id);
+    if (index === -1) {
+      Log.ERROR(
+        'Conversation.feedback',
+        'failed to find message. Restore snapshot'
+      );
+      this._restore('messages', snapshot);
+      return false;
+    }
+
+    this.value.messages[index].user_feedback = feedback;
+    this.store.set(this.value);
+
+    const success = await updateFeedback(this.value.id, message.id, feedback);
+
+    if (!success) {
+      Log.DEBUG(
+        'Conversation.feedback',
+        'failed to update feedback. Restore snapshot'
       );
       this._restore('messages', snapshot);
     }

@@ -12,7 +12,6 @@
 
   type T = $$Generic<Option>;
 
-  export let text: string | null = null;
   export let selected: T;
   export let options: T[];
   export let disabled: boolean = false;
@@ -57,8 +56,9 @@
         ? 'text-content-primary'
         : 'text-content-secondary'} {buttonClass}"
     >
-      <slot name="selected-option-prefix" {selected} />
-      <span class="">{text === null ? selected.label : text}</span>
+      <slot name="selected-option-prefix" {selected}>
+        <span class="">{selected.label}</span>
+      </slot>
 
       {#if open}
         <ExpandIcon

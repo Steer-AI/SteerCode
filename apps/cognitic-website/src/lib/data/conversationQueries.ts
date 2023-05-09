@@ -24,6 +24,24 @@ export async function deleteMessage(
   );
 }
 
+export async function updateFeedback(
+  conversationId: string,
+  messageId: string,
+  feedback: string
+): Promise<boolean> {
+  return responseWithErrorHandeling<boolean>(
+    customFetch(`/chat/conversations/${conversationId}/messages/${messageId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ feedback })
+    }),
+    false,
+    `Failed to update message ${messageId} from conversation ${conversationId}`
+  );
+}
+
 export async function getMessages(
   conversationId: string
 ): Promise<ChatMessageDTO[]> {

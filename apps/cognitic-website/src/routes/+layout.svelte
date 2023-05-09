@@ -5,7 +5,7 @@
 <PartytownSetup />
 
 <svelte:head>
-  <title>SuperGPT</title>
+  <title>Cognitic | Chat</title>
 </svelte:head>
 
 <slot />

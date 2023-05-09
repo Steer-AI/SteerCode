@@ -1,7 +1,5 @@
 module.exports = {
-  content: [
-    './src/**/*.{js,ts,html,svelte}'
-  ],
+  content: ['./src/**/*.{js,ts,html,svelte}'],
   safelist: [],
   theme: {
     fontFamily: {
@@ -27,6 +25,7 @@ module.exports = {
 
       content: {
         primary: '#FFFFFF',
+        primarySub: '#C3C6CA',
         secondary: '#8E929A',
         tertiary: '#737882',
         inverse: '#09090B'
@@ -49,7 +48,18 @@ module.exports = {
         DEFAULT: '#46B95F',
         darker: '#38944C'
       }
-    },      
+    },
+    extend: {
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            'line-height': '1.5',
+            // '--tw-prose-invert-body': theme('colors.content.secondary')
+            // ...
+          }
+        }
+      })
+    }
   },
   plugins: [require('@tailwindcss/typography')]
 };

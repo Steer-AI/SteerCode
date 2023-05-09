@@ -36,12 +36,7 @@
         'x-openai-api-key': settings.openaiAPIKey || '',
         'X-UID': window.localStorage.getItem('cognitic.uid') || 'TEST'
       },
-      payload: JSON.stringify({
-        conversation_id: agent.value.id,
-        messages: agent.value.messages,
-        model: settings.openaiModel,
-        temperature: settings.temperature
-      })
+      payload: JSON.stringify(agent.value)
     });
 
     eventSource.addEventListener('error', (e) => handleError(e));
@@ -117,7 +112,6 @@
 </script>
 
 <ConversationWrapper
-  agentName={agent.value.title}
   on:submit={(e) => {
     agent.addMessage({ role: 'user', content: e.detail });
     handleSubmit(e.detail);
@@ -126,35 +120,12 @@
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}
 >
-  <svelte:fragment slot="title">
-    <div class="flex h-14 w-full max-w-5xl items-center justify-end px-6">
-      <h3 class="text-content-tertiary headline-small">
-        {$_('conversation.chattingTitle', {
-          values: { name: agent.value.repository_name }
-        })}
-      </h3>
-      {#if agent.value.repository_url}
-        <a
-          href={agent.value.repository_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-content-tertiary hover:text-content-primary ml-1"
-        >
-          <LinkIcon class="h-4 w-4" />
-        </a>
-      {/if}
-    </div>
-    <Divider class="w-full" />
-  </svelte:fragment>
-
   <svelte:fragment>
     {#each $agent.messages as message (message.id)}
       <ChatMessage
-        senderName={message.role === 'user'
-          ? $_('conversation.message.me')
-          : agent.value.title}
         type={message.role}
         message={message.content}
+        messageFeedback={message.user_feedback}
         on:delete={() => {
           agent.deleteMessage(message);
           trackEvent('Delete message', {
@@ -164,14 +135,18 @@
           });
         }}
         deletable={true}
+        on:feedback={(e) => {
+          agent.addFeedback(message, e.detail);
+          trackEvent('Feedback message', {
+            messageId: message.id,
+            conversationId: agent.value.id,
+            feedback: e.detail
+          });
+        }}
       />
     {/each}
     {#if answer}
-      <ChatMessage
-        senderName={agent.value.title}
-        type="assistant"
-        message={answer}
-      />
+      <ChatMessage type="system" message={answer} />
     {/if}
   </svelte:fragment>
 

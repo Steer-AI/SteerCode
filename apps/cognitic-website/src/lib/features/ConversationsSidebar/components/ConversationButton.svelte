@@ -9,7 +9,6 @@
 
   import Divider from '$lib/shared/components/Divider.svelte';
   import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
-  import MessagingIcon from '$lib/shared/components/Icons/MessagingIcon.svelte';
   import Tooltip from '$lib/shared/components/Tooltip.svelte';
   import { createEventDispatcher } from 'svelte';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
@@ -21,16 +20,15 @@
 </script>
 
 <li
-  class="items text-content-secondary hover:text-content-primary group flex items-center px-3 {selected
-    ? 'bg-background-primaryActive'
-    : 'bg-background-primary hover:bg-background-primaryHover'}"
+  class="items group flex h-14 items-center px-4 {selected
+    ? 'bg-background-primaryActive text-content-primary'
+    : 'bg-background-primary text-content-primarySub hover:text-content-primary hover:bg-background-primaryHover'}"
 >
   <a
     href="/chat/{$agent.id}"
-    class="relative flex h-10 flex-1 items-center overflow-hidden"
+    class="relative flex h-full flex-1 items-center overflow-hidden"
     title={$agent.title}
   >
-    <MessagingIcon class="mr-2 h-4 w-4" />
     <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
       {$agent.title}
     </span>

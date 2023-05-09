@@ -20,6 +20,7 @@
   import IntermediateCheckboxIcon from '$lib/shared/components/Icons/IntermediateCheckboxIcon.svelte';
   import LinkIcon from '$lib/shared/components/Icons/LinkIcon.svelte';
   import MessagingIcon from '$lib/shared/components/Icons/MessagingIcon.svelte';
+  import MinusCircleIcon from '$lib/shared/components/Icons/MinusCircleIcon.svelte';
   import MinusIcon from '$lib/shared/components/Icons/MinusIcon.svelte';
   import PauseIcon from '$lib/shared/components/Icons/PauseIcon.svelte';
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
@@ -31,6 +32,9 @@
   import SortDownIcon from '$lib/shared/components/Icons/SortDownIcon.svelte';
   import SortUpIcon from '$lib/shared/components/Icons/SortUpIcon.svelte';
   import SuspiciousIcon from '$lib/shared/components/Icons/SuspiciousIcon.svelte';
+  import TagIcon from '$lib/shared/components/Icons/TagIcon.svelte';
+  import ThumbsDownIcon from '$lib/shared/components/Icons/ThumbsDownIcon.svelte';
+  import ThumbsUpIcon from '$lib/shared/components/Icons/ThumbsUpIcon.svelte';
   import TooltipIcon from '$lib/shared/components/Icons/TooltipIcon.svelte';
   import TwitterIcon from '$lib/shared/components/Icons/TwitterIcon.svelte';
   import VerifiedIcon from '$lib/shared/components/Icons/VerifiedIcon.svelte';
@@ -59,6 +63,7 @@
     IntermediateCheckboxIcon,
     LinkIcon,
     MessagingIcon,
+    MinusCircleIcon,
     MinusIcon,
     PauseIcon,
     PlusIcon,
@@ -70,6 +75,9 @@
     SortDownIcon,
     SortUpIcon,
     SuspiciousIcon,
+    TagIcon,
+    ThumbsUpIcon,
+    ThumbsDownIcon,
     TooltipIcon,
     TwitterIcon,
     VerifiedIcon,

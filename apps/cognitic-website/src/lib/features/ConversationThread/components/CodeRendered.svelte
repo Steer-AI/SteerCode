@@ -62,10 +62,9 @@
 
 <div class="not-prose" style="min-width: 256px">
   <div
-    class="bg-background-primaryHover flex h-10 w-full items-center justify-between px-4"
+    class="bg-background-primaryHover flex h-10 w-full items-center justify-between px-3"
   >
-    <span class="ml-2 text-xs font-bold text-white">{highlighted.language}</span
-    >
+    <span class="text-xs font-bold text-white">{highlighted.language}</span>
 
     <Button
       variant="tertiary"
@@ -82,7 +81,7 @@
       {/if}
     </Button>
   </div>
-  <pre class="{highlighted.language} hljs">
+  <pre class="{highlighted.language} hljs bg p-3">
     <code class="mono-regular">{@html highlighted.value}</code>
   </pre>
 </div>

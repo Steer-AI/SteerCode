@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Log } from '$lib/core/services/logging';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType } from '$lib/models/enums/notifications';
   import type { Settings } from '$lib/models/types/settings.type';
@@ -8,11 +7,8 @@
   import { get } from 'svelte/store';
   import { modalOpen } from '../stores/modal';
   import { settingsStore } from '../stores/settings';
-  import TemperatureSlider from '../components/TemperatureSlider.svelte';
-  import ModelSelector from '../components/ModelSelector.svelte';
   import ApiKeyInput from '../components/ApiKeyInput.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
-  import InputField from '$lib/shared/components/InputField.svelte';
   import { trackEvent } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
 
@@ -36,10 +32,7 @@
       removeAfter: 3000
     });
 
-    trackEvent('Save settings', {
-      model: newSettings.openaiModel,
-      temperature: newSettings.temperature
-    });
+    trackEvent('Save settings');
   }
 </script>
 
@@ -60,14 +53,6 @@
       {$_('settings.description')}
     </p>
     <ApiKeyInput bind:value={newSettings.openaiAPIKey} />
-    <ModelSelector bind:value={newSettings.openaiModel} />
-    <InputField
-      class="body-regular !bg-background-secondaryHover h-8 px-3"
-      labelClass="flex items-start flex-col"
-      bind:value={newSettings.openaiModel}
-    />
-
-    <TemperatureSlider bind:value={newSettings.temperature} />
   </div>
 
   <div slot="action">

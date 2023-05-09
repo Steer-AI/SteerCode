@@ -3,8 +3,16 @@ import type { Option } from '$lib/shared/components/Listbox/types';
 import { writable } from 'svelte/store';
 
 export const availableRepositories: Option<string>[] = [
-  { label: 'LangChain', value: 'https://github.com/hwchase17/langchain' },
-  { label: 'SuperGPT', value: 'https://github.com/cognitic-ai/SuperGPT' }
+  {
+    label: 'LangChain',
+    value: 'https://github.com/hwchase17/langchain',
+    version: 'v0.0.168'
+  },
+  {
+    label: 'SuperGPT',
+    value: 'https://github.com/cognitic-ai/SuperGPT',
+    version: 'v0.0.1'
+  }
 ];
 
 function createSettingsStore() {
@@ -15,8 +23,6 @@ function createSettingsStore() {
 
   const settings = writable<Settings>({
     openaiAPIKey: APIKeyFromLS || '',
-    openaiModel: 'gpt-3.5-turbo',
-    temperature: 0.3,
     selectedRepo: availableRepositories[0]
   });
 
