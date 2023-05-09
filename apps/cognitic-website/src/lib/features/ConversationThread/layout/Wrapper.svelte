@@ -4,6 +4,8 @@
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
+  import autoAnimate from '@formkit/auto-animate';
+  import { fade } from 'svelte/transition';
 
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
@@ -40,7 +42,7 @@
     <div class="" bind:this={scrollToDiv} />
     <slot name="footer" />
 
-    <div class="flex flex-col">
+    <div class="flex flex-col" in:fade={{ duration: 200 }}>
       <ChatMessage
         type="system"
         message={$_('conversation.message.initialMessage')}

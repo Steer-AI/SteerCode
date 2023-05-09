@@ -17,6 +17,8 @@
   import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
 
+  export let open: boolean;
+
   let dialogEl: HTMLDialogElement;
   let conversationToDelete: Conversation | null = null;
 
@@ -48,7 +50,12 @@
   });
 </script>
 
-<aside class="flex {$$props.class}" style={$$props.style}>
+<aside
+  class="absolute bottom-0 top-0 z-10 flex md:relative {open
+    ? 'left-0'
+    : '-left-full'}"
+  style={$$props.style}
+>
   <div class="bg-background-primary flex w-64 flex-col">
     <div class="flex h-14 flex-shrink-0 items-center px-4">
       <Button
@@ -82,7 +89,7 @@
     <Divider />
 
     <span
-      class="bg-background-primary text-content-secondary flex h-14 w-full items-center justify-center gap-6 px-6"
+      class="bg-background-primary text-content-secondary flex h-10 w-full items-center justify-center gap-6 px-6"
     >
       <a
         target="_blank"
@@ -131,6 +138,6 @@
 
 <style lang="postcss">
   aside {
-    transition: width 0.3s ease-in-out, opacity 0.2s ease-in-out;
+    transition: left 0.3s ease-in-out, opacity 0.2s ease-in-out;
   }
 </style>

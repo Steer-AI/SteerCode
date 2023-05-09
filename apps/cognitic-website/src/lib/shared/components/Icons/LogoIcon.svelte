@@ -16,7 +16,7 @@
     r="44.565"
     fill={dark ? 'black' : 'white'}
   />
-  <circle cx="374.314" cy="174.709" r="80.291" fill="#FD0054" />
+  <circle cx="374.314" cy="174.709" r="80.291" class="fill-primary" />
   <circle
     cx="142.574"
     cy="292.925"

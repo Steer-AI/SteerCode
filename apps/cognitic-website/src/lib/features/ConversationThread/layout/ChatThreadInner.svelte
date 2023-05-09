@@ -13,8 +13,6 @@
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
-  import Divider from '$lib/shared/components/Divider.svelte';
-  import LinkIcon from '$lib/shared/components/Icons/LinkIcon.svelte';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -45,15 +43,20 @@
       scrollToBottom();
       try {
         loading = false;
-        if (e.data === '[DONE]') {
-          agent.addMessage({ role: 'assistant', content: answer });
+
+        const completionResponse = JSON.parse(e.data);
+        const content = completionResponse.msg;
+
+        if (completionResponse.done) {
+          console.log('DONE', { completionResponse });
+          agent.addMessage(
+            { role: 'assistant', content: answer },
+            completionResponse.id
+          );
           answer = '';
           closeEventSource();
           return;
         }
-
-        const completionResponse = JSON.parse(e.data);
-        const content = completionResponse.msg;
 
         if (content) {
           answer = (answer ?? '') + content;

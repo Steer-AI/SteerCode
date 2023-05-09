@@ -11,6 +11,7 @@
   import ThumbsUpIcon from '$lib/shared/components/Icons/ThumbsUpIcon.svelte';
   import ThumbsDownIcon from '$lib/shared/components/Icons/ThumbsDownIcon.svelte';
   import MinusCircleIcon from '$lib/shared/components/Icons/MinusCircleIcon.svelte';
+  import { slide } from 'svelte/transition';
 
   export let type: ChatCompletionRequestMessageRoleEnum;
   export let message: string;
@@ -18,6 +19,17 @@
   export let messageFeedback: string | null = null;
 
   const dispatch = createEventDispatcher();
+
+  function animateClick(target: EventTarget | null) {
+    if (target === null) {
+      return;
+    }
+    const el = target as HTMLElement;
+    el.classList.add('animate-pop');
+    setTimeout(() => {
+      el.classList.remove('animate-pop');
+    }, 1500);
+  }
 </script>
 
 <div
@@ -25,7 +37,9 @@
     ? 'bg-background-primary'
     : 'bg-background-primaryHover'}
 >
-  <div class="mx-auto flex max-w-3xl items-start justify-start gap-6 p-6">
+  <div
+    class="mx-auto flex max-w-3xl flex-col items-start justify-start gap-6 p-6 md:flex-row"
+  >
     <div class="group relative w-8 overflow-hidden">
       {#if deletable}
         <button
@@ -51,7 +65,7 @@
       {/if}
     </div>
 
-    <div class="prose prose-invert text-content-primary flex-1 overflow-y-auto">
+    <div class="prose prose-invert text-content-primary w-full flex-1">
       <SvelteMarkdown
         source={message}
         renderers={{
@@ -62,9 +76,9 @@
 
       {#if type === 'assistant'}
         <div
-          class="bg-background-primaryActive label-small mt-6 flex h-7 !w-fit items-center gap-2 px-3"
+          class="bg-background-primaryActive label-small mt-6 flex h-7 !w-fit items-center gap-3 px-3"
         >
-          <p class="text-content-secondary mr-1">
+          <p class="text-content-secondary">
             {$_('conversation.message.improveText')}
           </p>
 
@@ -73,7 +87,10 @@
             class="{messageFeedback === 'positive'
               ? 'text-content-primary'
               : 'text-content-primarySub'} hover:text-content-primary"
-            on:click={() => dispatch('feedback', 'positive')}
+            on:click={(e) => {
+              dispatch('feedback', 'positive');
+              animateClick(e.target);
+            }}
           >
             <ThumbsUpIcon class="h-3 w-3" />
           </button>
@@ -82,7 +99,10 @@
             class="{messageFeedback === 'negative'
               ? 'text-content-primary'
               : 'text-content-primarySub'} hover:text-content-primary"
-            on:click={() => dispatch('feedback', 'negative')}
+            on:click={(e) => {
+              dispatch('feedback', 'negative');
+              animateClick(e.target);
+            }}
           >
             <ThumbsDownIcon class="h-3 w-3" />
           </button>
@@ -91,7 +111,10 @@
             class="{messageFeedback === 'neutral'
               ? 'text-content-primary'
               : 'text-content-primarySub'} hover:text-content-primary"
-            on:click={() => dispatch('feedback', 'neutral')}
+            on:click={(e) => {
+              dispatch('feedback', 'neutral');
+              animateClick(e.target);
+            }}
           >
             <MinusCircleIcon class="h-3 w-3" />
           </button>
@@ -105,4 +128,31 @@
 <style lang="postcss">
   /* https://highlightjs.tiddlyhost.com/ */
   @import './styles/vs2015.css';
+
+  :global(.animate-pop) {
+    transform-origin: center;
+    animation: pop 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+    animation-iteration-count: 1;
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.2);
+    }
+    40% {
+      transform: scale(1.2) rotate(8deg);
+    }
+    60% {
+      transform: scale(1.2) rotate(-8deg);
+    }
+    80% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 </style>

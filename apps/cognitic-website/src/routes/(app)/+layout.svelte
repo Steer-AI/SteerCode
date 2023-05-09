@@ -10,21 +10,15 @@
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
 
 <div class="main-template">
-  <Header style="grid-area: header; max-width: 100vw" bind:sidebarOpen />
+  <Header style="max-width: 100vw" bind:sidebarOpen />
 
-  <ConversationsSidebar
-    class="overflow-hidden {sidebarOpen
-      ? 'w-[257px] opacity-100'
-      : 'w-0 opacity-0'}"
-    style="grid-area: leftSidebar"
-  />
+  <div class="relative isolate flex overflow-hidden">
+    <ConversationsSidebar open={sidebarOpen} />
 
-  <main
-    style="grid-area: main; min-width: min(100vw, 511px)"
-    class="overflow-hidden"
-  >
-    <slot />
-  </main>
+    <main class="flex-1 overflow-hidden">
+      <slot />
+    </main>
+  </div>
 </div>
 
 <SettingsModal />
@@ -33,10 +27,6 @@
 <style lang="postcss">
   .main-template {
     @apply grid max-h-screen min-h-screen overflow-hidden;
-    grid-template-areas:
-      'header header header'
-      'leftSidebar main main';
-    grid-template-columns: min-content 1fr;
     grid-template-rows: min-content 1fr;
   }
 </style>

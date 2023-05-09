@@ -41,10 +41,13 @@ export class Conversation implements Readable<ConversationDTO> {
   }
 
   @withLogger()
-  async addMessage(message: ChatCompletionRequestMessage): Promise<boolean> {
+  async addMessage(
+    message: ChatCompletionRequestMessage,
+    id?: string
+  ): Promise<boolean> {
     this.value.messages.push({
       ...message,
-      id: uuidv4(),
+      id: id || uuidv4(),
       conversation_id: this.value.id,
       created_at: new Date().toISOString(),
       user_feedback: null

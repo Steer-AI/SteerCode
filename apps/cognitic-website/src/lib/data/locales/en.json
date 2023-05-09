@@ -55,9 +55,9 @@
         "clipboardAPIError": "Clipboard API not supported by your browser, please copy the text manually instead",
         "chatAPIError": "An error occurred while processing your request.",
         "settingsSaved": "Settings saved",
-        "failedDeleteAgent": "Failed to delete agent",
-        "agentDeleted": "Agent deleted",
-        "failedCreateAgent": "Failed to create agent",
-        "agentCreated": "Agent {name} created"
+        "failedDeleteAgent": "Failed to delete conversation",
+        "agentDeleted": "Conversation deleted",
+        "failedCreateAgent": "Failed to create conversation",
+        "agentCreated": "Conversation {name} created"
     }
 }
