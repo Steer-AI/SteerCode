@@ -4,10 +4,7 @@
   import LogoIcon from '../components/Icons/LogoIcon.svelte';
   import { locale, locales } from 'svelte-i18n';
   import Listbox from '../components/Listbox/Listbox.svelte';
-  import {
-    availableRepositories,
-    settingsStore
-  } from '$lib/features/SettingsModal/stores/settings';
+  import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import Button from '../components/Button.svelte';
   import { _ } from 'svelte-i18n';
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
@@ -15,6 +12,8 @@
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
 
   export let sidebarOpen = true;
+
+  const options = settingsStore.availableRepositories;
 </script>
 
 <header class="sticky top-0 z-20" style={$$props.style}>
@@ -101,11 +100,10 @@
         selected={$settingsStore.selectedRepo}
         on:change={(e) => {
           settingsStore.updateSettings({
-            ...$settingsStore,
             selectedRepo: e.detail
           });
         }}
-        options={availableRepositories}
+        options={$options}
       >
         <span
           slot="selected-option-prefix"
@@ -119,15 +117,17 @@
         </span>
       </Listbox>
 
-      <div
-        class="bg-background-secondaryActive label-mini-plus ml-2 flex h-5 items-center px-3"
-        style="font-size: 11px;"
-      >
-        <TagIcon class="text-content-tertiary mr-1 h-3 w-3" />
-        <span class="text-content-secondary">
-          {$settingsStore.selectedRepo.version}
-        </span>
-      </div>
+      {#if $settingsStore.selectedRepo.version}
+        <div
+          class="bg-background-secondaryActive label-mini-plus ml-2 flex h-5 items-center px-3"
+          style="font-size: 11px;"
+        >
+          <TagIcon class="text-content-tertiary mr-1 h-3 w-3" />
+          <span class="text-content-secondary">
+            {$settingsStore.selectedRepo.version}
+          </span>
+        </div>
+      {/if}
     </div>
 
     <Button

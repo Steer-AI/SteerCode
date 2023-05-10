@@ -23,8 +23,11 @@
     const settings = get(settingsStore);
     const toAdd: NewConversationDTO = {
       content: query,
-      repository_url: settings.selectedRepo.value,
-      repository_name: settings.selectedRepo.label
+      repository: {
+        url: settings.selectedRepo.value,
+        name: settings.selectedRepo.label,
+        version: settings.selectedRepo.version
+      }
     };
     const agent = await conversationsStore.add(toAdd);
     pendingRequest = false;

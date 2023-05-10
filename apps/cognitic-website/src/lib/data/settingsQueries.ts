@@ -1,12 +1,24 @@
-import { Log } from '$lib/core/services/logging';
-import type { Settings } from '$lib/models/types/settings.type';
+import {
+  customFetch,
+  responseWithErrorHandeling
+} from '$lib/core/services/request';
+import type { RepositoryOption } from '$lib/models/types/conversation.type';
 
-export function updateSettings(newValue: Settings): Promise<boolean> {
-    // TODO: implement server request
-    Log.WARNING('updateSettings', 'Not implemented');
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(true)
-        }, 1000)
-    })
+export function getAvailableRepositories(): Promise<RepositoryOption[]> {
+  return responseWithErrorHandeling<RepositoryOption[]>(
+    customFetch(`/configuration/repositories`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    [
+      {
+        name: 'LangChain',
+        url: 'https://github.com/hwchase17/langchain',
+        version: undefined
+      }
+    ],
+    'Failed to get available repositories'
+  );
 }

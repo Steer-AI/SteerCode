@@ -1,18 +1,22 @@
 import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
 
+export type RepositoryOption = {
+  name: string;
+  url: string;
+  version?: string;
+};
+
 // Model used to create a new agent
 export type NewConversationDTO = {
   content: string;
-  repository_name: string;
-  repository_url: string;
+  repository: RepositoryOption;
 };
 
 // Model retrieved from backend
 export type ConversationDTO = {
   id: string;
   title: string;
-  repository_name: string;
-  repository_url: string;
+  repository: RepositoryOption;
   messages: Array<ChatMessageDTO>;
   created_at: string; // datetime string;
 };
