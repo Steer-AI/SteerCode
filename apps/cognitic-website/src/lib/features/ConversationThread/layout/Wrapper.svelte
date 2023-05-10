@@ -42,12 +42,9 @@
     <div class="" bind:this={scrollToDiv} />
     <slot name="footer" />
 
-    <div class="flex flex-col" in:fade={{ duration: 200 }}>
-      <ChatMessage
-        type="system"
-        message={$_('conversation.message.initialMessage')}
-      />
+    <div role="separator" class="flex-1" />
 
+    <div class="flex flex-col" in:fade={{ duration: 200 }}>
       <slot />
       {#if loading}
         <ChatMessage
@@ -59,7 +56,7 @@
   </div>
 
   <form
-    class="relative flex w-full max-w-3xl flex-shrink-0 items-end px-6 py-2"
+    class="relative flex w-full max-w-5xl flex-shrink-0 items-end px-6 py-2"
     on:submit|preventDefault={() => {
       dispatch('submit', query);
       query = '';
@@ -104,4 +101,9 @@
       <SendIcon class="h-4 w-4" />
     </button>
   </form>
+  <div
+    class="text-content-secondary body-small flex h-14 max-w-5xl flex-shrink-0 items-center px-6"
+  >
+    {$_('conversation.disclaimer')}
+  </div>
 </section>

@@ -62,13 +62,13 @@
 
       {#if open}
         <ExpandIcon
-          class={`text-content-primary ml-1.5 h-4 w-4  ${
+          class={`text-content-primary ml-2 h-4 w-4  ${
             inverted ? 'rotate-0' : 'rotate-180'
           }`}
         />
       {:else}
         <ExpandIcon
-          class={`text-content-tertiary ml-1.5 h-4 w-4 ${
+          class={`text-content-tertiary ml-2 h-4 w-4 ${
             inverted ? 'rotate-180' : 'rotate-0'
           }`}
         />

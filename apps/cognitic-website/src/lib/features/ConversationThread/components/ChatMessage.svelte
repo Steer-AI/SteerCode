@@ -38,7 +38,7 @@
     : 'bg-background-primaryHover'}
 >
   <div
-    class="mx-auto flex max-w-3xl flex-col items-start justify-start gap-6 p-6 md:flex-row"
+    class="mx-auto flex max-w-5xl flex-col items-start justify-start gap-6 p-6 md:flex-row"
   >
     <div class="group relative w-8 overflow-hidden">
       {#if deletable}
@@ -73,6 +73,8 @@
           codespan: CodeSpanRenderer
         }}
       />
+
+      <slot />
 
       {#if type === 'assistant'}
         <div

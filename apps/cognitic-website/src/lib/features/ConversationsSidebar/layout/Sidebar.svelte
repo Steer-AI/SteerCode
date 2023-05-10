@@ -89,7 +89,7 @@
       <a
         target="_blank"
         rel="noopener"
-        href="https://twitter.com/singular_xyz"
+        href="https://twitter.com/CogniticAI"
         class="hover:text-content-primary"
       >
         <TwitterIcon class="h-5 w-5" />

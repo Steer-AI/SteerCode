@@ -13,10 +13,12 @@
   import Spinner from '$lib/shared/components/Spinner.svelte';
   import { _ } from 'svelte-i18n';
   import Divider from '$lib/shared/components/Divider.svelte';
+  import { trackEvent, trackPage } from '$lib/core/services/tracking';
 
   let unsub: Unsubscriber | null = null;
 
   onMount(async () => {
+    trackPage('Login Page');
     await setPersistence(auth, indexedDBLocalPersistence);
     unsub = user.subscribe((u) => {
       if (u !== null) goto('/');
@@ -48,8 +50,11 @@
     size="large"
     on:click={async () => {
       loadingGoogle = true;
-      await loginGoogle();
+      const succ = await loginGoogle();
       loadingGoogle = false;
+      if (succ) {
+        trackEvent('Login', { provider: 'google' });
+      }
     }}
   >
     {#if loadingGoogle}
@@ -68,8 +73,11 @@
     size="large"
     on:click={async () => {
       loadingGithub = true;
-      await loginGitHub();
+      const succ = await loginGitHub();
       loadingGithub = false;
+      if (succ) {
+        trackEvent('Login', { provider: 'github' });
+      }
     }}
   >
     {#if loadingGithub}
@@ -88,8 +96,11 @@
     size="large"
     on:click={async () => {
       loadingTwitter = true;
-      await loginTwitter();
+      const succ = await loginTwitter();
       loadingTwitter = false;
+      if (succ) {
+        trackEvent('Login', { provider: 'twitter' });
+      }
     }}
   >
     {#if loadingTwitter}

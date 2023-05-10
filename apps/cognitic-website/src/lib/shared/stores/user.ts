@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { auth } from '$lib/core/services/firebase';
 import { Log } from '$lib/core/services/logging';
-import { analytics } from '$lib/core/services/tracking';
+import { resetAnalytics, trackIdentify } from '$lib/core/services/tracking';
 import type { User } from '$lib/models/types/user.type';
 import * as Sentry from '@sentry/svelte';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -24,12 +24,15 @@ export const user = readable<User | null>(getUserFromLocalStorage(), (set) => {
   onAuthStateChanged(auth, (user) => {
     Log.DEBUG('user', user);
     if (user) {
-      analytics.identify(user.uid, {
-        email: user.email
+      trackIdentify(user.uid, {
+        email: user.email,
+        username: user.displayName,
+        avatar: user.photoURL
       });
       Sentry.setUser({
         id: user.uid,
-        email: user.email || undefined
+        email: user.email || undefined,
+        username: user.displayName || undefined
       });
 
       const _user: User = {
@@ -42,7 +45,7 @@ export const user = readable<User | null>(getUserFromLocalStorage(), (set) => {
       window.localStorage.setItem('cognitic.user', JSON.stringify(_user));
       set(_user);
     } else {
-      analytics.reset();
+      resetAnalytics();
       Sentry.setUser(null);
       window.localStorage.removeItem('cognitic.uid');
       window.localStorage.removeItem('cognitic.user');

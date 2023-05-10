@@ -54,6 +54,7 @@ module.exports = {
         DEFAULT: {
           css: {
             'line-height': '1.5',
+            'max-width': '100ch'
             // '--tw-prose-invert-body': '#F0F0F0'
           }
         }

@@ -8,8 +8,8 @@
   import Button from '../components/Button.svelte';
   import { _ } from 'svelte-i18n';
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
-  import TagIcon from '../components/Icons/TagIcon.svelte';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   export let sidebarOpen = true;
 
@@ -18,7 +18,7 @@
 
 <header class="sticky top-0 z-20" style={$$props.style}>
   <span class="bg-background-primary flex h-14 items-center px-6">
-    <a href="/" class="mr-auto flex items-center">
+    <a href="/" class="flex items-center">
       <!-- LOGO -->
       <LogoIcon class="mr-2 h-6 w-6" />
       <!-- COGNITIC -->
@@ -66,7 +66,14 @@
         />
       </svg>
     </a>
+    <div
+      class="bg-background-secondaryActive text-content-primarySub label-small-plus ml-2.5 flex h-5 items-center px-2.5"
+      style="font-size: 11px;"
+    >
+      BETA
+    </div>
 
+    <div role="separator" class="ml-4 flex-1" />
     <AuthButton />
     <!-- <div class="flex flex-1 items-center justify-end">
       <Listbox
@@ -95,7 +102,7 @@
       <ActivityFeedIcon class="h-8 w-8" />
     </button>
 
-    <div class="flex">
+    <div class="flex items-center">
       <Listbox
         selected={$settingsStore.selectedRepo}
         on:change={(e) => {
@@ -119,11 +126,10 @@
 
       {#if $settingsStore.selectedRepo.version}
         <div
-          class="bg-background-secondaryActive label-mini-plus ml-2 flex h-5 items-center px-3"
+          class="label-mini-plus flex h-5 items-center"
           style="font-size: 11px;"
         >
-          <TagIcon class="text-content-tertiary mr-1 h-3 w-3" />
-          <span class="text-content-secondary">
+          <span class="text-content-primarySub">
             {$settingsStore.selectedRepo.version}
           </span>
         </div>
@@ -137,6 +143,9 @@
       href="https://docs.google.com/forms/d/e/1FAIpQLSei53M_VZH1LVIBygG1k_6Ifwfo_regUEiZkNfKKYKiVbnfrA/viewform"
       target="_blank"
       class="hidden md:flex"
+      on:click={() => {
+        trackEvent('Open Import Repo Form');
+      }}
     >
       {$_('header.importRepoButton')}
     </Button>

@@ -4,12 +4,10 @@
   import DoneIcon from './Icons/DoneIcon.svelte';
   import IntermediateCheckboxIcon from './Icons/IntermediateCheckboxIcon.svelte';
 
-  type Variant = 'primary' | 'secondary';
-
   export let checked = false;
   export let intermediate = false;
   export let disabled = false;
-  export let variant: Variant = 'primary';
+  export let variant: 'primary' | 'secondary' = 'primary';
   export let checkboxClass: string = '';
 
   const dispatch = createEventDispatcher();
@@ -25,12 +23,7 @@
   }
 </script>
 
-<label
-  role="button"
-  on:click={handleClick}
-  style={$$props.style}
-  class={$$props.class}
->
+<label on:click={handleClick} style={$$props.style} class={$$props.class}>
   <slot name="before" />
   <div class="checkbox-container {variant} {checkboxClass}">
     <input type="checkbox" bind:checked {disabled} />
@@ -45,17 +38,17 @@
       {variant === 'secondary' && checked && !disabled
         ? 'bg-background-inverse'
         : ''}
-      {variant === 'secondary' && !disabled ? 'border-content-1000' : ''}
-      {disabled ? 'border-background-650' : ''}
-      {checked && disabled ? 'bg-background-650' : ''}
+      {variant === 'secondary' && !disabled ? 'border-content-primary' : ''}
+      {disabled ? 'border-background-primaryDisabled' : ''}
+      {checked && disabled ? 'bg-background-primaryDisabled' : ''}
     "
     >
       {#if intermediate}
         <IntermediateCheckboxIcon
-          class="{checked ? 'block' : 'hidden'} text-background-1000"
+          class="{checked ? 'block' : 'hidden'} text-content-inverse"
         />
       {:else}
-        <DoneIcon class="{checked ? 'block' : 'hidden'} text-background-1000" />
+        <DoneIcon class="{checked ? 'block' : 'hidden'} text-content-inverse" />
       {/if}
     </span>
   </div>
@@ -90,7 +83,7 @@
       @apply border-primary;
     }
     .checkbox-container.secondary:hover input:not(:disabled) ~ .checkmark {
-      @apply border-content-1000;
+      @apply border-content-primary;
     }
     /* When the checkbox is checked, add a blue background */
     input:checked:not(:disabled) ~ .checkmark.primary {

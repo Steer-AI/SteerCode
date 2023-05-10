@@ -10,6 +10,24 @@
             "cancelButton": "No"
         }
     },
+    "gdpr": {
+        "heading": "Cookie Policy",
+        "description": "We use cookies to offer a better browsing experience, analyze site traffic. By clicking accept, you consent to our privacy policy & use of cookies.",
+        "acceptLabel": "Accept all",
+        "rejectLabel": "Reject all",
+        "settingsLabel": "Preferences",
+        "closeLabel": "Close",
+        "choices": {
+            "necessary": {
+                "label": "Necessary cookies",
+                "description": "Used for cookie control and application monitoring. Can't be turned off."
+            },
+            "analytics": {
+                "label": "Analytics cookies",
+                "description": "Used to control Analytics to track user behavior."
+            }
+        }
+    },
     "header": {
         "title": "Cognitic | Chat",
         "importRepoButton": "Select your own repository",
@@ -50,13 +68,16 @@
         "message": {
             "me": "Me",
             "loading": "Loading...",
-            "initialMessage": "Hello, I am your agent. How can I help you?",
-            "improveText": "Help us improve. How was this answer?"
+            "initialMessage": "Welcome to Cognitic Chat, your AI assistant that understands large databases. \n\n Harness the incredible power of AI assistants, like ChatGPT, but for your own codebase. To demonstrate this technology, we present a chat with our favorite LangChain. \n\n Enter your own question about Langchain in the text box, or try one of the examples to get started. \n\n",
+            "improveText": "Help us improve. How was this answer?",
+            "example1": "What is an agent?",
+            "example2": "Create a tutorial on how to use buffer memory.",
+            "example3": "Store pdf in vectore database and chat with it."
         },
         "copy": "Copy",
         "copied": "Copied",
         "stop": "Stop generating response.",
-        "chattingTitle": "Chat with context of {name} repository. "
+        "disclaimer": "Cognitic Chat may provide inaccurate information about the Langchain codebase. If you find any mistakes, please let us know so we can do better job next-time."
     },
 
     "notifications": {
