@@ -15,6 +15,7 @@
   import TwitterIcon from '$lib/shared/components/Icons/TwitterIcon.svelte';
   import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
+  import { user } from '$lib/shared/stores/user';
 
   export let open: boolean;
 
@@ -70,15 +71,23 @@
 
     <!-- scrollable list of chat sessions -->
     <section class="flex-1 overflow-y-scroll">
-      <ul>
-        {#each $conversationsStore as agent (agent.value.id)}
-          <ConversationButton
-            {agent}
-            selected={$page.params.agentId === agent.value.id}
-            on:delete={handleAgentDelete}
-          />
-        {/each}
-      </ul>
+      {#if $user}
+        <ul>
+          {#each $conversationsStore as agent (agent.value.id)}
+            <ConversationButton
+              {agent}
+              selected={$page.params.agentId === agent.value.id}
+              on:delete={handleAgentDelete}
+            />
+          {/each}
+        </ul>
+      {:else}
+        <div class="flex h-full items-center justify-center">
+          <p class="body-regular text-content-primarySub px-6 text-center">
+            {@html $_('sidebar.noUserMessage')}
+          </p>
+        </div>
+      {/if}
     </section>
 
     <Divider />

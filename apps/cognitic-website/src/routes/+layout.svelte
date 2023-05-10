@@ -3,6 +3,7 @@
   import PartytownSetup from '../lib/shared/layout/PartytownSetup.svelte';
   import CookieBanner from '$lib/shared/layout/CookieBanner.svelte';
   import { loadAnalytics } from '$lib/core/services/tracking';
+  import { _ } from 'svelte-i18n';
 </script>
 
 <CookieBanner on:analytics={() => loadAnalytics()} />
@@ -10,7 +11,7 @@
 <PartytownSetup />
 
 <svelte:head>
-  <title>Cognitic | Chat</title>
+  <title>{$_('header.title')}</title>
 </svelte:head>
 
 <slot />
