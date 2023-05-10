@@ -12,13 +12,14 @@
   import { _ } from 'svelte-i18n';
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
   import TagIcon from '../components/Icons/TagIcon.svelte';
+  import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
 
   export let sidebarOpen = true;
 </script>
 
 <header class="sticky top-0 z-20" style={$$props.style}>
   <span class="bg-background-primary flex h-14 items-center px-6">
-    <a href="/" class="flex items-center">
+    <a href="/" class="mr-auto flex items-center">
       <!-- LOGO -->
       <LogoIcon class="mr-2 h-6 w-6" />
       <!-- COGNITIC -->
@@ -67,6 +68,7 @@
       </svg>
     </a>
 
+    <AuthButton />
     <!-- <div class="flex flex-1 items-center justify-end">
       <Listbox
         selected={{ label: $locale || 'unknown', value: $locale }}
@@ -111,7 +113,7 @@
           let:selected
         >
           <span class="mr-3">
-            <GitHubIcon class="h-6 w-6" fill="#8E929A" />
+            <GitHubIcon class="text-content-tertiary h-6 w-6" />
           </span>
           {selected.label}
         </span>
@@ -122,9 +124,9 @@
         style="font-size: 11px;"
       >
         <TagIcon class="text-content-tertiary mr-1 h-3 w-3" />
-        <span class="text-content-secondary"
-          >{$settingsStore.selectedRepo.version}</span
-        >
+        <span class="text-content-secondary">
+          {$settingsStore.selectedRepo.version}
+        </span>
       </div>
     </div>
 

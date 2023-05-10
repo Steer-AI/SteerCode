@@ -62,7 +62,7 @@
 
 <div class="not-prose" style="min-width: 256px">
   <div
-    class="bg-background-primaryHover flex h-10 items-center justify-between px-3"
+    class="bg-background-primary flex h-10 items-center justify-between px-3"
   >
     <span class="text-xs font-bold text-white">{highlighted.language}</span>
 

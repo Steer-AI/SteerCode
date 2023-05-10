@@ -12,7 +12,16 @@
     },
     "header": {
         "title": "Cognitic | Chat",
-        "importRepoButton": "Select your own repository"
+        "importRepoButton": "Select your own repository",
+        "logIn": "Log in",
+        "logOut": "Log out"
+    },
+    "auth": {
+        "title": "Welcome to Cognitic Chat",
+        "description": "Log in to your account to start chatting.",
+        "googleButton": "Log in with Google",
+        "githubButton": "Log in with GitHub",
+        "twitterButton": "Log in with Twitter"
     },
 
     "settings": {

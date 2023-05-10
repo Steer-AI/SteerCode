@@ -12,7 +12,6 @@
   import { trackEvent } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
-  import { onMount } from 'svelte';
   import TwitterIcon from '$lib/shared/components/Icons/TwitterIcon.svelte';
   import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
@@ -44,10 +43,6 @@
 
     conversationToDelete = null;
   }
-
-  onMount(() => {
-    conversationsStore.fetchFromServer();
-  });
 </script>
 
 <aside
@@ -103,7 +98,7 @@
       <a
         target="_blank"
         rel="noopener"
-        href="https://discord.gg/euRB6WkX"
+        href="https://discord.gg/nFNPQqxq"
         class="hover:text-content-primary"
       >
         <DiscordIcon class="h-5 w-5" />
@@ -115,7 +110,7 @@
         href="https://github.com/cognitic-ai/cognitic"
         class="hover:text-content-primary"
       >
-        <GitHubIcon fill="currentColor" class="h-4 w-4" />
+        <GitHubIcon class="h-4 w-4" />
       </a>
     </span>
   </div>

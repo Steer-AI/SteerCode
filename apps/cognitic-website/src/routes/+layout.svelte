@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
   import PartytownSetup from '../lib/shared/layout/PartytownSetup.svelte';
 </script>
 
@@ -9,3 +10,5 @@
 </svelte:head>
 
 <slot />
+
+<NotificationWrapper />

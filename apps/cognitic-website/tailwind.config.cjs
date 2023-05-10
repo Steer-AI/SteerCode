@@ -54,8 +54,7 @@ module.exports = {
         DEFAULT: {
           css: {
             'line-height': '1.5',
-            // '--tw-prose-invert-body': theme('colors.content.secondary')
-            // ...
+            // '--tw-prose-invert-body': '#F0F0F0'
           }
         }
       })

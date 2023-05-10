@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import { Log } from '$lib/core/services/logging';
 import {
   addConversation,
@@ -12,6 +13,7 @@ import type { NewConversationDTO } from '$lib/models/types/conversation.type';
 import type { DataStore } from '$lib/models/types/store.type';
 import { _ } from 'svelte-i18n';
 import { derived, get, writable, type Readable } from 'svelte/store';
+import { user } from './user';
 
 function createConversationsStore(): DataStore<
   Conversation,
@@ -140,11 +142,16 @@ function createConversationsStore(): DataStore<
     });
   }
 
+  if (browser) {
+    user.subscribe(() => {
+      fetchFromServer();
+    });
+  }
+
   return {
     subscribe: _conversations.subscribe,
     remove,
     add,
-    fetchFromServer,
     fetchById,
     getById
   };

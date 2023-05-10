@@ -17,6 +17,7 @@
   "devDependencies": {
     "@builder.io/partytown": "^0.7.0",
     "@formkit/auto-animate": "^1.0.0-beta.6",
+    "@metamask/jazzicon": "^2.0.0",
     "@popperjs/core": "^2.11.6",
     "@rgossiaux/svelte-headlessui": "^1.0.2",
     "@segment/analytics-next": "^1.51.6",
@@ -34,6 +35,7 @@
     "cssnano": "^6.0.0",
     "dotenv": "^16.0.1",
     "eslint-config-custom": "*",
+    "firebase": "^9.21.0",
     "postcss": "^8.4.23",
     "prettier": "^2.8.8",
     "svelte": "^3.58.0",

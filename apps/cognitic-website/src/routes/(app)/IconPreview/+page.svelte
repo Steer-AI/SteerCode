@@ -15,6 +15,7 @@
   import FullscreenIcon from '$lib/shared/components/Icons/FullscreenIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
   import GlobeIcon from '$lib/shared/components/Icons/GlobeIcon.svelte';
+  import GoogleIcon from '$lib/shared/components/Icons/GoogleIcon.svelte';
   import HeartIcon from '$lib/shared/components/Icons/HeartIcon.svelte';
   import InfoIcon from '$lib/shared/components/Icons/InfoIcon.svelte';
   import IntermediateCheckboxIcon from '$lib/shared/components/Icons/IntermediateCheckboxIcon.svelte';
@@ -58,6 +59,7 @@
     FullscreenIcon,
     GitHubIcon,
     GlobeIcon,
+    GoogleIcon,
     HeartIcon,
     InfoIcon,
     IntermediateCheckboxIcon,
@@ -86,13 +88,15 @@
   ];
 </script>
 
-<h1 class="headline-large m-6">Icons</h1>
+<div class="h-full overflow-auto">
+  <h1 class="headline-large m-6">Icons</h1>
 
-<section class="my-14 grid grid-cols-4 place-content-center gap-x-3 gap-y-6">
-  {#each icons as icon}
-    <div class="flex flex-col items-center">
-      <svelte:component this={icon} class="h-8 w-8" />
-      <div>{icon.name?.replace('Proxy', '') || '<???>'}</div>
-    </div>
-  {/each}
-</section>
+  <section class="my-14 grid grid-cols-4 place-content-center gap-x-3 gap-y-6">
+    {#each icons as icon}
+      <div class="flex flex-col items-center">
+        <svelte:component this={icon} class="h-8 w-8" />
+        <div>{icon.name?.replace('Proxy', '') || '<???>'}</div>
+      </div>
+    {/each}
+  </section>
+</div>

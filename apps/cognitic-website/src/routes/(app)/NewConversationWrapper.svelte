@@ -34,6 +34,11 @@
       conversationId: agent.value.id
     });
     goto(`/chat/${agent.value.id}`);
+
+    setTimeout(() => {
+      // refetch after 10s to get a conversation title
+      conversationsStore.fetchById(agent.value.id);
+    }, 10_000);
   }
 </script>
 

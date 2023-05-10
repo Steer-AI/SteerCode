@@ -2,7 +2,7 @@
   import Divider from '$lib/shared/components/Divider.svelte';
 </script>
 
-<div class="h-full overflow-auto">
+<div class="h-full overflow-auto py-10">
   <h1 class="headline-large mb-14 px-6">Backgrounds</h1>
   <section class="grid grid-cols-3 place-content-center gap-x-3 gap-y-6 px-6">
     <div class="bg-background-primary aspect-square w-32">
@@ -49,7 +49,7 @@
 
   <Divider class="my-10" />
 
-  <h1 class="headline-large mb-14 px-6">Colors</h1>
+  <h1 class="headline-large mb-14 px-6">Colors base</h1>
   <section class="grid grid-cols-3 place-content-center gap-x-3 gap-y-6 px-6">
     <p class="headline-large text-content-primary">
       This is a content-primary text color
@@ -64,7 +64,12 @@
     <p class="headline-large text-content-tertiary">
       This is a content-tertiary text color
     </p>
+  </section>
 
+  <Divider class="my-10" />
+
+  <h1 class="headline-large mb-14 px-6">Colors accent</h1>
+  <section class="grid grid-cols-3 place-content-center gap-x-3 gap-y-6 px-6">
     <p class="headline-large text-primary-lighter">
       This is a primary-lighter text color
     </p>
@@ -93,23 +98,26 @@
   <Divider class="my-10" />
 
   <h1 class="headline-large mb-14 px-6">Fonts</h1>
-  <section class="grid grid-cols-3 place-content-center gap-x-3 gap-y-6 px-6">
+  <section class="grid grid-cols-2 place-content-center gap-x-3 gap-y-6 px-6">
     <p class="headline-large text-content-primary">
       This is a headline-large text. 1234567890
     </p>
     <p class="headline-small text-content-primary">
       This is a headline-small text. 1234567890
     </p>
-    <p />
 
-    <p class="body-regular-plus text-content-primary">
-      This is a body-regular-plus text. 1234567890
-    </p>
     <p class="body-regular text-content-primary">
       This is a body-regular text. 1234567890
     </p>
+    <p class="body-regular-plus text-content-primary">
+      This is a body-regular-plus text. 1234567890
+    </p>
+
     <p class="body-small text-content-primary">
       This is a body-small text. 1234567890
+    </p>
+    <p class="body-small-plus text-content-primary">
+      This is a body-small-plus text. 1234567890
     </p>
 
     <p class="label-small text-content-primary">
@@ -118,7 +126,6 @@
     <p class="label-small-plus text-content-primary">
       This is a label-small-plus text. 1234567890
     </p>
-    <p />
 
     <p class="mono-small text-content-primary">
       This is a mono-small text. 1234567890
@@ -126,6 +133,7 @@
     <p class="mono-small-plus text-content-primary">
       This is a mono-small-plus text. 1234567890
     </p>
+
     <p class="mono-regular text-content-primary">
       This is a mono-regular text. 1234567890
     </p>

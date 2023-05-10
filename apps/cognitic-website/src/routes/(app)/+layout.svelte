@@ -1,6 +1,5 @@
 <script lang="ts">
   import ConversationsSidebar from '$lib/features/ConversationsSidebar/layout/Sidebar.svelte';
-  import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
 
@@ -22,7 +21,6 @@
 </div>
 
 <SettingsModal />
-<NotificationWrapper />
 
 <style lang="postcss">
   .main-template {

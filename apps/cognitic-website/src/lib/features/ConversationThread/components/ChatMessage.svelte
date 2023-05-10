@@ -78,7 +78,7 @@
         <div
           class="bg-background-primaryActive label-small mt-6 flex h-7 !w-fit items-center gap-3 px-3"
         >
-          <p class="text-content-secondary">
+          <p class="text-content-tertiary">
             {$_('conversation.message.improveText')}
           </p>
 
@@ -86,7 +86,7 @@
             disabled={messageFeedback === 'positive'}
             class="{messageFeedback === 'positive'
               ? 'text-content-primary'
-              : 'text-content-primarySub'} hover:text-content-primary"
+              : 'text-content-secondary'} hover:text-content-primary"
             on:click={(e) => {
               dispatch('feedback', 'positive');
               animateClick(e.target);
@@ -98,7 +98,7 @@
             disabled={messageFeedback === 'negative'}
             class="{messageFeedback === 'negative'
               ? 'text-content-primary'
-              : 'text-content-primarySub'} hover:text-content-primary"
+              : 'text-content-secondary'} hover:text-content-primary"
             on:click={(e) => {
               dispatch('feedback', 'negative');
               animateClick(e.target);
@@ -110,7 +110,7 @@
             disabled={messageFeedback === 'neutral'}
             class="{messageFeedback === 'neutral'
               ? 'text-content-primary'
-              : 'text-content-primarySub'} hover:text-content-primary"
+              : 'text-content-secondary'} hover:text-content-primary"
             on:click={(e) => {
               dispatch('feedback', 'neutral');
               animateClick(e.target);
