@@ -4,6 +4,7 @@
         "settings": "Settings",
         "deleteTooltip": "Delete Chat",
         "noUserMessage": "Log in to view <br/> your chat history",
+        "loadMore": "Load more",
         "deleteConfirmationDialog": {
             "title": "Delete Chat?",
             "description": "Are you sure you want to delete this Chat? This action cannot be undone. Chat name: ",

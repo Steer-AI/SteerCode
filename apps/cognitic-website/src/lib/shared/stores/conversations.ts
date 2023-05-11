@@ -99,19 +99,38 @@ function createConversationsStore(): DataStore<
     return newConv;
   }
 
-  async function fetchFromServer(): Promise<void> {
+  async function fetchFromServer(
+    nextPage: boolean = false
+  ): Promise<{ moreToFetch: boolean }> {
     Log.DEBUG('createConversationsStore.fetchFromerver');
-    const conversations = await getAllConversations();
-    _conversations.update((current) => {
-      return conversations.map((conv) => {
-        const index = current.findIndex((a) => a.value.id === conv.id);
-        if (index === -1) {
-          return new Conversation(conv);
-        } else {
-          return current[index];
-        }
-      });
+    const fetchLimit = 10;
+    const conversations = await getAllConversations({
+      limit: fetchLimit,
+      offset: nextPage ? get(_conversations).length : 0
     });
+    const res: Conversation[] = conversations.map(
+      (conv) => new Conversation(conv)
+    );
+    _conversations.update((current: Conversation[]) => {
+      const newConversations = res.filter((conv) => {
+        const index = current.findIndex((a) => a.value.id === conv.value.id);
+        return index === -1;
+      });
+
+      const updatedConversations = current.map((conv) => {
+        const index = res.findIndex((a) => a.value.id === conv.value.id);
+        return index === -1 ? conv : res[index];
+      });
+
+      if (nextPage) {
+        return [...updatedConversations, ...newConversations];
+      }
+      return updatedConversations.length > 0
+        ? updatedConversations
+        : newConversations;
+    });
+
+    return { moreToFetch: res.length >= fetchLimit };
   }
 
   async function fetchById(id: string): Promise<void> {
@@ -153,7 +172,8 @@ function createConversationsStore(): DataStore<
     remove,
     add,
     fetchById,
-    getById
+    getById,
+    fetchFromServer
   };
 }
 

@@ -104,25 +104,40 @@ export async function getConversation(
   );
 }
 
+const promiseCache = new Map<string, Promise<ConversationDTO[]>>();
 export async function getAllConversations(
-  limit: number = 0,
-  offset: number = 0
+  opt: { limit?: number; offset?: number } = {}
 ): Promise<ConversationDTO[]> {
-  const resp = await responseWithErrorHandeling<ConversationDTO[]>(
-    customFetch(`/chat/conversations?limit=${limit}&offset=${offset}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }),
-    [],
-    'Failed to get conversations'
-  );
+  const url = `/chat/conversations?limit=${opt.limit || 10}&offset=${
+    opt.offset || 0
+  }`;
 
-  return resp.map((conversation) => {
-    if (!conversation.messages) {
-      conversation.messages = [];
-    }
-    return conversation;
-  });
+  if (promiseCache.has(url)) {
+    return await promiseCache.get(url)!;
+  }
+
+  const fetchPromise = (async () => {
+    const resp = await responseWithErrorHandeling<ConversationDTO[]>(
+      customFetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      [],
+      'Failed to get conversations'
+    );
+
+    return resp.map((conversation) => {
+      if (!conversation.messages) {
+        conversation.messages = [];
+      }
+      return conversation;
+    });
+  })();
+
+  promiseCache.set(url, fetchPromise);
+  const resp = await fetchPromise;
+  promiseCache.delete(url);
+  return resp;
 }

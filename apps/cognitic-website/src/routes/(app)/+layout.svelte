@@ -1,12 +1,11 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import ConversationsSidebar from '$lib/features/ConversationsSidebar/layout/Sidebar.svelte';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
 
-  let sidebarOpen = true;
+  let sidebarOpen = browser ? window.innerWidth > 768 : true;
 </script>
-
-<svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
 
 <div class="main-template">
   <Header style="max-width: 100vw" bind:sidebarOpen />

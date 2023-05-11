@@ -6,4 +6,5 @@ export type DataStore<T = any, K = any> = {
   remove: (id: string) => Promise<boolean>;
   getById: (id: string) => Readable<T | null>;
   fetchById: (id: string) => Promise<void>;
+  fetchFromServer: (nextPage?: boolean) => Promise<{ moreToFetch: boolean }>;
 };

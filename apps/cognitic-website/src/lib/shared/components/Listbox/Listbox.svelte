@@ -17,7 +17,6 @@
   export let disabled: boolean = false;
   export let listboxClass = '';
   export let buttonClass = 'h-6';
-  export let optionsStyle = '';
   export let inverted: boolean = false;
   export let variant: 'primary' | 'secondary' = 'secondary';
 
@@ -56,29 +55,20 @@
         ? 'text-content-primary'
         : 'text-content-secondary'} {buttonClass}"
     >
-      <slot name="selected-option-prefix" {selected}>
+      <slot name="selected-option" {selected}>
         <span class="">{selected.label}</span>
       </slot>
 
-      {#if open}
-        <ExpandIcon
-          class={`text-content-primary ml-2 h-4 w-4  ${
-            inverted ? 'rotate-0' : 'rotate-180'
-          }`}
-        />
-      {:else}
-        <ExpandIcon
-          class={`text-content-tertiary ml-2 h-4 w-4 ${
-            inverted ? 'rotate-180' : 'rotate-0'
-          }`}
-        />
-      {/if}
+      <ExpandIcon
+        expanded={inverted ? open : !open}
+        class="{open
+          ? 'text-content-primary'
+          : 'text-content-tertiary'} ml-2 h-4 w-4"
+      />
     </ListboxButton>
 
     <ListboxOptions
-      style="{inverted
-        ? 'bottom: calc(100% + 8px)'
-        : 'top: calc(100% + 8px)'}; {optionsStyle}"
+      style="{inverted ? 'bottom: calc(100% + 8px)' : 'top: calc(100% + 8px)'};"
       class="bg-background-secondary absolute right-0 w-full"
     >
       {#each options as opt (opt.value)}
