@@ -32,9 +32,9 @@ module.exports = {
       },
 
       primary: {
-        lighter: '#FFEA66',
-        DEFAULT: '#FFDC00',
-        darker: '#B29A00'
+        lighter: '#9A76ED',
+        DEFAULT: '#8B60ED',
+        darker: '#8151ED'
       },
 
       error: {

@@ -70,7 +70,7 @@
   style={$$props.style}
 >
   <div class="bg-background-primary flex w-64 flex-col">
-    <div class="flex h-14 flex-shrink-0 items-center px-4">
+    <div class="flex h-14 flex-shrink-0 items-center px-6">
       <Button
         variant="secondary"
         class="w-full whitespace-nowrap"
@@ -100,7 +100,7 @@
         </ul>
 
         {#if moreToFetch}
-          <div class="flex h-14 flex-shrink-0 items-center px-4">
+          <div class="flex h-14 flex-shrink-0 items-center px-6">
             <Button
               variant="tertiary"
               class="w-full whitespace-nowrap"

@@ -56,7 +56,7 @@
 
     const cookie = Cookies.get(cookieName);
     if (!cookie) {
-      show();
+      // show();
       return;
     }
 
@@ -142,7 +142,7 @@
     transition:slide={{ duration: 250, delay: 500 }}
   >
     <Divider class="w-full" />
-    <div class="bg-background-primaryActive flex items-center gap-6 px-4 py-3">
+    <div class="bg-background-primaryActive flex items-center gap-6 px-6 py-3">
       <div class="flex flex-col gap-3">
         <p class="headline-small text-content-primary">
           {$_('gdpr.heading')}

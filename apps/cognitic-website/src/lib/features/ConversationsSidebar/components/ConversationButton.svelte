@@ -20,7 +20,7 @@
 </script>
 
 <li
-  class="items group flex h-14 items-center px-4 {selected
+  class="items group flex h-14 items-center px-6 {selected
     ? 'bg-background-primaryActive text-content-primary'
     : 'bg-background-primary text-content-primarySub hover:text-content-primary hover:bg-background-primaryHover'}"
 >

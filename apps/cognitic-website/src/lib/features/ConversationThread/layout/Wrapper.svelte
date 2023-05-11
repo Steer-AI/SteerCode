@@ -56,7 +56,7 @@
   </div>
 
   <form
-    class="relative flex w-full max-w-5xl flex-shrink-0 items-end px-6 py-2"
+    class="relative flex w-full max-w-5xl flex-shrink-0 items-end px-6"
     on:submit|preventDefault={() => {
       dispatch('submit', query);
       query = '';
@@ -102,7 +102,7 @@
     </button>
   </form>
   <div
-    class="text-content-secondary body-small flex h-14 max-w-5xl flex-shrink-0 items-center px-6"
+    class="text-content-secondary body-small my-6 flex max-w-5xl flex-shrink-0 items-center px-6"
   >
     {$_('conversation.disclaimer')}
   </div>

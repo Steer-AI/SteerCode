@@ -51,7 +51,7 @@
     <ListboxButton
       class="label-small hover:bg-background-secondary {variant === 'primary'
         ? 'border-stroke-secondary border '
-        : ''} flex w-full items-center justify-between pl-3 pr-2 {open
+        : ''} flex w-full items-center justify-between pr-2 {open
         ? 'text-content-primary'
         : 'text-content-secondary'} {buttonClass}"
     >
