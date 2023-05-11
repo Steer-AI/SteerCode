@@ -8,7 +8,7 @@ import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
 
 export const prerender = false;
-export const ssr = true;
+export const ssr = false;
 export const csr = true;
 
 export const load: LayoutLoad = async () => {

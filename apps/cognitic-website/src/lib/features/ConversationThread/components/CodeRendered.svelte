@@ -25,7 +25,8 @@
       'go',
       'ruby',
       'dart',
-      'rust'
+      'rust',
+      'html'
     ]);
   }
 
