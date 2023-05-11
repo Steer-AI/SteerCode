@@ -25,7 +25,7 @@
           {/if}
         </span>
         <span
-          class="mono-regular ml-2 mr-auto mt-px normal-case {open
+          class="body-regular ml-2 mr-auto mt-px normal-case {open
             ? 'text-content-primary'
             : 'text-content-primarySub'}"
         >

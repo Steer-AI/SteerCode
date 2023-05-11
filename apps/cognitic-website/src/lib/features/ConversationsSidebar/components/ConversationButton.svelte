@@ -29,7 +29,9 @@
     class="relative flex h-full flex-1 items-center overflow-hidden"
     title={$agent.title}
   >
-    <span class="flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap">
+    <span
+      class="body-regular flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
+    >
       {$agent.title}
     </span>
     <div
