@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
 import { Log } from '$lib/core/services/logging';
 import {
   addConversation,
@@ -167,8 +168,17 @@ function createConversationsStore(): DataStore<
     });
   }
 
+  let lastUserId: string | null = null;
   if (browser) {
-    user.subscribe(() => {
+    user.subscribe((u) => {
+      if (u && u.uid !== lastUserId) {
+        _conversations.set([]);
+        goto('/');
+      } else if (!u && lastUserId !== null) {
+        _conversations.set([]);
+        goto('/');
+      }
+      lastUserId = u?.uid || null;
       fetchFromServer();
     });
   }
