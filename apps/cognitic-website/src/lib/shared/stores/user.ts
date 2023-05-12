@@ -5,7 +5,9 @@ import { resetAnalytics, trackIdentify } from '$lib/core/services/tracking';
 import type { User } from '$lib/models/types/user.type';
 import * as Sentry from '@sentry/svelte';
 import { onAuthStateChanged } from 'firebase/auth';
+import Cookies from 'js-cookie';
 import { readable } from 'svelte/store';
+import { USER_COOKIE_ID_NAME } from '../utils/constants';
 
 function getUserFromLocalStorage(): User | null {
   if (!browser) return null;
@@ -41,13 +43,13 @@ export const user = readable<User | null>(getUserFromLocalStorage(), (set) => {
         displayName: user.displayName,
         photoURL: user.photoURL
       };
-      window.localStorage.setItem('cognitic.uid', user.uid);
+      Cookies.set(USER_COOKIE_ID_NAME, user.uid);
       window.localStorage.setItem('cognitic.user', JSON.stringify(_user));
       set(_user);
     } else {
       resetAnalytics();
       Sentry.setUser(null);
-      window.localStorage.removeItem('cognitic.uid');
+      Cookies.remove(USER_COOKIE_ID_NAME);
       window.localStorage.removeItem('cognitic.user');
       set(null);
     }

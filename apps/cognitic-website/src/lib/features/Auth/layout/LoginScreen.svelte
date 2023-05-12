@@ -90,7 +90,7 @@
     {/if}
   </Button>
 
-  <Button
+  <!-- <Button
     class="w-64"
     variant="tertiary"
     size="large"
@@ -111,7 +111,7 @@
         {$_('auth.twitterButton')}
       </span>
     {/if}
-  </Button>
+  </Button> -->
 
   <div role="separator" class="h-14 w-full" />
 </div>

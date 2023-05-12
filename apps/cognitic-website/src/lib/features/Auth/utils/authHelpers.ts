@@ -2,6 +2,7 @@ import { auth } from '$lib/core/services/firebase';
 import { Log } from '$lib/core/services/logging';
 import { notificationStore } from '$lib/features/Notifications/store/notifications';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
+import { USER_COOKIE_ID_NAME } from '$lib/shared/utils/constants';
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -9,6 +10,7 @@ import {
   signOut as firebaseSignOut,
   signInWithPopup
 } from 'firebase/auth';
+import Cookies from 'js-cookie';
 
 export function signOut() {
   return firebaseSignOut(auth);
@@ -22,7 +24,7 @@ export function loginGoogle() {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Google', { credential, result });
-      window.localStorage.setItem('cognitic.uid', result.user.uid);
+      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
       return true;
     })
     .catch((error) => {
@@ -47,7 +49,7 @@ export function loginGitHub() {
       // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       const credential = GithubAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Github', { credential, result });
-      window.localStorage.setItem('cognitic.uid', result.user.uid);
+      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
       return true;
     })
     .catch((error) => {
@@ -73,7 +75,7 @@ export function loginTwitter() {
       // This gives you a Twitter Access Token. You can use it to access the Twitter API.
       const credential = TwitterAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Twitter', { credential, result });
-      window.localStorage.setItem('cognitic.uid', result.user.uid);
+      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
       return true;
     })
     .catch((error) => {

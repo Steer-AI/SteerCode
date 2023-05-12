@@ -32,7 +32,7 @@
     },
     "header": {
         "title": "SteerCode | Chat",
-        "importRepoButton": "Select your own repository",
+        "importRepoButton": "Import your own codebase",
         "logIn": "Log in",
         "logOut": "Log out"
     },

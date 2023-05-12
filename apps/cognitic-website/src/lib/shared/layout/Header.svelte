@@ -22,8 +22,8 @@
 <header class="sticky top-0 z-20" style={$$props.style}>
   <span class="bg-background-primary flex h-14 items-center px-6">
     <a href="/" class="flex items-center">
-      <LogoIcon class="mr-2 h-6 w-6" />
-      <LogoText class="h-4" />
+      <LogoIcon class="mr-2 h-5 w-5" />
+      <LogoText class="h-3.5" />
     </a>
     <div
       class="bg-background-secondaryActive text-content-primarySub label-small-plus ml-2.5 flex h-5 items-center px-2.5"

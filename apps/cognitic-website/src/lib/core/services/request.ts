@@ -1,5 +1,10 @@
-import { BACKEND_URL } from '$lib/shared/utils/constants';
+import {
+  BACKEND_URL,
+  USER_COOKIE_ANONYMOUS_ID_NAME,
+  USER_COOKIE_ID_NAME
+} from '$lib/shared/utils/constants';
 import * as Sentry from '@sentry/browser';
+import Cookies from 'js-cookie';
 import { Log } from './logging';
 
 const returnFallbackAndLog = <T>(
@@ -11,6 +16,14 @@ const returnFallbackAndLog = <T>(
   return result;
 };
 
+export function getUIDHeader(): string {
+  return (
+    Cookies.get(USER_COOKIE_ID_NAME) ||
+    Cookies.get(USER_COOKIE_ANONYMOUS_ID_NAME) ||
+    ''
+  );
+}
+
 export async function customFetch(
   url: RequestInfo | URL,
   options?: RequestInit
@@ -19,7 +32,7 @@ export async function customFetch(
     ...(options || {}),
     headers: {
       ...options?.headers,
-      'X-UID': window.localStorage.getItem('cognitic.uid') || 'TEST'
+      'X-UID': getUIDHeader()
     }
   };
   return fetch(BACKEND_URL + url, _options);

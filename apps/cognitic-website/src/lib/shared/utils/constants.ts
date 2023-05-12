@@ -7,3 +7,6 @@ export const DEBUG_MODE =
 export const BACKEND_URL =
   (typeof window !== 'undefined' && localStorage.getItem('BACKEND_API_URL')) ||
   PUBLIC_BACKEND_API_URL;
+
+export const USER_COOKIE_ID_NAME = 'cognitic.uid';
+export const USER_COOKIE_ANONYMOUS_ID_NAME = 'cognitic.auid';

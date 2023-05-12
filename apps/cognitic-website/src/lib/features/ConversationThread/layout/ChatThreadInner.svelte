@@ -9,10 +9,16 @@
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
-  import { BACKEND_URL } from '$lib/shared/utils/constants';
+  import {
+    BACKEND_URL,
+    USER_COOKIE_ID_NAME
+  } from '$lib/shared/utils/constants';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
+  import { Log } from '$lib/core/services/logging';
+  import Cookies from 'js-cookie';
+  import { getUIDHeader } from '$lib/core/services/request';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -32,7 +38,7 @@
       headers: {
         'Content-Type': 'application/json',
         'x-openai-api-key': settings.openaiAPIKey || '',
-        'X-UID': window.localStorage.getItem('cognitic.uid') || 'TEST'
+        'X-UID': getUIDHeader()
       },
       payload: JSON.stringify(agent.value)
     });
@@ -48,7 +54,6 @@
         const content = completionResponse.msg;
 
         if (completionResponse.done) {
-          console.log('DONE', { completionResponse });
           agent.addMessage(
             { role: 'assistant', content: answer },
             completionResponse.id
@@ -87,7 +92,7 @@
     loading = false;
     answer = '';
     let msg = $_('notifications.chatAPIError');
-    console.log('err', err);
+    Log.ERROR('ERROR getting stream response', err);
     try {
       const errMessage = JSON.parse(err.data);
       msg = errMessage.error;
@@ -137,7 +142,7 @@
             conversationId: agent.value.id
           });
         }}
-        deletable={true}
+        deletable={false}
         on:feedback={(e) => {
           agent.addFeedback(message, e.detail);
           trackEvent('Feedback message', {

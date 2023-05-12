@@ -142,7 +142,7 @@
       <a
         target="_blank"
         rel="noopener"
-        href="https://discord.gg/nFNPQqxq"
+        href="https://discord.gg/4u6h5Wj6xr"
         class="hover:text-content-primary"
       >
         <DiscordIcon class="h-5 w-5" />

@@ -85,7 +85,7 @@ function createConversationsStore(): DataStore<
     const newConv = new Conversation(resp);
 
     _conversations.update((conversations) => {
-      conversations.push(newConv);
+      conversations.unshift(newConv);
       return conversations;
     });
     notificationStore.addNotification({
@@ -122,6 +122,12 @@ function createConversationsStore(): DataStore<
         return index === -1 ? conv : res[index];
       });
 
+      console.log({
+        updatedConversations: [...updatedConversations],
+        newConversations: [...newConversations],
+        res: [...res],
+        current: [...current]
+      });
       if (nextPage) {
         return [...updatedConversations, ...newConversations];
       }

@@ -40,7 +40,7 @@
   <div
     class="mx-auto flex max-w-5xl flex-col items-start justify-start gap-6 p-6 md:flex-row"
   >
-    <div class="group relative w-8 overflow-hidden">
+    <div class="group relative w-8 flex-shrink-0 overflow-hidden">
       {#if deletable}
         <button
           class="bg-background-primary absolute inset-0 hidden items-center justify-center bg-opacity-20 group-hover:flex"
@@ -65,7 +65,9 @@
       {/if}
     </div>
 
-    <div class="prose prose-invert text-content-primary w-full flex-1">
+    <div
+      class="prose prose-invert text-content-primary w-full flex-1 overflow-hidden"
+    >
       <SvelteMarkdown
         source={message}
         renderers={{
