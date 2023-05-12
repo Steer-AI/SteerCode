@@ -133,7 +133,7 @@
       <a
         target="_blank"
         rel="noopener"
-        href="https://twitter.com/CogniticAI"
+        href="https://twitter.com/SteerCode"
         class="hover:text-content-primary"
       >
         <TwitterIcon class="h-5 w-5" />
