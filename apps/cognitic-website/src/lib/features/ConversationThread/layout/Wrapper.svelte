@@ -65,7 +65,7 @@
     <TextAreaField
       placeholder={$_('conversation.messageInput.placeholder')}
       labelClass="flex-1 flex justify-end"
-      class="w-full p-3"
+      class="w-full p-3 pr-10"
       style="min-height: 24px; max-height: 256px;"
       maxlength={3000}
       rows={1}
@@ -87,7 +87,7 @@
     >
       <div
         slot="maxlength"
-        class="text-content-tertiary mono-small bg-background-secondary absolute bottom-2 right-14 p-1"
+        class="text-content-tertiary mono-small absolute bottom-2 right-10 p-1 opacity-50"
       >
         {query?.length || 0}/{3000}
       </div>
@@ -95,7 +95,7 @@
 
     <button
       type="submit"
-      class="text-content-tertiary hover:text-content-primary absolute bottom-4 right-8 cursor-pointer rounded-full p-2"
+      class="text-content-tertiary hover:text-content-primary absolute bottom-2 right-8 cursor-pointer rounded-full p-2"
       disabled={loading || submitDisabled || !query}
     >
       <SendIcon class="h-4 w-4" />
