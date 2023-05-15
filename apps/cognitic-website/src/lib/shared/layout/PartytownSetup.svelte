@@ -22,9 +22,7 @@
         // Facebook borked
         'fb_xd_fragment',
         // sw failed
-        'partytown-sandbox-sw',
-        "TypeError: Cannot read properties of undefined (reading 'apply')",
-        'AbortError: The user aborted a request.'
+        'partytown-sandbox-sw'
       ],
       denyUrls: [
         // Facebook flakiness
