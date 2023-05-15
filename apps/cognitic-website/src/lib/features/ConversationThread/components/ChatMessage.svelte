@@ -52,7 +52,7 @@
         <img
           src="https://ui-avatars.com/api/?name={$_(
             'conversation.message.me'
-          )}Me&size=40&background=FFDC00&color=000"
+          )}Me&size=40&background=8B60ED&color=000"
           alt={type}
         />
       {:else}

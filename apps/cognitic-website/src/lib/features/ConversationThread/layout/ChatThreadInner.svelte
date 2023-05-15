@@ -193,9 +193,8 @@
         variant="tertiary"
         type="button"
         on:click={() => {
-          closeEventSource();
           agent.addMessage({ role: 'assistant', content: answer });
-          answer = '';
+          closeEventSource();
         }}
       >
         {$_('conversation.stop')}
