@@ -23,14 +23,14 @@
 
   let settingOptions = {
     apiKey: '',
-    persistApiKey: false
+    persistApiKey: true
   };
 
   $: if (dialogEl && $modalOpen && !dialogEl.open) {
     dialogEl.showModal();
     settingOptions = {
       apiKey: get(settingsStore).openaiAPIKey,
-      persistApiKey: false
+      persistApiKey: true
     };
   }
 
