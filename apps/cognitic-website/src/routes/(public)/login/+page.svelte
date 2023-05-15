@@ -1,6 +1,5 @@
 <script lang="ts">
   import LoginScreen from '$lib/features/Auth/layout/LoginScreen.svelte';
-  import { _ } from 'svelte-i18n';
   import LogoIcon from '$lib/shared/components/Icons/LogoIcon.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
   import LogoText from '$lib/shared/components/Icons/LogoText.svelte';

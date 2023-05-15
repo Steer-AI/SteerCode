@@ -1,5 +1,4 @@
 import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
 import { Log } from '$lib/core/services/logging';
 import {
   addConversation,
@@ -113,28 +112,26 @@ function createConversationsStore(): DataStore<
       (conv) => new Conversation(conv)
     );
     _conversations.update((current: Conversation[]) => {
-      const newConversations = res.filter((conv) => {
-        const index = current.findIndex((a) => a.value.id === conv.value.id);
-        return index === -1;
-      });
-
-      const updatedConversations = current.map((conv) => {
-        const index = res.findIndex((a) => a.value.id === conv.value.id);
-        return index === -1 ? conv : res[index];
-      });
-
-      console.log({
-        updatedConversations: [...updatedConversations],
-        newConversations: [...newConversations],
-        res: [...res],
-        current: [...current]
-      });
       if (nextPage) {
-        return [...updatedConversations, ...newConversations];
+        const newConversations = res.filter(
+          (conv) => !current.some((a) => a.value.id === conv.value.id)
+        );
+        return [...current, ...newConversations];
       }
-      return updatedConversations.length > 0
-        ? updatedConversations
-        : newConversations;
+
+      return res.map((conv) => {
+        const local = current.find(
+          (conversation) => conversation.value.id === conv.value.id
+        );
+        if (
+          local &&
+          local.value.messages.length &&
+          !conv.value.messages.length
+        ) {
+          return local;
+        }
+        return local || conv;
+      });
     });
 
     return { moreToFetch: res.length >= fetchLimit };
@@ -168,17 +165,8 @@ function createConversationsStore(): DataStore<
     });
   }
 
-  let lastUserId: string | null = null;
   if (browser) {
-    user.subscribe((u) => {
-      if (u && u.uid !== lastUserId) {
-        _conversations.set([]);
-        goto('/');
-      } else if (!u && lastUserId !== null) {
-        _conversations.set([]);
-        goto('/');
-      }
-      lastUserId = u?.uid || null;
+    user.subscribe(() => {
       fetchFromServer();
     });
   }

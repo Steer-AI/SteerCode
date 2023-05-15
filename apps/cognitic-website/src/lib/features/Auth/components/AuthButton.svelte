@@ -11,6 +11,9 @@
   import { trackEvent } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import { signOut } from '../utils/authHelpers';
+  import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
+  import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
+  import { goto } from '$app/navigation';
 </script>
 
 {#if $user}
@@ -46,11 +49,24 @@
         class="body-small border-stroke-secondary bg-background-secondary absolute right-0 z-50 mt-2 w-full whitespace-nowrap border"
       >
         <PopoverPanel static class="body-regular flex flex-col">
+          <!-- Settings -->
+          <PopoverButton
+            class="hover:bg-background-secondaryHover flex h-14 items-center px-6 after:mx-0"
+            on:click={() => {
+              openModal();
+              trackEvent('Open settings');
+            }}
+          >
+            <SettingsIcon class="mr-2 h-4 w-4" />
+            {$_('header.settings')}
+          </PopoverButton>
+
           <!-- Log out -->
           <PopoverButton
-            class="separator text-error hover:bg-background-secondaryHover flex h-14 items-center px-6 after:mx-0"
+            class="text-error hover:bg-background-secondaryHover flex h-14 items-center px-6 after:mx-0"
             on:click={() => {
               signOut();
+              goto('/');
               trackEvent('logout');
             }}
           >

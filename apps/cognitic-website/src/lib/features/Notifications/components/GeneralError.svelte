@@ -7,10 +7,10 @@
 </script>
 
 <div
-  class="bg-background-secondary mx-3 mb-1 flex h-10 items-center px-3"
+  class="bg-background-secondary mx-3 mb-1 flex items-center px-3 py-2"
   transition:slide
 >
-  <CloseIcon class="text-error mr-2 h-4 w-4" />
+  <CloseIcon class="text-error mr-2 h-4 w-4 flex-shrink-0" />
   <span class="body-regular text-content-primary">
     {notification.message}
   </span>

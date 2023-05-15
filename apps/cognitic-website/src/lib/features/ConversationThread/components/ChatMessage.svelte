@@ -11,7 +11,6 @@
   import ThumbsUpIcon from '$lib/shared/components/Icons/ThumbsUpIcon.svelte';
   import ThumbsDownIcon from '$lib/shared/components/Icons/ThumbsDownIcon.svelte';
   import MinusCircleIcon from '$lib/shared/components/Icons/MinusCircleIcon.svelte';
-  import { slide } from 'svelte/transition';
 
   export let type: ChatCompletionRequestMessageRoleEnum;
   export let message: string;

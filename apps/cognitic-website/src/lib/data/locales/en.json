@@ -1,7 +1,6 @@
 {
     "sidebar": {
         "newAgent": "New Chat",
-        "settings": "Settings",
         "deleteTooltip": "Delete Chat",
         "noUserMessage": "Log in to view <br/> your chat history",
         "loadMore": "Load more",
@@ -34,7 +33,8 @@
         "title": "SteerCode | Chat",
         "importRepoButton": "Import your own codebase",
         "logIn": "Log in",
-        "logOut": "Log out"
+        "logOut": "Log out",
+        "settings": "Settings"
     },
     "auth": {
         "title": "Welcome to SteerCode Chat",
@@ -46,18 +46,15 @@
 
     "settings": {
         "title": "Settings",
-        "description": "You can change the settings for the AI model here. The settings will apply right away to the next generated text.",
+        "description": "Edit your settings here.",
         "save": "Save changes",
 
         "apiKeyInput": {
             "label": "API Key",
-            "placeholder": "Your own OpenAI API key"
-        },
-        "modelSelector": {
-            "label": "Select a model"
-        },
-        "temperatureSlider": {
-            "label": "OpenAI model temperature" 
+            "placeholder": "Your own OpenAI API key",
+            "helperText": "You can get your own API key from the OpenAI dashboard.",
+            "persistentLabel": "Save API key for future sessions?",
+            "persistentLabelHelperText": "If you select this option, your API key will be saved in your browser's local storage. Otherwise, you will have to enter it every time you open the app."
         }
     },
 

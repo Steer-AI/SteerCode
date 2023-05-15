@@ -9,15 +9,11 @@
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
-  import {
-    BACKEND_URL,
-    USER_COOKIE_ID_NAME
-  } from '$lib/shared/utils/constants';
+  import { BACKEND_URL } from '$lib/shared/utils/constants';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
-  import Cookies from 'js-cookie';
   import { getUIDHeader } from '$lib/core/services/request';
 
   export let agent: Conversation;
@@ -26,11 +22,19 @@
   let wrapContainer: ConversationWrapper;
   let eventSource: SSE | null = null;
 
+  type CompletionResponse = {
+    msg: string;
+    error: boolean;
+    done?: boolean;
+    id?: string;
+  };
+
   async function handleSubmit(query: string) {
     trackEvent('New message', {
       message: query,
       conversationId: agent.value.id
     });
+    answer = '';
     loading = true;
     const settings = get(settingsStore);
 
@@ -43,24 +47,32 @@
       payload: JSON.stringify(agent.value)
     });
 
+    eventSource.addEventListener('status', (e) => {
+      Log.DEBUG('System status is now: ' + e.data);
+    });
     eventSource.addEventListener('error', (e) => handleError(e));
 
     eventSource.addEventListener('message', (e) => {
       scrollToBottom();
       try {
         loading = false;
-
-        const completionResponse = JSON.parse(e.data);
+        const completionResponse = JSON.parse(e.data) as CompletionResponse;
+        console.log({ completionResponse });
         const content = completionResponse.msg;
 
         if (completionResponse.done) {
-          agent.addMessage(
-            { role: 'assistant', content: answer },
-            completionResponse.id
-          );
-          answer = '';
+          if (completionResponse.id) {
+            agent.addMessage(
+              { role: 'assistant', content: answer },
+              completionResponse.id
+            );
+          }
           closeEventSource();
           return;
+        }
+
+        if (completionResponse.error) {
+          throw new Error(content);
         }
 
         if (content) {
@@ -70,7 +82,6 @@
         handleError(err);
       }
     });
-    eventSource.addEventListener;
     eventSource.stream();
     scrollToBottom();
   }
@@ -79,6 +90,7 @@
     if (eventSource) {
       eventSource.close();
       eventSource = null;
+      answer = '';
     }
   }
 
@@ -88,25 +100,41 @@
     }
   }
 
-  function handleError<T = any>(err: T) {
+  function handleError(error: any) {
     loading = false;
-    answer = '';
     let msg = $_('notifications.chatAPIError');
-    Log.ERROR('ERROR getting stream response', err);
-    try {
-      const errMessage = JSON.parse(err.data);
-      msg = errMessage.error;
-    } catch (err) {
-      console.error(err);
+    if (error instanceof Event) {
+      // Handle SSE connection errors
+      if (error.source!.readyState === EventSource.CLOSED) {
+        Log.ERROR('SSE connection closed');
+      } else if (error.source!.readyState === EventSource.CONNECTING) {
+        Log.ERROR('SSE connection reconnecting');
+      } else {
+        Log.ERROR('SSE connection error', error);
+      }
+    } else if (error instanceof Error) {
+      // Handle message processing errors
+      Log.ERROR('Message processing error', error);
+      msg = error.message;
+    } else {
+      Log.ERROR('Unknown error', error);
+      try {
+        const errMessage = JSON.parse(error.data);
+        msg = errMessage.error;
+      } catch {
+        // Do nothing
+        Log.ERROR('Unknown error', error);
+      }
     }
+
+    closeEventSource();
     notificationStore.addNotification({
       type: NotificationType.GeneralError,
       position: Position.BottomRight,
       removeAfter: 10_000, // 10s
       message: msg
     });
-
-    Sentry.captureException(err);
+    Sentry.captureMessage(msg);
   }
 
   onMount(async () => {

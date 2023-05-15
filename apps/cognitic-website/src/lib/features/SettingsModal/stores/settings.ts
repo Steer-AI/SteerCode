@@ -7,7 +7,7 @@ import { writable } from 'svelte/store';
 function createSettingsStore() {
   const APIKeyFromLS =
     typeof window !== 'undefined'
-      ? window.localStorage.getItem('OPENAI_API_KEY')
+      ? window.localStorage.getItem('cognitic.openAiAPIKey')
       : '';
 
   const DEFAULT_REPOSITORIES: Option<string>[] = [

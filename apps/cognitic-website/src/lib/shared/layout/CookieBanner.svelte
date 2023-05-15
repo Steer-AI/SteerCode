@@ -4,10 +4,8 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
   import Button from '../components/Button.svelte';
-  import { writable } from 'svelte/store';
   import Dialog from '$lib/shared/layout/Dialog.svelte';
   import Divider from '../components/Divider.svelte';
-  import Checkbox from '../components/Checkbox.svelte';
   import Switch from '../components/Switch.svelte';
 
   const dispatch = createEventDispatcher();
@@ -212,7 +210,7 @@
           <Switch
             size="large"
             disabled={choiceId === 'necessary'}
-            bind:active={selectedCoises[choiceId]}
+            bind:checked={selectedCoises[choiceId]}
           />
         </div>
         <p class="text-content-secondary body-small">

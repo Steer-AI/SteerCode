@@ -2,7 +2,7 @@
   import Divider from '../components/Divider.svelte';
   import ActivityFeedIcon from '../components/Icons/ActivityFeedIcon.svelte';
   import LogoIcon from '../components/Icons/LogoIcon.svelte';
-  import { locale, locales } from 'svelte-i18n';
+  // import { locale, locales } from 'svelte-i18n';
   import Listbox from '../components/Listbox/Listbox.svelte';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import Button from '../components/Button.svelte';

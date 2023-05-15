@@ -4,7 +4,6 @@
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
-  import autoAnimate from '@formkit/auto-animate';
   import { fade } from 'svelte/transition';
 
   export let loading: boolean = false;
