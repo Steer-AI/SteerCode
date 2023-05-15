@@ -42,7 +42,9 @@
       headers: {
         'Content-Type': 'application/json',
         'x-openai-api-key': settings.openaiAPIKey || '',
-        'X-UID': getUIDHeader()
+        'X-UID': getUIDHeader(),
+        'x-vector-store-type':
+          window.localStorage.getItem('X_VECTOR_STORE_TYPE') || ''
       },
       payload: JSON.stringify(agent.value)
     });
