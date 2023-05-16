@@ -1,5 +1,3 @@
-import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-
 export type RepositoryOption = {
   name: string;
   url: string;
@@ -25,7 +23,7 @@ export type ChatMessageDTO = {
   id: string; // uuidv4
   conversation_id: string;
   content: string;
-  role: ChatCompletionRequestMessageRoleEnum;
+  role: 'system' | 'user' | 'assistant';
   created_at: string; // datetime string;
   user_feedback: string | null;
 };

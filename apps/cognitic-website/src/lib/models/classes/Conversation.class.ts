@@ -5,7 +5,6 @@ import {
   updateFeedback
 } from '$lib/data/conversationQueries';
 import { withLogger } from '$lib/shared/utils/decorators';
-import type { ChatCompletionRequestMessage } from 'openai';
 import {
   writable,
   type Readable,
@@ -42,7 +41,7 @@ export class Conversation implements Readable<ConversationDTO> {
 
   @withLogger()
   async addMessage(
-    message: ChatCompletionRequestMessage,
+    message: Pick<ChatMessageDTO, 'role' | 'content'>,
     id?: string
   ): Promise<boolean> {
     this.value.messages.push({

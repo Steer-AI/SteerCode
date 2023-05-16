@@ -154,35 +154,30 @@
     agent.addMessage({ role: 'user', content: e.detail });
     handleSubmit(e.detail);
   }}
+  on:feedback={(e) => {
+    const { message, feedback } = e.detail;
+    agent.addFeedback(message, feedback);
+    trackEvent('Feedback message', {
+      messageId: message.id,
+      conversationId: agent.value.id,
+      feedback: e.detail
+    });
+  }}
+  on:deleteMessage={(e) => {
+    const message = e.detail;
+    agent.deleteMessage(message);
+    trackEvent('Delete message', {
+      from: message.role,
+      message: message.content,
+      conversationId: agent.value.id
+    });
+  }}
   {loading}
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}
+  messages={$agent.messages}
 >
   <svelte:fragment>
-    {#each $agent.messages as message (message.id)}
-      <ChatMessage
-        type={message.role}
-        message={message.content}
-        messageFeedback={message.user_feedback}
-        on:delete={() => {
-          agent.deleteMessage(message);
-          trackEvent('Delete message', {
-            from: message.role,
-            message: message.content,
-            conversationId: agent.value.id
-          });
-        }}
-        deletable={false}
-        on:feedback={(e) => {
-          agent.addFeedback(message, e.detail);
-          trackEvent('Feedback message', {
-            messageId: message.id,
-            conversationId: agent.value.id,
-            feedback: e.detail
-          });
-        }}
-      />
-    {/each}
     {#if answer}
       <ChatMessage type="system" message={answer} />
     {/if}

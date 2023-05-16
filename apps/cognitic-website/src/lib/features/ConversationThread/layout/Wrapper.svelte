@@ -4,21 +4,24 @@
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
-  import { fade } from 'svelte/transition';
+  import VirtualScroll from 'svelte-virtual-scroll-list';
+  import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
 
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
+  export let messages: ChatMessageDTO[] = [];
 
+  let currentScrollTimeoutRef: ReturnType<typeof setTimeout> | null = null;
   export function scrollToBottom(force: boolean = false) {
-    if (!scrollToDiv || !chatAreaDiv) return;
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
-    if (chatAreaDiv.scrollTop > -200 || force) {
-      setTimeout(function () {
-        scrollToDiv.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-          inline: 'nearest'
-        });
+    if (currentScrollTimeoutRef) return;
+
+    const offsetDiff =
+      scrollToDiv.offsetTop - list.getOffset() - list.getClientSize();
+    if (offsetDiff < 100 || force) {
+      currentScrollTimeoutRef = setTimeout(() => {
+        list.scrollToBottom();
+        currentScrollTimeoutRef = null;
       }, 100);
     }
   }
@@ -29,6 +32,8 @@
   let chatAreaDiv: HTMLDivElement;
 
   let query: string = '';
+
+  let list: VirtualScroll;
 </script>
 
 <section class="flex h-full w-full flex-col items-center">
@@ -38,20 +43,34 @@
     class="relative flex w-full flex-1 flex-col-reverse gap-4 overflow-y-auto"
     bind:this={chatAreaDiv}
   >
-    <div class="" bind:this={scrollToDiv} />
     <slot name="footer" />
 
     <div role="separator" class="flex-1" />
 
-    <div class="flex flex-col" in:fade={{ duration: 200 }}>
-      <slot />
-      {#if loading}
-        <ChatMessage
-          type="system"
-          message={$_('conversation.message.loading')}
-        />
-      {/if}
-    </div>
+    <VirtualScroll bind:this={list} data={messages} key="id" let:data>
+      <ChatMessage
+        type={data.role}
+        message={data.content}
+        messageFeedback={data.user_feedback}
+        on:delete={() => {
+          dispatch('deleteMessage', data);
+        }}
+        deletable={false}
+        on:feedback={(e) => {
+          dispatch('feedback', { message: data, feedback: e.detail });
+        }}
+      />
+      <div slot="footer">
+        <slot />
+        {#if loading}
+          <ChatMessage
+            type="system"
+            message={$_('conversation.message.loading')}
+          />
+        {/if}
+        <div class="" bind:this={scrollToDiv} />
+      </div>
+    </VirtualScroll>
   </div>
 
   <form
