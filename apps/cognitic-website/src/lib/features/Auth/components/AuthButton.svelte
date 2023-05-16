@@ -66,7 +66,7 @@
             class="text-error hover:bg-background-secondaryHover flex h-14 items-center px-6 after:mx-0"
             on:click={() => {
               signOut();
-              goto('/');
+              goto('/', { invalidateAll: true });
               trackEvent('logout');
             }}
           >

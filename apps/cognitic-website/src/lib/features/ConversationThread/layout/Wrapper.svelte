@@ -6,6 +6,7 @@
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
   import VirtualScroll from 'svelte-virtual-scroll-list';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import { browser } from '$app/environment';
 
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
@@ -46,31 +47,32 @@
     <slot name="footer" />
 
     <div role="separator" class="flex-1" />
-
-    <VirtualScroll bind:this={list} data={messages} key="id" let:data>
-      <ChatMessage
-        type={data.role}
-        message={data.content}
-        messageFeedback={data.user_feedback}
-        on:delete={() => {
-          dispatch('deleteMessage', data);
-        }}
-        deletable={false}
-        on:feedback={(e) => {
-          dispatch('feedback', { message: data, feedback: e.detail });
-        }}
-      />
-      <div slot="footer">
-        <slot />
-        {#if loading}
-          <ChatMessage
-            type="system"
-            message={$_('conversation.message.loading')}
-          />
-        {/if}
-        <div class="" bind:this={scrollToDiv} />
-      </div>
-    </VirtualScroll>
+    {#if browser}
+      <VirtualScroll bind:this={list} data={messages} key="id" let:data>
+        <ChatMessage
+          type={data.role}
+          message={data.content}
+          messageFeedback={data.user_feedback}
+          on:delete={() => {
+            dispatch('deleteMessage', data);
+          }}
+          deletable={false}
+          on:feedback={(e) => {
+            dispatch('feedback', { message: data, feedback: e.detail });
+          }}
+        />
+        <div slot="footer">
+          <slot />
+          {#if loading}
+            <ChatMessage
+              type="system"
+              message={$_('conversation.message.loading')}
+            />
+          {/if}
+          <div class="" bind:this={scrollToDiv} />
+        </div>
+      </VirtualScroll>
+    {/if}
   </div>
 
   <form

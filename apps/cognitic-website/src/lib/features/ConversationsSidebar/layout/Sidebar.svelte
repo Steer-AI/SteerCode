@@ -57,10 +57,6 @@
     moreToFetch = res.moreToFetch;
     fetching = false;
   }
-
-  onMount(() => {
-    fetchMoreConversations(false);
-  });
 </script>
 
 <aside

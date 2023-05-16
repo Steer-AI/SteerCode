@@ -1,4 +1,3 @@
-import { browser } from '$app/environment';
 import { Log } from '$lib/core/services/logging';
 import {
   addConversation,
@@ -10,10 +9,18 @@ import { notificationStore } from '$lib/features/Notifications/store/notificatio
 import { Conversation } from '$lib/models/classes/Conversation.class';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
 import type { NewConversationDTO } from '$lib/models/types/conversation.type';
-import type { DataStore } from '$lib/models/types/store.type';
 import { _ } from 'svelte-i18n';
 import { derived, get, writable, type Readable } from 'svelte/store';
-import { user } from './user';
+
+export type DataStore<T = any, K = any> = {
+  subscribe: Readable<T[]>['subscribe'];
+  set: (items: T[]) => void;
+  add: (item: K) => Promise<T | null>;
+  remove: (id: string) => Promise<boolean>;
+  getById: (id: string) => Readable<T | null>;
+  fetchById: (id: string) => Promise<void>;
+  fetchFromServer: (nextPage?: boolean) => Promise<{ moreToFetch: boolean }>;
+};
 
 function createConversationsStore(): DataStore<
   Conversation,
@@ -165,14 +172,9 @@ function createConversationsStore(): DataStore<
     });
   }
 
-  if (browser) {
-    user.subscribe(() => {
-      fetchFromServer();
-    });
-  }
-
   return {
     subscribe: _conversations.subscribe,
+    set: _conversations.set,
     remove,
     add,
     fetchById,
