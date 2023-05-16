@@ -7,7 +7,10 @@
   import ConversationWrapper from '$lib/features/ConversationThread/layout/Wrapper.svelte';
   import ChatMessage from '$lib/features/ConversationThread/components/ChatMessage.svelte';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
-  import type { NewConversationDTO } from '$lib/models/types/conversation.type';
+  import type {
+    NewConversationDTO,
+    RepositoryOption
+  } from '$lib/models/types/conversation.type';
   import { get } from 'svelte/store';
   import Button from '$lib/shared/components/Button.svelte';
 
@@ -22,11 +25,14 @@
     pendingContent = query;
     Log.DEBUG('NewConversation.handleSubmit', query);
     const settings = get(settingsStore);
-    const repository = {
-      url: settings.selectedRepo.value,
-      name: settings.selectedRepo.label,
-      version: settings.selectedRepo.version
+    const repository: RepositoryOption = {
+      name: '',
+      url: '',
+      ...settings.selectedRepo
     };
+
+    delete repository.label;
+    delete repository.value;
     const toAdd: NewConversationDTO = {
       content: query,
       repository

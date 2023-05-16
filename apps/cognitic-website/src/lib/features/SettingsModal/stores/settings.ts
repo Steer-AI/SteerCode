@@ -37,7 +37,7 @@ function createSettingsStore() {
     const tmp = repos.map((repo) => ({
       label: repo.name,
       value: repo.url,
-      version: repo.version
+      ...repo
     }));
     Log.DEBUG('Available repositories', tmp);
     availableRepositories.set(tmp);
