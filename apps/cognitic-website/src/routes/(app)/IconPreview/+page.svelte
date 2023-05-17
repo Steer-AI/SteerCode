@@ -11,7 +11,9 @@
   import CloseIcon from '$lib/shared/components/Icons/CloseIcon.svelte';
   import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
+  import ErrorIcon from '$lib/shared/components/Icons/ErrorIcon.svelte';
   import ExpandIcon from '$lib/shared/components/Icons/ExpandIcon.svelte';
+  import FilterIcon from '$lib/shared/components/Icons/FilterIcon.svelte';
   import FullscreenIcon from '$lib/shared/components/Icons/FullscreenIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
   import GlobeIcon from '$lib/shared/components/Icons/GlobeIcon.svelte';
@@ -55,7 +57,9 @@
     CloseIcon,
     DiscordIcon,
     DoneIcon,
+    ErrorIcon,
     ExpandIcon,
+    FilterIcon,
     FullscreenIcon,
     GitHubIcon,
     GlobeIcon,

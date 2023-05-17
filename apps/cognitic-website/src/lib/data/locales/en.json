@@ -46,16 +46,33 @@
 
     "settings": {
         "title": "Settings",
-        "description": "Edit your settings here.",
         "save": "Save changes",
 
-        "apiKeyInput": {
-            "label": "API Key",
-            "placeholder": "Your own OpenAI API key",
-            "helperText": "You can get your own API key from the OpenAI dashboard.",
-            "persistentLabel": "Save API key for future sessions?",
-            "persistentLabelHelperText": "If you select this option, your API key will be saved in your browser's local storage. Otherwise, you will have to enter it every time you open the app."
-        }
+        "general": {
+            "description": "General settings.",
+            "apiKeyInput": {
+                "label": "API Key",
+                "placeholder": "Your own OpenAI API key",
+                "helperText": "You can get your own API key from the OpenAI dashboard."
+          },
+            "persistence": {
+                "label": "Save API key for future sessions?",
+                "helperText": "If you select this option, your API key will be saved in your browser's local storage. Otherwise, you will have to enter it every time you open the app."
+            
+            }
+        },
+        "advanced": {
+            "description": "Advanced settings.",
+            "useLocalBackend": {
+                "label": "Use local backend",
+                "helperText": "If you select this option, the app will use a local backend instead of the default one. This is useful if you want to run the app locally or if you want to use a custom backend."
+            },
+            "customBackendUrlInput": {
+                    "label": "Local backend URL",
+                    "placeholder": "Local backend URL. E.g. http://127.0.0.1:8081",
+                    "helperText": "Enter the URL of your local backend. If you are running the app's backend locally, e.g. http://127.0.0.1:8081."
+                }
+        }        
     },
 
     "conversation": {

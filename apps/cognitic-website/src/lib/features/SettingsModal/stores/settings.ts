@@ -1,5 +1,3 @@
-import { Log } from '$lib/core/services/logging';
-import { getAvailableRepositories } from '$lib/data/settingsQueries';
 import type { Settings } from '$lib/models/types/settings.type';
 import type { Option } from '$lib/shared/components/Listbox/types';
 import { writable } from 'svelte/store';
@@ -8,6 +6,11 @@ function createSettingsStore() {
   const APIKeyFromLS =
     typeof window !== 'undefined'
       ? window.localStorage.getItem('cognitic.openAiAPIKey')
+      : '';
+
+  const backendURLFromLS =
+    typeof window !== 'undefined'
+      ? window.localStorage.getItem('cognitic.customBackendUrl')
       : '';
 
   const DEFAULT_REPOSITORIES: Option<string>[] = [
@@ -20,34 +23,29 @@ function createSettingsStore() {
   const availableRepositories =
     writable<Option<string>[]>(DEFAULT_REPOSITORIES);
 
-  const settings = writable<Settings>({
+  let currentSettingsValue: Settings = {
     openaiAPIKey: APIKeyFromLS || '',
-    selectedRepo: DEFAULT_REPOSITORIES[0]
-  });
+    selectedRepo: DEFAULT_REPOSITORIES[0],
+    customBackendUrl: backendURLFromLS || ''
+  };
+
+  const settings = writable<Settings>(currentSettingsValue);
 
   function updateSettings(newValue: Partial<Settings>) {
     settings.update((current) => {
       const updatedSettings: Settings = { ...current, ...newValue };
+      currentSettingsValue = updatedSettings;
+      console.log({ updatedSettings, currentSettingsValue });
       return updatedSettings;
     });
+    console.log({ currentSettingsValue });
   }
-
-  // fetch from server
-  getAvailableRepositories().then((repos) => {
-    const tmp = repos.map((repo) => ({
-      label: repo.name,
-      value: repo.url,
-      ...repo
-    }));
-    Log.DEBUG('Available repositories', tmp);
-    availableRepositories.set(tmp);
-    updateSettings({ selectedRepo: tmp[0] });
-  });
 
   return {
     subscribe: settings.subscribe,
     updateSettings,
-    availableRepositories
+    availableRepositories,
+    getValue: () => currentSettingsValue
   };
 }
 

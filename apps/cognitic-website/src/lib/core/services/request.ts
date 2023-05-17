@@ -1,5 +1,5 @@
+import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
 import {
-  BACKEND_URL,
   USER_COOKIE_ANONYMOUS_ID_NAME,
   USER_COOKIE_ID_NAME
 } from '$lib/shared/utils/constants';
@@ -24,6 +24,14 @@ export function getUIDHeader(): string {
   );
 }
 
+const apiVersionPath = '/api/v1';
+export function getBackendUrl(): string {
+  if (settingsStore.getValue().customBackendUrl) {
+    return settingsStore.getValue().customBackendUrl + apiVersionPath;
+  }
+  return 'https://api.steercode.com' + apiVersionPath;
+}
+
 export async function customFetch(
   url: RequestInfo | URL,
   options?: RequestInit
@@ -35,7 +43,7 @@ export async function customFetch(
       'X-UID': getUIDHeader()
     }
   };
-  return fetch(BACKEND_URL + url, _options);
+  return fetch(getBackendUrl() + url, _options);
 }
 
 export function requestWithRetries(

@@ -9,12 +9,11 @@
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
-  import { BACKEND_URL } from '$lib/shared/utils/constants';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
-  import { getUIDHeader } from '$lib/core/services/request';
+  import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -38,7 +37,7 @@
     loading = true;
     const settings = get(settingsStore);
 
-    eventSource = new SSE(BACKEND_URL + '/chat/stream', {
+    eventSource = new SSE(getBackendUrl() + '/chat/stream', {
       headers: {
         'Content-Type': 'application/json',
         'x-openai-api-key': settings.openaiAPIKey || '',
@@ -133,7 +132,6 @@
     notificationStore.addNotification({
       type: NotificationType.GeneralError,
       position: Position.BottomRight,
-      removeAfter: 10_000, // 10s
       message: msg
     });
     Sentry.captureMessage(msg);
