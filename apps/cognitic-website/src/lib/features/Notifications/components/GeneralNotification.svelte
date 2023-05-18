@@ -29,7 +29,7 @@
     />
   {/if}
 
-  <span class="body-regular text-content-primary">
+  <span class="body-regular text-content-primary mr-auto">
     {notification.message}
   </span>
 

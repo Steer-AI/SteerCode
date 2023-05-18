@@ -109,24 +109,15 @@
   function handleError(error: any) {
     loading = false;
     let msg = $_('notifications.chatAPIError');
-    if (error instanceof Event) {
-      // Handle SSE connection errors
-      if (error.source!.readyState === EventSource.CLOSED) {
-        Log.ERROR('SSE connection closed', error);
-      } else if (error.source!.readyState === EventSource.CONNECTING) {
-        Log.ERROR('SSE connection reconnecting', error);
-      } else {
-        Log.ERROR('SSE connection error', error);
-      }
-    } else if (error instanceof Error) {
+    if (error instanceof Error) {
       // Handle message processing errors
       Log.ERROR('Message processing error', error);
       msg = error.message;
     } else {
-      Log.ERROR('Unknown error', error);
+      Log.ERROR('Unknown error event', error);
       try {
         const errMessage = JSON.parse(error.data);
-        msg = errMessage.error;
+        msg = errMessage.detail;
       } catch {
         // Do nothing
         Log.ERROR('Unknown error', error);
