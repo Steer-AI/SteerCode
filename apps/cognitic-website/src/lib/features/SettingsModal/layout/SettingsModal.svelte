@@ -34,7 +34,8 @@
   let settingOptions: ModalSettingsOptions = {
     openaiAPIKey: '',
     persistApiKey: true,
-    customBackendUrl: ''
+    customBackendUrl: '',
+    useCustomBackend: false
   };
 
   $: if (dialogEl && $modalOpen && !dialogEl.open) {
@@ -43,14 +44,16 @@
     settingOptions = {
       openaiAPIKey: s.openaiAPIKey,
       persistApiKey: true,
-      customBackendUrl: s.customBackendUrl
+      customBackendUrl: s.customBackendUrl,
+      useCustomBackend: s.useCustomBackend
     };
   }
 
   function handleSettingsSave() {
     settingsStore.updateSettings({
       openaiAPIKey: settingOptions.openaiAPIKey,
-      customBackendUrl: settingOptions.customBackendUrl
+      customBackendUrl: settingOptions.customBackendUrl,
+      useCustomBackend: settingOptions.useCustomBackend
     });
 
     if (settingOptions.persistApiKey) {

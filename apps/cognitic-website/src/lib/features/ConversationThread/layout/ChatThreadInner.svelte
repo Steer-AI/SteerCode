@@ -3,7 +3,7 @@
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
   import { SSE } from 'sse.js';
   import { get } from 'svelte/store';
@@ -144,6 +144,10 @@
     } else {
       scrollToBottom(true);
     }
+  });
+
+  onDestroy(() => {
+    closeEventSource();
   });
 </script>
 

@@ -26,8 +26,9 @@ export function getUIDHeader(): string {
 
 const apiVersionPath = '/api/v1';
 export function getBackendUrl(): string {
-  if (settingsStore.getValue().customBackendUrl) {
-    return settingsStore.getValue().customBackendUrl + apiVersionPath;
+  const sv = settingsStore.getValue();
+  if (sv.customBackendUrl && sv.useCustomBackend) {
+    return sv.customBackendUrl + apiVersionPath;
   }
   return 'https://api.steercode.com' + apiVersionPath;
 }

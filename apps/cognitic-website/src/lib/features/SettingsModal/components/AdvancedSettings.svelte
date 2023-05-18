@@ -6,7 +6,6 @@
   import { slide } from 'svelte/transition';
 
   export let settingOptions: ModalSettingsOptions;
-  let useLocalBackend = settingOptions.customBackendUrl !== '';
 </script>
 
 <div class="text-content-secondary body-regular flex flex-col gap-6">
@@ -14,7 +13,7 @@
     {$_('settings.advanced.description')}
   </p>
   <Switch
-    bind:checked={useLocalBackend}
+    bind:checked={settingOptions.useCustomBackend}
     label={$_('settings.advanced.useLocalBackend.label')}
     labelClassName="mr-auto"
   />
@@ -22,7 +21,7 @@
     {$_('settings.advanced.useLocalBackend.helperText')}
   </p>
 
-  {#if useLocalBackend}
+  {#if settingOptions.useCustomBackend}
     <div in:slide={{ duration: 200 }}>
       <!-- LOCAL BACKEND URL -->
       <InputField

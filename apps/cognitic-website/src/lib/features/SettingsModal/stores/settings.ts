@@ -26,7 +26,8 @@ function createSettingsStore() {
   let currentSettingsValue: Settings = {
     openaiAPIKey: APIKeyFromLS || '',
     selectedRepo: DEFAULT_REPOSITORIES[0],
-    customBackendUrl: backendURLFromLS || ''
+    customBackendUrl: backendURLFromLS || '',
+    useCustomBackend: false
   };
 
   const settings = writable<Settings>(currentSettingsValue);

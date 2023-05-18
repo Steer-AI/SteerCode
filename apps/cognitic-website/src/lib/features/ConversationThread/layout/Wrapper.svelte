@@ -56,7 +56,7 @@
           on:delete={() => {
             dispatch('deleteMessage', data);
           }}
-          deletable={false}
+          deletable={true}
           on:feedback={(e) => {
             dispatch('feedback', { message: data, feedback: e.detail });
           }}
