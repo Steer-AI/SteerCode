@@ -9,6 +9,8 @@
   import CancelCircleIcon from '$lib/shared/components/Icons/CancelCircleIcon.svelte';
   import ClockIcon from '$lib/shared/components/Icons/ClockIcon.svelte';
   import CloseIcon from '$lib/shared/components/Icons/CloseIcon.svelte';
+  import CopyIcon from '$lib/shared/components/Icons/CopyIcon.svelte';
+  import CreateIcon from '$lib/shared/components/Icons/CreateIcon.svelte';
   import DiscordIcon from '$lib/shared/components/Icons/DiscordIcon.svelte';
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import ErrorIcon from '$lib/shared/components/Icons/ErrorIcon.svelte';
@@ -53,6 +55,9 @@
     BinIcon,
     BroomIcon,
     CancelCircleIcon,
+    ClockIcon,
+    CopyIcon,
+    CreateIcon,
     ClockIcon,
     CloseIcon,
     DiscordIcon,

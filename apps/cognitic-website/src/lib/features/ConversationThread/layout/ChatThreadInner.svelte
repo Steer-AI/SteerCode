@@ -14,6 +14,7 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
+  import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
 
   export let agent: Conversation;
   let loading: boolean = false;
@@ -68,7 +69,7 @@
               completionResponse.id
             );
           }
-          closeEventSource();
+          setTimeout(() => closeEventSource(), 0);
           return;
         }
 
@@ -107,9 +108,9 @@
     if (error instanceof Event) {
       // Handle SSE connection errors
       if (error.source!.readyState === EventSource.CLOSED) {
-        Log.ERROR('SSE connection closed');
+        Log.ERROR('SSE connection closed', error);
       } else if (error.source!.readyState === EventSource.CONNECTING) {
-        Log.ERROR('SSE connection reconnecting');
+        Log.ERROR('SSE connection reconnecting', error);
       } else {
         Log.ERROR('SSE connection error', error);
       }
@@ -135,6 +136,34 @@
       message: msg
     });
     Sentry.captureMessage(msg);
+  }
+
+  function handleEdit(
+    e: CustomEvent<{ message: ChatMessageDTO; content: string }>
+  ) {
+    const { message, content } = e.detail;
+    const index = agent.value.messages.findIndex((m) => m.id === message.id);
+    if (index === -1) {
+      return;
+    }
+
+    const messagesToDelete = [];
+    for (let i = index; i < agent.value.messages.length; i++) {
+      messagesToDelete.push(agent.value.messages[i]);
+    }
+    for (const m of messagesToDelete) {
+      agent.deleteMessage(m);
+    }
+
+    agent.addMessage({ role: message.role, content }, message.id);
+    handleSubmit(content);
+    trackEvent('Edit message', {
+      messageId: message.id,
+      message: message.content,
+      conversationId: agent.value.id,
+      messageIndex: index,
+      deletedMessageCount: messagesToDelete.length
+    });
   }
 
   onMount(async () => {
@@ -174,6 +203,7 @@
       conversationId: agent.value.id
     });
   }}
+  on:edit={handleEdit}
   {loading}
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}

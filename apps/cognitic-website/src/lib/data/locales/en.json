@@ -92,6 +92,8 @@
         },
         "copy": "Copy",
         "copied": "Copied",
+        "saveEdit": "Save",
+        "cancelEdit": "Cancel",
         "stop": "Stop generating response.",
         "disclaimer": "SteerCode Chat may provide inaccurate information about the Langchain codebase. If you find any mistakes, please let us know so we can do better job next-time."
     },

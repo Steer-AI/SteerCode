@@ -57,8 +57,12 @@
             dispatch('deleteMessage', data);
           }}
           deletable={true}
+          editable={data.role === 'user'}
           on:feedback={(e) => {
             dispatch('feedback', { message: data, feedback: e.detail });
+          }}
+          on:edit={(e) => {
+            dispatch('edit', { message: data, content: e.detail });
           }}
         />
         <div slot="footer">

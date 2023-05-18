@@ -11,10 +11,13 @@
   import ThumbsUpIcon from '$lib/shared/components/Icons/ThumbsUpIcon.svelte';
   import ThumbsDownIcon from '$lib/shared/components/Icons/ThumbsDownIcon.svelte';
   import MinusCircleIcon from '$lib/shared/components/Icons/MinusCircleIcon.svelte';
+  import CreateIcon from '$lib/shared/components/Icons/CreateIcon.svelte';
+  import Button from '$lib/shared/components/Button.svelte';
 
   export let type: ChatCompletionRequestMessageRoleEnum;
   export let message: string;
   export let deletable: boolean = false;
+  export let editable: boolean = false;
   export let messageFeedback: string | null = null;
 
   const dispatch = createEventDispatcher();
@@ -28,6 +31,24 @@
     setTimeout(() => {
       el.classList.remove('animate-pop');
     }, 1500);
+  }
+
+  let editMode: boolean = false;
+  let editMessage: string;
+  let textArea: HTMLTextAreaElement;
+
+  function handleEdit() {
+    editMode = true;
+    editMessage = message;
+    setTimeout(() => {
+      if (textArea === undefined) {
+        return;
+      }
+
+      textArea.focus();
+      textArea.style.height = '0';
+      textArea.style.height = textArea.scrollHeight + 'px';
+    }, 0);
   }
 </script>
 
@@ -65,17 +86,53 @@
     </div>
 
     <div
-      class="prose prose-invert text-content-primary w-full flex-1 overflow-hidden"
+      class="prose prose-invert text-content-primary group relative w-full flex-1 overflow-hidden"
     >
-      <SvelteMarkdown
-        source={message}
-        renderers={{
-          code: CodeRendered,
-          codespan: CodeSpanRenderer
-        }}
-      />
+      {#if editMode}
+        <textarea
+          class="m-0 h-0 w-full resize-none overflow-y-hidden border-0 bg-[transparent] p-0 focus:ring-0"
+          bind:value={editMessage}
+          bind:this={textArea}
+          on:input={(e) => {
+            e.target.style.height = '0';
+            e.target.style.height = e.target.scrollHeight + 'px';
+          }}
+        />
 
-      <slot />
+        <div class="mx-auto mt-4 flex items-center gap-4">
+          <Button
+            variant="primary"
+            on:click={() => {
+              if (editMessage !== message) {
+                dispatch('edit', editMessage);
+              }
+              editMode = false;
+            }}
+          >
+            {$_('conversation.saveEdit')}
+          </Button>
+
+          <Button
+            variant="secondary"
+            on:click={() => {
+              editMessage = '';
+              editMode = false;
+            }}
+          >
+            {$_('conversation.cancelEdit')}
+          </Button>
+        </div>
+      {:else}
+        <SvelteMarkdown
+          source={message}
+          renderers={{
+            code: CodeRendered,
+            codespan: CodeSpanRenderer
+          }}
+        />
+
+        <slot />
+      {/if}
 
       {#if type === 'assistant'}
         <div
@@ -122,6 +179,17 @@
             <MinusCircleIcon class="h-3 w-3" />
           </button>
         </div>
+      {/if}
+
+      {#if editable && !editMode}
+        <button
+          class="absolute right-0 top-4 hidden group-hover:block"
+          on:click={handleEdit}
+        >
+          <CreateIcon
+            class="text-content-tertiary hover:text-content-primary h-4 w-4"
+          />
+        </button>
       {/if}
     </div>
   </div>
