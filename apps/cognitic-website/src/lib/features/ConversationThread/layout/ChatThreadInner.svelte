@@ -69,7 +69,7 @@
               completionResponse.id
             );
           }
-          setTimeout(() => closeEventSource(), 0);
+          closeEventSource();
           return;
         }
 
@@ -90,8 +90,12 @@
 
   function closeEventSource() {
     if (eventSource) {
-      eventSource.close();
-      eventSource = null;
+      setTimeout(() => {
+        if (eventSource) {
+          eventSource.close();
+          eventSource = null;
+        }
+      }, 0);
       answer = '';
     }
   }
