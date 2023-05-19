@@ -56,7 +56,7 @@
           on:delete={() => {
             dispatch('deleteMessage', data);
           }}
-          deletable={true}
+          deletable={false}
           editable={data.role === 'user'}
           on:feedback={(e) => {
             dispatch('feedback', { message: data, feedback: e.detail });
