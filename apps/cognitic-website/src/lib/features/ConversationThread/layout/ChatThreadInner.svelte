@@ -5,7 +5,7 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
-  import { SSE } from 'sse.js';
+  import { SSE, type SSEOptions } from 'sse.js';
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
@@ -38,20 +38,30 @@
     loading = true;
     const settings = get(settingsStore);
 
-    eventSource = new SSE(getBackendUrl() + '/chat/stream', {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-openai-api-key': settings.openaiAPIKey || '',
-        'X-UID': getUIDHeader(),
-        'x-vector-store-type':
-          window.localStorage.getItem('X_VECTOR_STORE_TYPE') || ''
-      },
-      payload: JSON.stringify(agent.value)
-    });
+    // Prepare the request options
+    const headers: Record<string, string> = {};
+    headers['Content-Type'] = 'application/json';
+    headers['X-UID'] = getUIDHeader();
 
-    eventSource.addEventListener('status', (e) => {
-      Log.DEBUG('System status is now: ' + e.data);
-    });
+    // update header options
+    const vst = window.localStorage.getItem('X_VECTOR_STORE_TYPE');
+    if (vst) {
+      headers['x-vector-store-type'] = vst;
+    }
+    if (settings.openaiAPIKey) {
+      headers['x-openai-api-key'] = settings.openaiAPIKey;
+    }
+    const llm = window.localStorage.getItem('X_LLM_TYPE');
+    if (llm) {
+      headers['x-llm-type'] = llm;
+    }
+
+    const sseOptions: SSEOptions = {
+      headers: headers,
+      payload: JSON.stringify(agent.value)
+    };
+    eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
+
     eventSource.addEventListener('error', (e) => handleError(e));
 
     eventSource.addEventListener('message', (e) => {
@@ -213,7 +223,7 @@
   <svelte:fragment slot="footer">
     {#if answer}
       <Button
-        class="mx-auto"
+        class="mx-auto mb-2"
         variant="tertiary"
         type="button"
         on:click={() => {
