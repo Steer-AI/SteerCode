@@ -83,13 +83,13 @@
         </span>
       </Listbox>
 
-      {#if $settingsStore.selectedRepo.version}
+      {#if $settingsStore.selectedRepo.value.version}
         <div
           class="label-mini-plus flex h-5 items-center"
           style="font-size: 11px;"
         >
           <span class="text-content-primarySub">
-            {$settingsStore.selectedRepo.version}
+            {$settingsStore.selectedRepo.value.version}
           </span>
         </div>
       {/if}

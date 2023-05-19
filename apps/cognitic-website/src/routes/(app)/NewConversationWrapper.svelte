@@ -9,7 +9,6 @@
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import type {
     NewConversationDTO,
-    RepositoryOption
   } from '$lib/models/types/conversation.type';
   import { get } from 'svelte/store';
   import Button from '$lib/shared/components/Button.svelte';
@@ -25,17 +24,10 @@
     pendingContent = query;
     Log.DEBUG('NewConversation.handleSubmit', query);
     const settings = get(settingsStore);
-    const repository: RepositoryOption = {
-      name: '',
-      url: '',
-      ...settings.selectedRepo
-    };
 
-    delete repository.label;
-    delete repository.value;
     const toAdd: NewConversationDTO = {
       content: query,
-      repository
+      repository: settings.selectedRepo.value
     };
     const agent = await conversationsStore.add(toAdd);
     pendingRequest = false;
@@ -43,8 +35,8 @@
     trackEvent('Create conversation', {
       message: query,
       conversationId: agent.value.id,
-      repository_name: repository.name,
-      repository_version: repository.version
+      repository_name: settings.selectedRepo.value.name,
+      repository_version: settings.selectedRepo.value.version
     });
     goto(`/chat/${agent.value.id}`);
 

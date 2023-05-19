@@ -15,8 +15,6 @@
   }
 
   function handleBackdropClick(e: MouseEvent) {
-    console.log('close backgrop', e.target, dialogEl);
-
     if (!closeOnBackdropClick) return;
     // if clicked outside <dialog> element, return
     const rect = dialogEl.getBoundingClientRect();
@@ -27,7 +25,6 @@
       e.clientX <= rect.left + rect.width;
     if (isInDialog) return;
 
-    console.log('close backgrop', rect, e.clientX, e.clientY, isInDialog);
     e.preventDefault();
     dialogEl.close();
   }

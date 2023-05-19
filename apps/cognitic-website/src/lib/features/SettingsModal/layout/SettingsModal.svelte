@@ -55,19 +55,9 @@
       customBackendUrl: settingOptions.customBackendUrl,
       useCustomBackend: settingOptions.useCustomBackend
     });
-
-    if (settingOptions.persistApiKey) {
-      localStorage.setItem(
-        'cognitic.openAiAPIKey',
-        settingOptions.openaiAPIKey
-      );
-    } else {
+    if (!settingOptions.persistApiKey) {
       localStorage.removeItem('cognitic.openAiAPIKey');
     }
-    localStorage.setItem(
-      'cognitic.customBackendUrl',
-      settingOptions.customBackendUrl
-    );
 
     dialogEl.close();
     notificationStore.addNotification({

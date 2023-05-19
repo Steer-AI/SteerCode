@@ -1,46 +1,81 @@
+import { Log } from '$lib/core/services/logging';
+import type { RepositoryOption } from '$lib/models/types/conversation.type';
 import type { Settings } from '$lib/models/types/settings.type';
 import type { Option } from '$lib/shared/components/Listbox/types';
-import { writable } from 'svelte/store';
+import { localStorageWritable } from '$lib/shared/stores/localStorageStore';
+import { derived, writable, type Readable } from 'svelte/store';
 
 function createSettingsStore() {
-  const APIKeyFromLS =
-    typeof window !== 'undefined'
-      ? window.localStorage.getItem('cognitic.openAiAPIKey')
-      : '';
-
-  const backendURLFromLS =
-    typeof window !== 'undefined'
-      ? window.localStorage.getItem('cognitic.customBackendUrl')
-      : '';
-
-  const DEFAULT_REPOSITORIES: Option<string>[] = [
+  const DEFAULT_REPOSITORIES: Option<RepositoryOption>[] = [
     {
       label: 'LangChain',
-      value: 'https://github.com/hwchase17/langchain',
-      version: undefined
+      value: {
+        branch: "master",
+        clone_url: "git@github.com:hwchase17/langchain.git",
+        name: "LangChain",
+        repo_id: "hwchase17_langchain",
+        repo_name: null,
+        repo_path: "/app/codebases/hwchase17_langchain",
+        url: "https://github.com/hwchase17/langchain",
+        version: "v0.0.173"
+      }
     }
   ];
+  
   const availableRepositories =
-    writable<Option<string>[]>(DEFAULT_REPOSITORIES);
+    writable<Option<RepositoryOption>[]>(DEFAULT_REPOSITORIES);
 
   let currentSettingsValue: Settings = {
-    openaiAPIKey: APIKeyFromLS || '',
+    openaiAPIKey: '',
+    customBackendUrl: '',
+    useCustomBackend: false,
     selectedRepo: DEFAULT_REPOSITORIES[0],
-    customBackendUrl: backendURLFromLS || '',
-    useCustomBackend: false
   };
 
-  const settings = writable<Settings>(currentSettingsValue);
+  const stringValueSerialiser = {
+    parse: (text: string) => text,
+    stringify: (object: string) => object
+  };
+
+  const settingStores = {
+    openaiAPIKey: localStorageWritable('cognitic.openAiAPIKey', currentSettingsValue.openaiAPIKey, { serializer: stringValueSerialiser }),
+    customBackendUrl: localStorageWritable('cognitic.customBackendUrl', currentSettingsValue.customBackendUrl, { serializer: stringValueSerialiser }),
+    useCustomBackend: localStorageWritable('cognitic.useCustomBackend', currentSettingsValue.useCustomBackend),
+    selectedRepo: writable(currentSettingsValue.selectedRepo)
+  }
+
+  type StoreKeys = keyof typeof settingStores;
 
   function updateSettings(newValue: Partial<Settings>) {
-    settings.update((current) => {
-      const updatedSettings: Settings = { ...current, ...newValue };
-      currentSettingsValue = updatedSettings;
-      console.log({ updatedSettings, currentSettingsValue });
-      return updatedSettings;
+    Object.entries(newValue).forEach(([key, value]) => {
+      const store = settingStores[key as StoreKeys];
+      if (!store) {
+        Log.WARNING(`Unknown setting ${key}`);
+        return;
+      }
+      Log.DEBUG(`Updating settings.${key}`, value)
+      store.set(value);
     });
-    console.log({ currentSettingsValue });
   }
+
+  const settings: Readable<Settings> = derived([
+    settingStores.openaiAPIKey,
+    settingStores.customBackendUrl,
+    settingStores.useCustomBackend,
+    settingStores.selectedRepo
+  ], ($) => {
+    return {
+      openaiAPIKey: $[0],
+      customBackendUrl: $[1],
+      useCustomBackend: $[2],
+      selectedRepo: $[3]
+    }
+  });
+
+  settings.subscribe((value) => {
+    Log.DEBUG('Settings', value);
+    currentSettingsValue = value;
+  });
 
   return {
     subscribe: settings.subscribe,

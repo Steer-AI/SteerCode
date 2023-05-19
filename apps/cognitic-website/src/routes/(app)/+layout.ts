@@ -10,8 +10,7 @@ export const load = (async () => {
   getAvailableRepositories().then((repos) => {
     const tmp = repos.map((repo) => ({
       label: repo.name,
-      value: repo.url,
-      ...repo
+      value: repo,
     }));
     Log.DEBUG('Available repositories', tmp);
     settingsStore.availableRepositories.set(tmp);

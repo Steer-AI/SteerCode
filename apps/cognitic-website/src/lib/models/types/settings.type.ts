@@ -1,8 +1,9 @@
 import type { Option } from '$lib/shared/components/Listbox/types';
+import type { RepositoryOption } from './conversation.type';
 
 export type Settings = {
   openaiAPIKey: string;
-  selectedRepo: Option<string>;
+  selectedRepo: Option<RepositoryOption>;
   customBackendUrl: string;
   useCustomBackend: boolean;
 };
