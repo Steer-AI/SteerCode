@@ -33,6 +33,7 @@
     "@types/uuid": "^9.0.1",
     "@vercel/edge-config": "^0.1.5",
     "autoprefixer": "^9.8.8",
+    "cognitic-models": "*",
     "cssnano": "^6.0.0",
     "dotenv": "^16.0.1",
     "eslint-config-custom": "*",

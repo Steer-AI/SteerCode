@@ -3,14 +3,16 @@
   import Error from '$lib/shared/layout/Error.svelte';
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import ChatThreadInner from '$lib/features/ConversationThread/layout/ChatThreadInner.svelte';
+  import Sidebar from '$lib/features/CodebaseSidebar/layout/Sidebar.svelte';
 
-  $: agent = conversationsStore.getById($page.params.agentId);
+  $: conversation = conversationsStore.getById($page.params.agentId);
 </script>
 
 <div class="flex h-full">
-  {#if $agent}
-    {#key $agent.value.id}
-      <ChatThreadInner agent={$agent} />
+  {#if $conversation}
+    {#key $conversation.value.id}
+      <ChatThreadInner conversation={$conversation} />
+      <Sidebar conversation={$conversation} />
     {/key}
   {:else}
     <Error status="404" summary="Conversation not found" />

@@ -16,7 +16,7 @@
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
 
-  export let agent: Conversation;
+  export let conversation: Conversation;
   let loading: boolean = false;
   let answer: string = '';
   let wrapContainer: ConversationWrapper;
@@ -32,7 +32,7 @@
   async function handleSubmit(query: string) {
     trackEvent('New message', {
       message: query,
-      conversationId: agent.value.id
+      conversationId: conversation.value.id
     });
     answer = '';
     loading = true;
@@ -58,7 +58,7 @@
 
     const sseOptions: SSEOptions = {
       headers: headers,
-      payload: JSON.stringify(agent.value)
+      payload: JSON.stringify(conversation.value)
     };
     eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
 
@@ -74,7 +74,7 @@
 
         if (completionResponse.done) {
           if (completionResponse.id) {
-            agent.addMessage(
+            conversation.addMessage(
               { role: 'assistant', content: answer },
               completionResponse.id
             );
@@ -147,32 +147,34 @@
     e: CustomEvent<{ message: ChatMessageDTO; content: string }>
   ) {
     const { message, content } = e.detail;
-    const index = agent.value.messages.findIndex((m) => m.id === message.id);
+    const index = conversation.value.messages.findIndex(
+      (m) => m.id === message.id
+    );
     if (index === -1) {
       return;
     }
 
     const messagesToDelete = [];
-    for (let i = index; i < agent.value.messages.length; i++) {
-      messagesToDelete.push(agent.value.messages[i]);
+    for (let i = index; i < conversation.value.messages.length; i++) {
+      messagesToDelete.push(conversation.value.messages[i]);
     }
     for (const m of messagesToDelete) {
-      agent.deleteMessage(m);
+      conversation.deleteMessage(m);
     }
 
-    agent.addMessage({ role: message.role, content }, message.id);
+    conversation.addMessage({ role: message.role, content }, message.id);
     handleSubmit(content);
     trackEvent('Edit message', {
       messageId: message.id,
       message: message.content,
-      conversationId: agent.value.id,
+      conversationId: conversation.value.id,
       messageIndex: index,
       deletedMessageCount: messagesToDelete.length
     });
   }
 
   onMount(async () => {
-    let m = agent.value.messages;
+    let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
       handleSubmit(m[m.length - 1].content);
     } else {
@@ -187,32 +189,32 @@
 
 <ConversationWrapper
   on:submit={(e) => {
-    agent.addMessage({ role: 'user', content: e.detail });
+    conversation.addMessage({ role: 'user', content: e.detail });
     handleSubmit(e.detail);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;
-    agent.addFeedback(message, feedback);
+    conversation.addFeedback(message, feedback);
     trackEvent('Feedback message', {
       messageId: message.id,
-      conversationId: agent.value.id,
+      conversationId: conversation.value.id,
       feedback: e.detail
     });
   }}
   on:deleteMessage={(e) => {
     const message = e.detail;
-    agent.deleteMessage(message);
+    conversation.deleteMessage(message);
     trackEvent('Delete message', {
       from: message.role,
       message: message.content,
-      conversationId: agent.value.id
+      conversationId: conversation.value.id
     });
   }}
   on:edit={handleEdit}
   {loading}
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}
-  messages={$agent.messages}
+  messages={$conversation.messages}
 >
   <svelte:fragment>
     {#if answer}
@@ -227,7 +229,7 @@
         variant="tertiary"
         type="button"
         on:click={() => {
-          agent.addMessage({ role: 'assistant', content: answer });
+          conversation.addMessage({ role: 'assistant', content: answer });
           closeEventSource();
         }}
       >

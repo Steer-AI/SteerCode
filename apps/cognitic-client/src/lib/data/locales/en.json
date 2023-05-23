@@ -95,8 +95,12 @@
         "saveEdit": "Save",
         "cancelEdit": "Cancel",
         "stop": "Stop generating response.",
-        "disclaimer": "SteerCode Chat may provide inaccurate information about the Langchain codebase. If you find any mistakes, please let us know so we can do better job next-time."
-    },
+        "disclaimer": "SteerCode Chat may provide inaccurate information about the Langchain codebase. If you find any mistakes, please let us know so we can do better job next-time.",
+        "cosebaseSidebar": {
+            "codebaseTitle": "Codebase",
+            "contextTitle": "AI has a context of"
+        }
+    }, 
 
     "notifications": {
         "failedCopyClipboard": "Failed to copy to clipboard",
