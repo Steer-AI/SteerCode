@@ -1,0 +1,86 @@
+@tailwind components;
+
+@layer components {
+  /* HEADLINE */
+  .headline-small,
+  .headline-large {
+    @apply font-basier font-semibold;
+  }
+  .headline-small {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  .headline-large {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  /* BODY */
+  .body-small,
+  .body-small-plus,
+  .body-regular,
+  .body-regular-plus {
+    @apply font-basier;
+  }
+  .body-small,
+  .body-regular {
+    @apply font-normal;
+  }
+  .body-small-plus,
+  .body-regular-plus {
+    @apply font-semibold;
+  }
+  .body-small,
+  .body-small-plus {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .body-regular,
+  .body-regular-plus {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  /* LABEL */
+  .label-small,
+  .label-small-plus {
+    @apply font-basier uppercase;
+  }
+  .label-mini-plus,
+  .label-small-plus {
+    @apply font-semibold;
+  }
+
+  .label-small-plus,
+  .label-small {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  /* MONO */
+  .mono-small,
+  .mono-small-plus,
+  .mono-regular,
+  .mono-regular-plus {
+    @apply font-basierMono;
+  }
+  .mono-small,
+  .mono-regular {
+    @apply font-normal;
+  }
+  .mono-small-plus,
+  .mono-regular-plus {
+    @apply font-semibold;
+  }
+
+  .mono-small,
+  .mono-small-plus {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .mono-regular,
+  .mono-regular-plus {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}

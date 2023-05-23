@@ -1,0 +1,14 @@
+@import url('../../static/fonts/basier.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background-primary font-basier text-content-primary antialiased;
+  scroll-behavior: smooth;
+}
+
+:focus {
+  outline: 0;
+}
