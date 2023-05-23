@@ -1,9 +1,12 @@
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
+import fileTreeRouter from './routes/fileTree';
 
 dotenv.config();
 
 const app: Express = express();
+app.use(fileTreeRouter);
+
 const port = process.env.BACKEND_PORT || 3000;
 
 app.get('/', (req: Request, res: Response) => {
