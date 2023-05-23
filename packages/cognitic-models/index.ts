@@ -25,3 +25,17 @@ export interface IFileTreeItem {
   isDirectory: boolean;
   children: IFileTreeItem[];
 }
+
+export interface IFileContentReqParams {
+    paths: string[];
+}
+
+export interface IFilesContentResponse extends ISuccessResponse {
+    files: IFileContentItem[];
+}
+
+export interface IFileContentItem {
+    filePath: string;
+    fileName: string;
+    fileContent: string;
+}

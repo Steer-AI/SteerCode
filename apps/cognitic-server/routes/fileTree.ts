@@ -14,7 +14,7 @@ const getDirectoryContent = (
   dirPath: string,
   maxDepth: number
 ): IFileTreeItem[] => {
-  let result: IFileTreeItem[] = [];
+  const result: IFileTreeItem[] = [];
 
   if (maxDepth <= 0) return result;
 
@@ -22,7 +22,7 @@ const getDirectoryContent = (
     const absolutePath = path.join(dirPath, file);
     const stat = fs.lstatSync(absolutePath);
 
-    let item: IFileTreeItem = {
+    const item: IFileTreeItem = {
       fileName: file,
       filePath: absolutePath,
       children: [],
@@ -42,8 +42,8 @@ const getDirectoryContent = (
 router.get(
   '/fileTree',
   (
-    req: Request<{}, {}, {}, IFileTreeReqParams>,
-    res: Response<IFileTreeResponse | IErrorResponse, {}>
+    req: Request<any, any, any, IFileTreeReqParams>,
+    res: Response<IFileTreeResponse | IErrorResponse, any>
   ) => {
     const { path, maxDepth } = req.query;
 
@@ -58,12 +58,10 @@ router.get(
         };
         res.json(resp);
       } catch (error) {
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: 'Error reading directory content.'
-          } as IErrorResponse);
+        res.status(500).json({
+          success: false,
+          message: 'Error reading directory content.'
+        } as IErrorResponse);
       }
     } else {
       res
