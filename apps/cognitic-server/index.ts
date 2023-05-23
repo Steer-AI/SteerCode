@@ -1,11 +1,14 @@
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
+import fileContentRouter from './routes/fileContent';
 import fileTreeRouter from './routes/fileTree';
 
 dotenv.config();
 
 const app: Express = express();
+app.use(express.json());
 app.use(fileTreeRouter);
+app.use(fileContentRouter);
 
 const port = process.env.BACKEND_PORT || 3000;
 
