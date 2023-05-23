@@ -1,5 +1,5 @@
-import { error, type RequestHandler } from '@sveltejs/kit';
 import { ANALYTICS_CDN_URL } from '$env/static/private';
+import { error, type RequestHandler } from '@sveltejs/kit';
 
 async function proxyFetch({
   method,

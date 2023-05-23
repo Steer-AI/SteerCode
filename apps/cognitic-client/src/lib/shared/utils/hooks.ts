@@ -1,4 +1,3 @@
-
 export const clickOutside = (
   node: HTMLElement,
   handler: (event: MouseEvent) => void
@@ -17,4 +16,3 @@ export const clickOutside = (
     }
   };
 };
-

@@ -1,5 +1,4 @@
-import { writable,type Updater,type Writable } from 'svelte/store';
-
+import { writable, type Updater, type Writable } from 'svelte/store';
 
 type WritableStoreWithValue<T> = Writable<T> & { getValue: () => T };
 
@@ -20,7 +19,8 @@ export function localStorageWritable<T>(
   initialValue: T,
   options?: Options<T>
 ): WritableStoreWithValue<T> {
-  const browser = typeof window !== 'undefined' && typeof document !== 'undefined';
+  const browser =
+    typeof window !== 'undefined' && typeof document !== 'undefined';
 
   function getStorage(): Storage {
     if (browser) {
@@ -39,7 +39,7 @@ export function localStorageWritable<T>(
         : initialValue;
     const store = writable<T>(currentValue);
     browser && getStorage().setItem(key, serializer.stringify(currentValue));
-    
+
     const persistedStore = {
       set(value: T) {
         currentValue = value;
@@ -49,7 +49,8 @@ export function localStorageWritable<T>(
       },
       update(updater: Updater<T>) {
         currentValue = updater(currentValue);
-        browser && getStorage().setItem(key, serializer.stringify(currentValue));
+        browser &&
+          getStorage().setItem(key, serializer.stringify(currentValue));
         store.set(currentValue);
       },
       subscribe: store.subscribe,

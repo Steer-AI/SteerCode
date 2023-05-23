@@ -1,0 +1,20 @@
+{
+  "name": "cognitic-models",
+  "version": "1.0.0",
+  "type": "module",
+  "module": "index.ts",
+  "svelte": "index.ts",
+  "main": "index.ts",
+  "scripts": {
+    "lint": "prettier --check --ignore-path=../../.prettierignore . && eslint \".\"",
+    "format": "prettier --write --ignore-path=../../.prettierignore ."
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

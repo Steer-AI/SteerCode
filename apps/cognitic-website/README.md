@@ -43,12 +43,12 @@ https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ### TODO:
+
 - Auth/login
 - get conversations from backend
 - get conversation history from backend
 - send new message to backend
 - new home screen ... show new conversation
-
 
 ## local build and deploy to vercel
 
@@ -61,13 +61,14 @@ vercel deploy --prebuilt --prod
 
 1. update your env variables in `.env` file
 2. run following commands
+
 ```
 yarn install
 cd apps/cognitic-website
 yarn dev
 ```
+
 3. open http://localhost:5173
 4. open browser dev tools and enter following command `localStorage.DEBUG_LOGGING = true`
-
 
 - for additional dev options see `apps/cognitic-website/src/lib/shared/utils/constants.ts`

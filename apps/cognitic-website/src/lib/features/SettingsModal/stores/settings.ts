@@ -10,18 +10,18 @@ function createSettingsStore() {
     {
       label: 'LangChain',
       value: {
-        branch: "master",
-        clone_url: "git@github.com:hwchase17/langchain.git",
-        name: "LangChain",
-        repo_id: "hwchase17_langchain",
+        branch: 'master',
+        clone_url: 'git@github.com:hwchase17/langchain.git',
+        name: 'LangChain',
+        repo_id: 'hwchase17_langchain',
         repo_name: null,
-        repo_path: "/app/codebases/hwchase17_langchain",
-        url: "https://github.com/hwchase17/langchain",
-        version: "v0.0.173"
+        repo_path: '/app/codebases/hwchase17_langchain',
+        url: 'https://github.com/hwchase17/langchain',
+        version: 'v0.0.173'
       }
     }
   ];
-  
+
   const availableRepositories =
     writable<Option<RepositoryOption>[]>(DEFAULT_REPOSITORIES);
 
@@ -29,7 +29,7 @@ function createSettingsStore() {
     openaiAPIKey: '',
     customBackendUrl: '',
     useCustomBackend: false,
-    selectedRepo: DEFAULT_REPOSITORIES[0],
+    selectedRepo: DEFAULT_REPOSITORIES[0]
   };
 
   const stringValueSerialiser = {
@@ -38,11 +38,22 @@ function createSettingsStore() {
   };
 
   const settingStores = {
-    openaiAPIKey: localStorageWritable('cognitic.openAiAPIKey', currentSettingsValue.openaiAPIKey, { serializer: stringValueSerialiser }),
-    customBackendUrl: localStorageWritable('cognitic.customBackendUrl', currentSettingsValue.customBackendUrl, { serializer: stringValueSerialiser }),
-    useCustomBackend: localStorageWritable('cognitic.useCustomBackend', currentSettingsValue.useCustomBackend),
+    openaiAPIKey: localStorageWritable(
+      'cognitic.openAiAPIKey',
+      currentSettingsValue.openaiAPIKey,
+      { serializer: stringValueSerialiser }
+    ),
+    customBackendUrl: localStorageWritable(
+      'cognitic.customBackendUrl',
+      currentSettingsValue.customBackendUrl,
+      { serializer: stringValueSerialiser }
+    ),
+    useCustomBackend: localStorageWritable(
+      'cognitic.useCustomBackend',
+      currentSettingsValue.useCustomBackend
+    ),
     selectedRepo: writable(currentSettingsValue.selectedRepo)
-  }
+  };
 
   type StoreKeys = keyof typeof settingStores;
 
@@ -53,24 +64,27 @@ function createSettingsStore() {
         Log.WARNING(`Unknown setting ${key}`);
         return;
       }
-      Log.DEBUG(`Updating settings.${key}`, value)
+      Log.DEBUG(`Updating settings.${key}`, value);
       store.set(value);
     });
   }
 
-  const settings: Readable<Settings> = derived([
-    settingStores.openaiAPIKey,
-    settingStores.customBackendUrl,
-    settingStores.useCustomBackend,
-    settingStores.selectedRepo
-  ], ($) => {
-    return {
-      openaiAPIKey: $[0],
-      customBackendUrl: $[1],
-      useCustomBackend: $[2],
-      selectedRepo: $[3]
+  const settings: Readable<Settings> = derived(
+    [
+      settingStores.openaiAPIKey,
+      settingStores.customBackendUrl,
+      settingStores.useCustomBackend,
+      settingStores.selectedRepo
+    ],
+    ($) => {
+      return {
+        openaiAPIKey: $[0],
+        customBackendUrl: $[1],
+        useCustomBackend: $[2],
+        selectedRepo: $[3]
+      };
     }
-  });
+  );
 
   settings.subscribe((value) => {
     Log.DEBUG('Settings', value);

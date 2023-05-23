@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["VITE_PUBLIC_ENV", "SENTRY_AUTH_TOKEN", "SENTRY_PROJECT_NAME"],
+      "env": ["VITE_PUBLIC_ENV", "SENTRY_AUTH_TOKEN", "SENTRY_PROJECT_NAME", "BACKEND_PORT"],
       "outputs": ["dist/**", ".svelte-kit/**",  ".vercel/**"]
     },
     "format": {

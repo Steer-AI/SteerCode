@@ -11,8 +11,8 @@
     "partytown": "partytown copylib static/~partytown",
     "preview": "vite preview",
     "format:changes": "git diff --cached --name-only --diff-filter=ACM | grep '\\.\\(js\\|ts\\|svelte\\|css\\|html\\)$' | sed 's/apps\\/cognitic-website/./g' | xargs prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write",
-    "lint": "yarn format:changes && eslint \"src\" && git add . && git update-index",
-    "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write ./**/*.{js,ts,svelte}"
+    "lint": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --check . && eslint \"./src\"",
+    "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write ."
   },
   "devDependencies": {
     "@builder.io/partytown": "^0.7.0",
