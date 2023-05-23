@@ -1,4 +1,4 @@
-import type { IErrorResponse, IFileTreeResponse } from 'cognitic-models';
+import type { IErrorResponse, IFileTreeResponse, IFileContentItem, IFileContentReqParams } from 'cognitic-models';
 
 export function fetchFileTree(
   path: string,
@@ -13,4 +13,22 @@ export function fetchFileTree(
       };
       return resp;
     });
+}
+
+export function fetchFilesContent(paths: string[]): Promise<IFileContentItem| IErrorResponse> {
+  const payload = paths.reduce((cur, path) => ({paths: [...cur.paths, path]}), {paths: []} as IFileContentReqParams);
+  return fetch('/api/fileContent', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  }).then((res) => res.json())
+  .catch((err) => {
+    const resp: IErrorResponse = {
+      success: false,
+      message: err.message
+    };
+    return resp;
+  });
 }
