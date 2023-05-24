@@ -6,20 +6,26 @@
     "build": "npx tsc",
     "dev": "ts-node-dev ./index.ts",
     "lint": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --check . && eslint \".\"",
-    "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write ."
+    "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write .",
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
     "cognitic-models": "*",
     "cors": "^2.8.5",
+    "diff2html": "^3.4.35",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.1",
     "@types/node": "^20.2.3",
     "eslint-config-custom": "*",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   }
