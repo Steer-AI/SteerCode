@@ -1,4 +1,5 @@
 // eslint-disable @typescript-eslint/no-explicit-any
-interface Window {
+declare interface Window {
   analytics: any;
+  electron: any;
 }
