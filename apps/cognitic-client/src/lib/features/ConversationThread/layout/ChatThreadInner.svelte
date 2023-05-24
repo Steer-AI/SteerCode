@@ -15,6 +15,7 @@
   import { Log } from '$lib/core/services/logging';
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -56,9 +57,43 @@
       headers['x-llm-type'] = llm;
     }
 
+    // const selections = $selectedEntities
+    const selections = [
+      {
+        fileName: 'example_1.txt',
+        filePath: '/path/to/example_1.txt',
+        isDirectory: false,
+        children: []
+      },
+      {
+        fileName: 'example_2.txt',
+        filePath: '/path/to/example_2.txt',
+        isDirectory: false,
+        children: []
+      }
+    ];
+
+    // TODO - fetch contents from api
+    const contents = selections.map((selection) => {
+      return {
+        filePath: selection.filePath,
+        fileName: selection.fileName,
+        fileContent: `This is the content of ${selection.fileName}`
+      };
+    });
+
+    const documents = contents.map((content) => {
+      return {
+        page_content: content.fileContent,
+        metadata: {
+          file_name: content.fileName
+        }
+      };
+    });
+
     const sseOptions: SSEOptions = {
       headers: headers,
-      payload: JSON.stringify(conversation.value)
+      payload: JSON.stringify({ ...conversation.value, documents: documents })
     };
     eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
 
