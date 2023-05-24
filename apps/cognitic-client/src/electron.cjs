@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const serve = require('electron-serve');
 const loadURL = serve({ directory: 'public' });
@@ -21,7 +21,7 @@ function createWindow() {
     fullscreen: true, // Start the app in full screen mode
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.cjs')
       // enableRemoteModule: true,
       // contextIsolation: false
     },
@@ -78,3 +78,10 @@ app.on('activate', function () {
 });
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+app.whenReady().then(() => {
+  ipcMain.handle('dialog', async (event, method, config) => {
+    const result = await dialog[method](config);
+    return result;
+  });
+});

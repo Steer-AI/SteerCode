@@ -16,7 +16,7 @@
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
-  import { getContentsForFiles } from '$lib/data/localQueries';
+  import type { IFileContentItem } from 'cognitic-models';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -87,7 +87,7 @@
     // ------------------------------
 
     const selections = $selectedEntities;
-    const contents = await getContentsForFiles(
+    const contents: [IFileContentItem] = await window.electron.getContents(
       selections.map((selection) => selection.filePath)
     );
     const documents = contents.map((content) => {

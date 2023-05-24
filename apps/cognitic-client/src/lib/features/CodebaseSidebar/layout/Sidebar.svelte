@@ -10,7 +10,6 @@
     IFileTreeResponse
   } from 'cognitic-models';
   import FileTreeItem from '../components/FileTreeItem.svelte';
-  import { getFileTree } from '$lib/data/localQueries';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
@@ -37,7 +36,7 @@
     if (item.children.length !== 0) return;
 
     try {
-      const fileTree = await getFileTree(item.filePath, depth);
+      const fileTree = await window.electron.getTree(item.filePath, depth);
       item.children = fileTree;
       initialFileTreeFile = root;
       Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, fileTree });

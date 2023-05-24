@@ -23,26 +23,33 @@
   export let sidebarOpen: boolean;
 
   async function handleImportRepo() {
-    const res = await fetch('http://127.0.0.1:3000/select-directory', {
-      method: 'GET'
-    }).then(
-      (res) => res.json() as { success: boolean; data: string; message: string }
-    );
+    if (!window.electron) return;
+    const selection = await window.electron.openDialog('showOpenDialog', {
+      properties: ['openDirectory']
+    });
 
-    if (res.success) {
-      if (res.data.endsWith('/')) res.data = res.data.slice(0, -1);
+    try {
+      if (selection.canceled) {
+        Log.WARNING('User cancelled folder selection...');
+        return;
+      }
+      let folder_path = selection.filePaths[0];
+      Log.INFO(`User selected folder ${folder_path}`);
+      if (folder_path.endsWith('/')) folder_path = folder_path.slice(0, -1);
 
       settingsStore.updateSettings({
         selectedRepo: {
-          url: res.data,
-          name: res.data.split('/').pop() || res.data
+          url: folder_path,
+          name: folder_path.split('/').pop() || folder_path
         }
       });
-    } else {
-      Log.ERROR(res.message);
+    } catch (error: any) {
+      Log.ERROR(
+        `Error occured during the folder selection process ${error.message}`
+      );
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
-        message: res.message,
+        message: error.message,
         position: Position.BottomRight
       });
     }

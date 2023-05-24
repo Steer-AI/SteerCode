@@ -1,14 +1,9 @@
-import type { IFileContentItem, IFileTreeItem } from 'cognitic-models';
-
-import { Log } from '$lib/core/services/logging';
-import fs from 'fs';
-import fsAsync from 'fs/promises';
-import path from 'path';
+const fs = require('fs');
+const fsAsync = fs.promises;
+const path = require('path');
 
 class LoadFileError extends Error {
-  filePath: string;
-
-  constructor(message: string, filePath: string) {
+  constructor(message, filePath) {
     super(message);
     this.message = message;
     this.filePath = filePath;
@@ -19,11 +14,8 @@ class LoadFileError extends Error {
 
 // File tree functionality
 // -----------------------------------
-const getDirectoryContent = (
-  dirPath: string,
-  maxDepth: number
-): IFileTreeItem[] => {
-  const result: IFileTreeItem[] = [];
+const getDirectoryContent = (dirPath, maxDepth) => {
+  const result = [];
 
   if (maxDepth <= 0) return result;
 
@@ -31,7 +23,7 @@ const getDirectoryContent = (
     const absolutePath = path.join(dirPath, file);
     const stat = fs.lstatSync(absolutePath);
 
-    const item: IFileTreeItem = {
+    const item = {
       fileName: file,
       filePath: absolutePath,
       children: [],
@@ -48,7 +40,7 @@ const getDirectoryContent = (
   return result;
 };
 
-export function getFileTree(path: string, maxDepth?: number): IFileTreeItem[] {
+function getFileTree(path, maxDepth) {
   // Check if dirPath is a directory
   if (fs.existsSync(path) && fs.lstatSync(path).isDirectory()) {
     return getDirectoryContent(path, maxDepth || 1);
@@ -59,7 +51,7 @@ export function getFileTree(path: string, maxDepth?: number): IFileTreeItem[] {
 
 // File content functionality
 // -----------------------------------
-const loadFileContent = async (filePath: string): Promise<IFileContentItem> => {
+const loadFileContent = async (filePath) => {
   try {
     const content = await fsAsync.readFile(filePath, { encoding: 'utf8' });
     return {
@@ -67,25 +59,23 @@ const loadFileContent = async (filePath: string): Promise<IFileContentItem> => {
       fileName: path.basename(filePath),
       fileContent: content
     };
-  } catch (error: any) {
+  } catch (error) {
     throw new LoadFileError(error?.message, filePath);
   }
 };
 
-export async function getContentsForFiles(
-  paths: string[]
-): Promise<IFileContentItem[]> {
+async function getContentsForFiles(paths) {
   const promises = paths.map(loadFileContent);
   const contents = await Promise.allSettled(promises);
 
-  const files: IFileContentItem[] = [];
-  const errors: LoadFileError[] = [];
+  const files = [];
+  const errors = [];
 
   contents.forEach((content) => {
     if (content.status === 'fulfilled') {
       files.push(content.value);
     } else {
-      Log.WARNING(
+      console.warn(
         `There was an error loading content for file: ${content.reason}`
       );
     }
@@ -93,3 +83,5 @@ export async function getContentsForFiles(
 
   return files;
 }
+
+module.exports = { getFileTree, getContentsForFiles };
