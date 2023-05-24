@@ -2,6 +2,7 @@
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
+    "baseUrl": "./",
     "checkJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -11,5 +12,6 @@
     "sourceMap": true,
     "strict": true,
     "experimentalDecorators": true
-  }
+  },
+  "include": ["src/**/*", "src/electron.cjs"],
 }
