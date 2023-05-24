@@ -7,7 +7,6 @@
   import Button from '../components/Button.svelte';
   import { _ } from 'svelte-i18n';
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
-  import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
   import LogoText from '../components/Icons/LogoText.svelte';
   import { Log } from '$lib/core/services/logging';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
@@ -109,7 +108,6 @@
     </div>
 
     <div role="separator" class="ml-4 flex-1" />
-    <AuthButton />
     <!-- <div class="flex flex-1 items-center justify-end">
       <Listbox
         selected={{ label: $locale || 'unknown', value: $locale }}

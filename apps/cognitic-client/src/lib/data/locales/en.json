@@ -2,31 +2,12 @@
     "sidebar": {
         "newAgent": "New Chat",
         "deleteTooltip": "Delete Chat",
-        "noUserMessage": "Log in to view <br/> your chat history",
         "loadMore": "Load more",
         "deleteConfirmationDialog": {
             "title": "Delete Chat?",
             "description": "Are you sure you want to delete this Chat? This action cannot be undone. Chat name: ",
             "confirmButton": "Yes",
             "cancelButton": "No"
-        }
-    },
-    "gdpr": {
-        "heading": "Cookie Policy",
-        "description": "We use cookies to offer a better browsing experience, analyze site traffic. By clicking accept, you consent to our privacy policy & use of cookies.",
-        "acceptLabel": "Accept all",
-        "rejectLabel": "Reject all",
-        "settingsLabel": "Preferences",
-        "closeLabel": "Close",
-        "choices": {
-            "necessary": {
-                "label": "Necessary cookies",
-                "description": "Used for cookie control and application monitoring. Can't be turned off."
-            },
-            "analytics": {
-                "label": "Analytics cookies",
-                "description": "Used to control Analytics to track user behavior."
-            }
         }
     },
     "header": {

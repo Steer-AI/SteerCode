@@ -1,7 +1,6 @@
 <script lang="ts">
   import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
   import PartytownSetup from '../lib/shared/layout/PartytownSetup.svelte';
-  import CookieBanner from '$lib/shared/layout/CookieBanner.svelte';
   import { loadAnalytics } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import { onMount } from 'svelte';
@@ -10,8 +9,6 @@
     loadAnalytics();
   });
 </script>
-
-<CookieBanner on:analytics={() => loadAnalytics()} />
 
 <PartytownSetup />
 
