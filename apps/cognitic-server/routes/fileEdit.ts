@@ -12,7 +12,7 @@ const applyDiff = (diff: string) => {
     }
 }
 
-function applyFileDiff(diff: DiffFile) {
+export function applyFileDiff(diff: DiffFile) {
     let oldFilePath = diff.oldName;
     let newFilePath = diff.newName;
 
@@ -106,7 +106,7 @@ function applyBlockChangesToNewFile(block: DiffBlock) {
     let lines: string[] = [];
     for (let diffLine of block.lines) {
         if (diffLine.type === LineType.INSERT) {
-            lines.push(diffLine.content);
+            lines.push(diffLine.content.slice(1));
         } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file
     }
     return lines;
