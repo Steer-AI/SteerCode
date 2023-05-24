@@ -48,7 +48,6 @@
       });
     }
   }
-  $: console.log({ $page });
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
@@ -56,8 +55,8 @@
 <header class="sticky top-0 z-20" style={$$props.style}>
   <span class="bg-background-primary flex h-16 items-center px-6">
     <a href="/" class="flex items-center">
-      <LogoIcon class="mr-2 h-5 w-5" />
-      <LogoText class="h-3.5" />
+      <LogoIcon class="mr-2 h-6 w-6" />
+      <LogoText class="h-4" />
     </a>
     <div
       class="bg-background-secondaryActive text-content-primarySub label-small-plus mx-2.5 flex h-5 items-center px-2.5"
@@ -69,12 +68,15 @@
     <div class="flex items-center">
       {#if $settingsStore.selectedRepo !== null}
         {@const paths = $settingsStore.selectedRepo.url.split('/')}
-        <Menu let:open class="relative">
+        <Menu
+          let:open
+          class="relative {$page.url.pathname === '/' ? '' : 'hidden'}"
+        >
           <MenuButton class="mr-2 flex items-center">
             <ExpandIcon class="h-5 w-5" expanded={!open} />
           </MenuButton>
           <MenuItems
-            class="bg-background-secondary border-stroke-primary absolute top-full mt-4"
+            class="bg-background-secondary border-stroke-primary absolute top-full mt-4 border"
           >
             <MenuItem
               as="button"
@@ -90,9 +92,9 @@
         <span class="text-content-secondary headline-large">
           {paths[paths.length - 2] + ' / '}
         </span>
-        <span class="text-content-primary headline-large"
-          >{paths[paths.length - 1]}</span
-        >
+        <span class="text-content-primary headline-large ml-2">
+          {paths[paths.length - 1]}
+        </span>
       {:else}
         <Button
           variant="secondary"

@@ -10,6 +10,8 @@
   import type { NewConversationDTO } from '$lib/models/types/conversation.type';
   import { get } from 'svelte/store';
   import Button from '$lib/shared/components/Button.svelte';
+  import { notificationStore } from '$lib/features/Notifications/store/notifications';
+  import { NotificationType, Position } from '$lib/models/enums/notifications';
 
   // form variables
   let pendingRequest = false;
@@ -17,24 +19,32 @@
   let pendingContent = '';
 
   async function handleSubmit(query: string) {
+    const settings = get(settingsStore);
+
+    if (settings.selectedRepo === null) {
+      Log.ERROR('NewConversation.handleSubmit', 'No repository selected');
+      notificationStore.addNotification({
+        type: NotificationType.GeneralError,
+        message: $_('notifications.noRepoSelected'),
+        position: Position.BottomRight
+      });
+      return;
+    }
+
     if (pendingRequest) return;
     pendingRequest = true;
     pendingContent = query;
     Log.DEBUG('NewConversation.handleSubmit', query);
-    const settings = get(settingsStore);
-
     const toAdd: NewConversationDTO = {
       content: query,
-      repository: settings.selectedRepo.value
+      repository: settings.selectedRepo
     };
     const agent = await conversationsStore.add(toAdd);
     pendingRequest = false;
     if (!agent) return;
     trackEvent('Create conversation', {
       message: query,
-      conversationId: agent.value.id,
-      repository_name: settings.selectedRepo.value.name,
-      repository_version: settings.selectedRepo.value.version
+      conversationId: agent.value.id
     });
     goto(`/chat/${agent.value.id}`);
 

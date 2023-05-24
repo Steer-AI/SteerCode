@@ -70,7 +70,10 @@ function fileselect(str, title, timeout, callback) {
     cb = function (code, stdout, stderr) {
       //parse return from appl script code
       const items = stdout.split(' ');
-      retVal = items[items.length - 1].replace(/:/g, '/').replace(/\n/, '');
+      retVal = items[items.length - 1]
+        .replace(/:/g, '/')
+        .replace(/\n/, '')
+        .replace('HD', '');
 
       if (callback) callback(code, retVal, stderr);
     };

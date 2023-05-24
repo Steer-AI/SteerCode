@@ -2793,11 +2793,6 @@ devalue@^4.3.0:
   resolved "https://registry.yarnpkg.com/devalue/-/devalue-4.3.0.tgz#d86db8fee63a70317c2355be0d3d1b4d8f89a44e"
   integrity sha512-n94yQo4LI3w7erwf84mhRUkUJfhLoCZiLyoOZ/QFsDbcWNZePrLwbQpvZBUG2TNxwV3VjCKPxkiiQA6pe3TrTA==
 
-dialog-node@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/dialog-node/-/dialog-node-0.2.1.tgz#f2465d49ec7ee5fdff1fe17b5991de1b0b2bf040"
-  integrity sha512-4Uy3zICGvc8+NPUC4mubLumzT/BNF2oeo+7yrN0uo5sOL+64PQXcaekLviU0Q8o8ZujZ9oTYN3X1S6T2C4K2tQ==
-
 didyoumean@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/didyoumean/-/didyoumean-1.2.2.tgz#989346ffe9e839b4555ecf5666edea0d3e8ad037"
@@ -3223,6 +3218,10 @@ file-entry-cache@^6.0.1:
   integrity sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==
   dependencies:
     flat-cache "^3.0.4"
+
+file-icons-js@websemantics/file-icons-js:
+  version "1.1.0"
+  resolved "https://codeload.github.com/websemantics/file-icons-js/tar.gz/8b397223dc14fa57600f1b06c787dfd2107c4449"
 
 file-uri-to-path@1.0.0:
   version "1.0.0"
@@ -5121,7 +5120,7 @@ ts-node-dev@^2.0.0:
     ts-node "^10.4.0"
     tsconfig "^7.0.0"
 
-ts-node@^10.4.0, ts-node@^10.9.1:
+ts-node@^10.4.0:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==

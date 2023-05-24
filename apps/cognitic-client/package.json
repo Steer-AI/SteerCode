@@ -52,6 +52,7 @@
     "vite": "^4.3.1"
   },
   "dependencies": {
+    "file-icons-js": "websemantics/file-icons-js",
     "highlight.js": "^11.7.0",
     "sse.js": "^0.6.1",
     "svelte-i18n": "^3.6.0",

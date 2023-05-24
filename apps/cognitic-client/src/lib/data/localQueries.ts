@@ -9,8 +9,12 @@ export function fetchFileTree(
   path: string,
   maxDepth?: number
 ): Promise<IFileTreeResponse | IErrorResponse> {
+  const encodedPath = encodeURIComponent(path);
+
   return fetch(
-    `http://127.0.0.1:3000/fileTree?path=${path}&maxDepth=${maxDepth || 1}`
+    `http://127.0.0.1:3000/fileTree?path=${encodedPath}&maxDepth=${
+      maxDepth || 1
+    }`
   )
     .then((res) => res.json())
     .catch((err) => {

@@ -14,6 +14,8 @@
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
+  import { onMount } from 'svelte';
+  import 'file-icons-js/css/style.css';
 
   export let conversation: Conversation;
   let initialFileTreeFile: IFileTreeItem;
@@ -38,6 +40,7 @@
     if (isSuccesResponse(resp)) {
       // TODO: verify
       item.children = resp.content;
+      initialFileTreeFile = root;
       Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, resp });
     } else {
       Log.ERROR(resp.message);
@@ -49,7 +52,7 @@
     }
   }
 
-  $: {
+  onMount(() => {
     initialFileTreeFile = {
       isDirectory: true,
       fileName: conversation.value.repository.name,
@@ -57,23 +60,20 @@
       children: []
     };
     fetchFileTreeItem(initialFileTreeFile, initialFileTreeFile, 0);
-  }
-
-  $: console.log('selectedEntities', $selectedEntities);
-  $: console.log('initialFileTreeFile', initialFileTreeFile);
+  });
 </script>
 
 <aside class="flex" style={$$props.style}>
   <Divider vertical />
-  <div class="bg-background-primary flex w-64 flex-col">
+  <div class="bg-background-primary flex w-80 flex-col">
     <div
-      class="headline-large text-content-primary flex h-14 items-center px-6"
+      class="headline-large text-content-primary flex h-14 items-center px-4"
     >
       {$_('conversation.cosebaseSidebar.codebaseTitle')}
     </div>
 
     <!-- scrollable file tree -->
-    <section class="flex-[2] overflow-y-scroll">
+    <section class="flex-[2] overflow-y-scroll px-4">
       {#if initialFileTreeFile}
         <FileTreeItem
           file={initialFileTreeFile}
@@ -87,13 +87,13 @@
     <Divider />
 
     <div
-      class="headline-large text-content-primary flex h-14 items-center px-6"
+      class="headline-large text-content-primary flex h-14 items-center px-4"
     >
       {$_('conversation.cosebaseSidebar.contextTitle')}
     </div>
 
     <!-- scrollable selected files -->
-    <section class="flex-1 overflow-y-scroll">
+    <section class="flex-1 overflow-y-scroll px-4">
       {#each $selectedEntities as entity (entity.filePath)}
         <SelectedContextItem item={entity} {conversation} />
       {/each}

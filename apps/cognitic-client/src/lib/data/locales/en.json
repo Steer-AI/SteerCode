@@ -31,7 +31,7 @@
     },
     "header": {
         "title": "SteerCode | Chat",
-        "importRepoButton": "Import your codebase",
+        "importRepoButton": "Select your codebase",
         "logIn": "Log in",
         "logOut": "Log out",
         "settings": "Settings"
@@ -110,6 +110,7 @@
         "failedDeleteAgent": "Failed to delete conversation",
         "agentDeleted": "Conversation deleted",
         "failedCreateAgent": "Failed to create conversation",
-        "agentCreated": "Conversation {name} created"
+        "agentCreated": "Conversation {name} created",
+        "noRepoSelected": "No repository selected"
     }
 }
