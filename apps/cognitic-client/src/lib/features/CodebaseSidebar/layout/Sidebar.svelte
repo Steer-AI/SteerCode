@@ -10,7 +10,7 @@
     IFileTreeResponse
   } from 'cognitic-models';
   import FileTreeItem from '../components/FileTreeItem.svelte';
-  import { fetchFileTree } from '$lib/data/localQueries';
+  import { getFileTree } from '$lib/data/localQueries';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
@@ -36,17 +36,16 @@
     if (!item.isDirectory) return;
     if (item.children.length !== 0) return;
 
-    const resp = await fetchFileTree(item.filePath, depth);
-    if (isSuccesResponse(resp)) {
-      // TODO: verify
-      item.children = resp.content;
+    try {
+      const fileTree = await getFileTree(item.filePath, depth);
+      item.children = fileTree;
       initialFileTreeFile = root;
-      Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, resp });
-    } else {
-      Log.ERROR(resp.message);
+      Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, fileTree });
+    } catch (error: any) {
+      Log.ERROR(error.message);
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
-        message: resp.message,
+        message: error.message,
         position: Position.BottomRight
       });
     }

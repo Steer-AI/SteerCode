@@ -16,6 +16,7 @@
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
+  import { getContentsForFiles } from '$lib/data/localQueries';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -56,32 +57,39 @@
     if (llm) {
       headers['x-llm-type'] = llm;
     }
-
-    // const selections = $selectedEntities
-    const selections = [
-      {
-        fileName: 'example_1.txt',
-        filePath: '/path/to/example_1.txt',
-        isDirectory: false,
-        children: []
-      },
-      {
-        fileName: 'example_2.txt',
-        filePath: '/path/to/example_2.txt',
-        isDirectory: false,
-        children: []
-      }
-    ];
+    // ------------------------------
+    // Mocking vvvvv
+    // const selections = [
+    //   {
+    //     fileName: 'example_1.txt',
+    //     filePath: '/path/to/example_1.txt',
+    //     isDirectory: false,
+    //     children: []
+    //   },
+    //   {
+    //     fileName: 'example_2.txt',
+    //     filePath: '/path/to/example_2.txt',
+    //     isDirectory: false,
+    //     children: []
+    //   }
+    // ];
 
     // TODO - fetch contents from api
-    const contents = selections.map((selection) => {
-      return {
-        filePath: selection.filePath,
-        fileName: selection.fileName,
-        fileContent: `This is the content of ${selection.fileName}`
-      };
-    });
+    // const contents = selections.map((selection) => {
+    //   return {
+    //     filePath: selection.filePath,
+    //     fileName: selection.fileName,
+    //     fileContent: `This is the content of ${selection.fileName}`
+    //   };
+    // });
 
+    // Mocking ^^^^^
+    // ------------------------------
+
+    const selections = $selectedEntities;
+    const contents = await getContentsForFiles(
+      selections.map((selection) => selection.filePath)
+    );
     const documents = contents.map((content) => {
       return {
         page_content: content.fileContent,
