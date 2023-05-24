@@ -9,21 +9,52 @@
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
   import LogoText from '../components/Icons/LogoText.svelte';
+  import { Log } from '$lib/core/services/logging';
+  import { notificationStore } from '$lib/features/Notifications/store/notifications';
+  import { NotificationType, Position } from '$lib/models/enums/notifications';
+  import {
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems
+  } from '@rgossiaux/svelte-headlessui';
+  import ExpandIcon from '../components/Icons/ExpandIcon.svelte';
+  import { page } from '$app/stores';
 
   export let sidebarOpen: boolean;
 
   async function handleImportRepo() {
     const res = await fetch('http://127.0.0.1:3000/select-directory', {
       method: 'GET'
-    }).then((res) => res.json());
-    console.log({ res });
+    }).then(
+      (res) => res.json() as { success: boolean; data: string; message: string }
+    );
+
+    if (res.success) {
+      if (res.data.endsWith('/')) res.data = res.data.slice(0, -1);
+
+      settingsStore.updateSettings({
+        selectedRepo: {
+          url: res.data,
+          name: res.data.split('/').pop() || res.data
+        }
+      });
+    } else {
+      Log.ERROR(res.message);
+      notificationStore.addNotification({
+        type: NotificationType.GeneralError,
+        message: res.message,
+        position: Position.BottomRight
+      });
+    }
   }
+  $: console.log({ $page });
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
 
 <header class="sticky top-0 z-20" style={$$props.style}>
-  <span class="bg-background-primary flex h-14 items-center px-6">
+  <span class="bg-background-primary flex h-16 items-center px-6">
     <a href="/" class="flex items-center">
       <LogoIcon class="mr-2 h-5 w-5" />
       <LogoText class="h-3.5" />
@@ -35,13 +66,33 @@
       BETA
     </div>
 
-    <div class="headline-latge">
+    <div class="flex items-center">
       {#if $settingsStore.selectedRepo !== null}
         {@const paths = $settingsStore.selectedRepo.url.split('/')}
-        <span class="text-content-primary"
-          >{paths[paths.length - 2] + ' / '}</span
+        <Menu let:open class="relative">
+          <MenuButton class="mr-2 flex items-center">
+            <ExpandIcon class="h-5 w-5" expanded={!open} />
+          </MenuButton>
+          <MenuItems
+            class="bg-background-secondary border-stroke-primary absolute top-full mt-4"
+          >
+            <MenuItem
+              as="button"
+              on:click={handleImportRepo}
+              class="body-regular text-content-secondary hover:text-content-primary flex h-10 items-center whitespace-nowrap px-3"
+            >
+              <GitHubIcon class="mr-2 h-4 w-4" />
+              {$_('header.importRepoButton')}
+            </MenuItem>
+          </MenuItems>
+        </Menu>
+
+        <span class="text-content-secondary headline-large">
+          {paths[paths.length - 2] + ' / '}
+        </span>
+        <span class="text-content-primary headline-large"
+          >{paths[paths.length - 1]}</span
         >
-        <span class="text-content-primary">{paths[paths.length - 1]}</span>
       {:else}
         <Button
           variant="secondary"

@@ -66,7 +66,9 @@
 <aside class="flex" style={$$props.style}>
   <Divider vertical />
   <div class="bg-background-primary flex w-64 flex-col">
-    <div class="headline-large text-content-primary h-14">
+    <div
+      class="headline-large text-content-primary flex h-14 items-center px-6"
+    >
       {$_('conversation.cosebaseSidebar.codebaseTitle')}
     </div>
 
@@ -84,7 +86,9 @@
 
     <Divider />
 
-    <div class="headline-large text-content-primary h-14">
+    <div
+      class="headline-large text-content-primary flex h-14 items-center px-6"
+    >
       {$_('conversation.cosebaseSidebar.contextTitle')}
     </div>
 

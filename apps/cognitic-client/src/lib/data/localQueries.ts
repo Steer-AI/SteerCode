@@ -9,7 +9,9 @@ export function fetchFileTree(
   path: string,
   maxDepth?: number
 ): Promise<IFileTreeResponse | IErrorResponse> {
-  return fetch(`/api/fileTree?path=${path}&maxDepth=${maxDepth || 1}`)
+  return fetch(
+    `http://127.0.0.1:3000/fileTree?path=${path}&maxDepth=${maxDepth || 1}`
+  )
     .then((res) => res.json())
     .catch((err) => {
       const resp: IErrorResponse = {
@@ -27,7 +29,7 @@ export function fetchFilesContent(
     (cur, path) => ({ paths: [...cur.paths, path] }),
     { paths: [] } as IFileContentReqParams
   );
-  return fetch('/api/fileContent', {
+  return fetch('http://127.0.0.1:3000/fileContent', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
