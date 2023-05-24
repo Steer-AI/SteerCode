@@ -1,8 +1,5 @@
 import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
-import {
-  USER_COOKIE_ANONYMOUS_ID_NAME,
-  USER_COOKIE_ID_NAME
-} from '$lib/shared/utils/constants';
+import { USER_COOKIE_ANONYMOUS_ID_NAME } from '$lib/shared/utils/constants';
 import * as Sentry from '@sentry/browser';
 import Cookies from 'js-cookie';
 import { Log } from './logging';
@@ -17,11 +14,7 @@ const returnFallbackAndLog = <T>(
 };
 
 export function getUIDHeader(): string {
-  return (
-    Cookies.get(USER_COOKIE_ID_NAME) ||
-    Cookies.get(USER_COOKIE_ANONYMOUS_ID_NAME) ||
-    ''
-  );
+  return Cookies.get(USER_COOKIE_ANONYMOUS_ID_NAME) || '';
 }
 
 const apiVersionPath = '/api/v1';

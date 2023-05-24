@@ -31,5 +31,11 @@
 			"$app/*": [".svelte/dev/runtime/app/*", ".svelte/build/runtime/app/*"]
 		}
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "src/electron.js"]
+	"include": [
+		"./.svelte-kit/ambient.d.ts",
+		"./.svelte-kit/types/**/$types.d.ts",
+		"src/**/*.js",
+		"src/**/*.ts",
+		"src/**/*.svelte",
+		"src/electron.js"]
 }
