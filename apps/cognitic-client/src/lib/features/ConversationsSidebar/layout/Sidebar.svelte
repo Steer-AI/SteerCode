@@ -93,7 +93,7 @@
           {#each $conversationsStore as agent (agent.value.id)}
             <ConversationButton
               {agent}
-              selected={$page.params.agentId === agent.value.id}
+              selected={$page.params.chatId === agent.value.id}
               on:delete={handleAgentDelete}
             />
           {/each}

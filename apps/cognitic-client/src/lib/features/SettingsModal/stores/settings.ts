@@ -1,35 +1,14 @@
 import { Log } from '$lib/core/services/logging';
-import type { RepositoryOption } from '$lib/models/types/conversation.type';
 import type { Settings } from '$lib/models/types/settings.type';
-import type { Option } from '$lib/shared/components/Listbox/types';
 import { localStorageWritable } from '$lib/shared/stores/localStorageStore';
 import { derived, writable, type Readable } from 'svelte/store';
 
 function createSettingsStore() {
-  const DEFAULT_REPOSITORIES: Option<RepositoryOption>[] = [
-    {
-      label: 'LangChain',
-      value: {
-        branch: 'master',
-        clone_url: 'git@github.com:hwchase17/langchain.git',
-        name: 'LangChain',
-        repo_id: 'hwchase17_langchain',
-        repo_name: null,
-        repo_path: '/app/codebases/hwchase17_langchain',
-        url: 'https://github.com/hwchase17/langchain',
-        version: 'v0.0.173'
-      }
-    }
-  ];
-
-  const availableRepositories =
-    writable<Option<RepositoryOption>[]>(DEFAULT_REPOSITORIES);
-
   let currentSettingsValue: Settings = {
     openaiAPIKey: '',
     customBackendUrl: '',
     useCustomBackend: false,
-    selectedRepo: DEFAULT_REPOSITORIES[0]
+    selectedRepo: null
   };
 
   const stringValueSerialiser = {
@@ -94,7 +73,6 @@ function createSettingsStore() {
   return {
     subscribe: settings.subscribe,
     updateSettings,
-    availableRepositories,
     getValue: () => currentSettingsValue
   };
 }

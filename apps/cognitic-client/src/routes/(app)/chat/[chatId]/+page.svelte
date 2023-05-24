@@ -5,7 +5,7 @@
   import ChatThreadInner from '$lib/features/ConversationThread/layout/ChatThreadInner.svelte';
   import Sidebar from '$lib/features/CodebaseSidebar/layout/Sidebar.svelte';
 
-  $: conversation = conversationsStore.getById($page.params.agentId);
+  $: conversation = conversationsStore.getById($page.params.chatId);
 </script>
 
 <div class="flex h-full">

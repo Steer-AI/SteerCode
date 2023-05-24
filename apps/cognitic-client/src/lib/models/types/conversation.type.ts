@@ -2,7 +2,7 @@ export type RepositoryOption = {
   name: string;
   url: string;
   version?: string;
-  [key: string]: any;
+  branch?: string;
 };
 
 // Model used to create a new agent

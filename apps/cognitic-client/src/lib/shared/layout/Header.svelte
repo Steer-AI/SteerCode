@@ -3,18 +3,21 @@
   import ActivityFeedIcon from '../components/Icons/ActivityFeedIcon.svelte';
   import LogoIcon from '../components/Icons/LogoIcon.svelte';
   // import { locale, locales } from 'svelte-i18n';
-  import Listbox from '../components/Listbox/Listbox.svelte';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import Button from '../components/Button.svelte';
   import { _ } from 'svelte-i18n';
   import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
-  import { trackEvent } from '$lib/core/services/tracking';
   import LogoText from '../components/Icons/LogoText.svelte';
 
   export let sidebarOpen: boolean;
 
-  const options = settingsStore.availableRepositories;
+  async function handleImportRepo() {
+    const res = await fetch('http://127.0.0.1:3000/select-directory', {
+      method: 'GET'
+    }).then((res) => res.json());
+    console.log({ res });
+  }
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
@@ -26,10 +29,30 @@
       <LogoText class="h-3.5" />
     </a>
     <div
-      class="bg-background-secondaryActive text-content-primarySub label-small-plus ml-2.5 flex h-5 items-center px-2.5"
+      class="bg-background-secondaryActive text-content-primarySub label-small-plus mx-2.5 flex h-5 items-center px-2.5"
       style="font-size: 11px;"
     >
       BETA
+    </div>
+
+    <div class="headline-latge">
+      {#if $settingsStore.selectedRepo !== null}
+        {@const paths = $settingsStore.selectedRepo.url.split('/')}
+        <span class="text-content-primary"
+          >{paths[paths.length - 2] + ' / '}</span
+        >
+        <span class="text-content-primary">{paths[paths.length - 1]}</span>
+      {:else}
+        <Button
+          variant="secondary"
+          size="medium"
+          class=""
+          on:click={handleImportRepo}
+        >
+          <GitHubIcon class="mr-2 h-4 w-4" />
+          {$_('header.importRepoButton')}
+        </Button>
+      {/if}
     </div>
 
     <div role="separator" class="ml-4 flex-1" />
@@ -49,65 +72,13 @@
         })}
       />
     </div> -->
-  </span>
-
-  <Divider />
-
-  <div class="flex h-14 flex-shrink-0 items-center px-6 md:justify-between">
     <button
       class="mr-3 block md:hidden"
       on:click={() => (sidebarOpen = !sidebarOpen)}
     >
       <ActivityFeedIcon class="h-8 w-8" />
     </button>
+  </span>
 
-    <div class="flex items-center">
-      <Listbox
-        selected={$settingsStore.selectedRepo}
-        on:change={(e) => {
-          settingsStore.updateSettings({
-            selectedRepo: e.detail
-          });
-        }}
-        options={$options}
-      >
-        <span
-          slot="selected-option"
-          class="text-content-primary headline-large flex items-center capitalize"
-          let:selected
-        >
-          <span class="mr-3">
-            <GitHubIcon class="text-content-tertiary h-6 w-6" />
-          </span>
-          {selected.label}
-        </span>
-      </Listbox>
-
-      {#if $settingsStore.selectedRepo.value.version}
-        <div
-          class="label-mini-plus flex h-5 items-center"
-          style="font-size: 11px;"
-        >
-          <span class="text-content-primarySub">
-            {$settingsStore.selectedRepo.value.version}
-          </span>
-        </div>
-      {/if}
-    </div>
-
-    <Button
-      variant="secondary"
-      size="medium"
-      as="a"
-      href="https://docs.google.com/forms/d/e/1FAIpQLSei53M_VZH1LVIBygG1k_6Ifwfo_regUEiZkNfKKYKiVbnfrA/viewform"
-      target="_blank"
-      class="hidden md:flex"
-      on:click={() => {
-        trackEvent('Open Import Repo Form');
-      }}
-    >
-      {$_('header.importRepoButton')}
-    </Button>
-  </div>
   <Divider />
 </header>

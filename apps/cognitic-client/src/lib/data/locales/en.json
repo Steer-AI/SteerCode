@@ -31,7 +31,7 @@
     },
     "header": {
         "title": "SteerCode | Chat",
-        "importRepoButton": "Import your own codebase",
+        "importRepoButton": "Import your codebase",
         "logIn": "Log in",
         "logOut": "Log out",
         "settings": "Settings"

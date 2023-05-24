@@ -27,15 +27,15 @@ export interface IFileTreeItem {
 }
 
 export interface IFileContentReqParams {
-    paths: string[];
+  paths: string[];
 }
 
 export interface IFilesContentResponse extends ISuccessResponse {
-    files: IFileContentItem[];
+  files: IFileContentItem[];
 }
 
 export interface IFileContentItem {
-    filePath: string;
-    fileName: string;
-    fileContent: string;
+  filePath: string;
+  fileName: string;
+  fileContent: string;
 }

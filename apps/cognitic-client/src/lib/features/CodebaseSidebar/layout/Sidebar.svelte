@@ -13,6 +13,7 @@
   import { fetchFileTree } from '$lib/data/localQueries';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
+  import { Log } from '$lib/core/services/logging';
 
   export let conversation: Conversation;
   let initialFileTreeFile: IFileTreeItem;
@@ -28,17 +29,18 @@
     item: IFileTreeItem,
     depth: number
   ) {
+    Log.INFO('fetchFileTreeItem', { root, item, depth });
+
     if (!item.isDirectory) return;
     if (item.children.length !== 0) return;
 
-    // TODO: fetch item.children
     const resp = await fetchFileTree(item.filePath, depth);
     if (isSuccesResponse(resp)) {
       // TODO: verify
       item.children = resp.content;
-      console.log({ initialFileTreeFile });
+      Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, resp });
     } else {
-      console.error(resp.message);
+      Log.ERROR(resp.message);
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
         message: resp.message,
@@ -56,6 +58,9 @@
     };
     fetchFileTreeItem(initialFileTreeFile, initialFileTreeFile, 0);
   }
+
+  $: console.log('selectedEntities', $selectedEntities);
+  $: console.log('initialFileTreeFile', initialFileTreeFile);
 </script>
 
 <aside class="flex" style={$$props.style}>
@@ -69,8 +74,8 @@
     <section class="flex-[2] overflow-y-scroll">
       {#if initialFileTreeFile}
         <FileTreeItem
-          files={[initialFileTreeFile]}
-          on:fetch={(e) => {
+          file={initialFileTreeFile}
+          on:expand={(e) => {
             fetchFileTreeItem(initialFileTreeFile, e.detail, 1);
           }}
         />

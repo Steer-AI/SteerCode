@@ -2,37 +2,65 @@
   import type { IFileTreeItem } from 'cognitic-models';
   import FileItem from './FileItem.svelte';
   import { selectedEntities } from '../stores/selection';
+  import { createEventDispatcher } from 'svelte';
+  import ArrowDownIcon from '$lib/shared/components/Icons/ArrowDownIcon.svelte';
+  import ArrowRightIcon from '$lib/shared/components/Icons/ArrowRightIcon.svelte';
 
   export let expanded = false;
-  export let files: IFileTreeItem[];
+  export let file: IFileTreeItem;
   export let depth = 0;
+
+  const dispatch = createEventDispatcher<{ expand: IFileTreeItem }>();
 
   function toggle() {
     expanded = !expanded;
+    if (expanded) {
+      dispatch('expand', file);
+    }
   }
 </script>
 
-<button class:expanded on:click={toggle}>{name}</button>
+<button class="flex h-8 w-full items-center" on:click={toggle}>
+  {#if expanded}
+    <ArrowDownIcon class="h-5 w-5" />
+  {:else}
+    <ArrowRightIcon class="h-5 w-5" />
+  {/if}
+
+  <svg
+    viewBox="0 0 16 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-4 w-auto"
+  >
+    <path
+      d="M1.75 0C1.28587 0 0.840752 0.184374 0.512563 0.512563C0.184374 0.840752 0 1.28587 0 1.75L0 12.25C0 13.216 0.784 14 1.75 14H14.25C14.7141 14 15.1592 13.8156 15.4874 13.4874C15.8156 13.1592 16 12.7141 16 12.25V3.75C16 3.28587 15.8156 2.84075 15.4874 2.51256C15.1592 2.18437 14.7141 2 14.25 2H7.5C7.46119 2 7.42291 1.99096 7.3882 1.97361C7.35348 1.95625 7.32329 1.93105 7.3 1.9L6.4 0.7C6.07 0.26 5.55 0 5 0H1.75Z"
+      fill="#3398FF"
+    />
+  </svg>
+
+  <span class="text-content-primary body-regular ml-2">{file.fileName}</span>
+</button>
 
 {#if expanded}
   <ul>
-    {#each files as file (file.filePath)}
+    {#each file.children as f (f.filePath)}
       {@const selected = $selectedEntities.find(
-        (s) => s.filePath === file.filePath
+        (s) => s.filePath === f.filePath
       )}
-      <li class="h-8 w-full">
-        {#if file.isDirectory}
-          <svelte:self files={file.children} depth={depth + 1} />
+      <li class="flex h-8 w-full items-center">
+        {#if f.isDirectory}
+          <svelte:self files={f.children} depth={depth + 1} />
         {:else}
           <FileItem
             on:click={() => {
               if (selected) {
                 selectedEntities.remove(selected);
               } else {
-                selectedEntities.add(file);
+                selectedEntities.add(f);
               }
             }}
-            {file}
+            file={f}
             selected={Boolean(selected)}
           />
         {/if}
