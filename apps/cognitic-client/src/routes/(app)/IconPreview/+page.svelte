@@ -16,6 +16,7 @@
   import ErrorIcon from '$lib/shared/components/Icons/ErrorIcon.svelte';
   import ExpandIcon from '$lib/shared/components/Icons/ExpandIcon.svelte';
   import FilterIcon from '$lib/shared/components/Icons/FilterIcon.svelte';
+  import FolderIcon from '$lib/shared/components/Icons/FolderIcon.svelte';
   import FullscreenIcon from '$lib/shared/components/Icons/FullscreenIcon.svelte';
   import GitHubIcon from '$lib/shared/components/Icons/GitHubIcon.svelte';
   import GlobeIcon from '$lib/shared/components/Icons/GlobeIcon.svelte';
@@ -65,6 +66,7 @@
     ErrorIcon,
     ExpandIcon,
     FilterIcon,
+    FolderIcon,
     FullscreenIcon,
     GitHubIcon,
     GlobeIcon,

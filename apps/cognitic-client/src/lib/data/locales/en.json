@@ -12,7 +12,7 @@
     },
     "header": {
         "title": "SteerCode | Chat",
-        "importRepoButton": "Select your codebase",
+        "importRepoButton": "Open local codebase",
         "logIn": "Log in",
         "logOut": "Log out",
         "settings": "Settings"

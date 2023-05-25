@@ -11,14 +11,11 @@
   import { Log } from '$lib/core/services/logging';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
-  import {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems
-  } from '@rgossiaux/svelte-headlessui';
-  import ExpandIcon from '../components/Icons/ExpandIcon.svelte';
-  import { page } from '$app/stores';
+  import Listbox, { type Option } from '../components/Listbox/Listbox.svelte';
+  import type { RepositoryOption } from '$lib/models/types/conversation.type';
+  import PlusIcon from '../components/Icons/PlusIcon.svelte';
+  import FolderIcon from '../components/Icons/FolderIcon.svelte';
+  import { recentRepositories } from '../stores/recentRepositories';
 
   export let sidebarOpen: boolean;
 
@@ -37,12 +34,14 @@
       Log.INFO(`User selected folder ${folder_path}`);
       if (folder_path.endsWith('/')) folder_path = folder_path.slice(0, -1);
 
+      const repo = {
+        url: folder_path,
+        name: folder_path.split('/').pop() || folder_path
+      };
       settingsStore.updateSettings({
-        selectedRepo: {
-          url: folder_path,
-          name: folder_path.split('/').pop() || folder_path
-        }
+        selectedRepo: repo
       });
+      recentRepositories.add(repo);
     } catch (error: any) {
       Log.ERROR(
         `Error occured during the folder selection process ${error.message}`
@@ -54,6 +53,52 @@
       });
     }
   }
+
+  function handleListboxChange(opt: Option<RepositoryOption>) {
+    if (opt.label === 'new-import') {
+      handleImportRepo();
+      return;
+    }
+
+    settingsStore.updateSettings({
+      selectedRepo: {
+        url: opt.value.url,
+        name: opt.value.url.split('/').pop() || opt.value.url
+      }
+    });
+  }
+
+  function getLabelPartsForRepo(selectedRepo: RepositoryOption) {
+    const paths = selectedRepo.url.split('/');
+    return {
+      end: paths[paths.length - 1],
+      start: paths[paths.length - 2]
+    };
+  }
+
+  function createOptions(items: RepositoryOption[]) {
+    const options: Option<RepositoryOption>[] = [];
+
+    items.forEach((item) => {
+      const parts = getLabelPartsForRepo(item);
+      options.push({
+        label: parts.start + ' / ' + parts.end,
+        value: item
+      });
+    });
+
+    options.push({
+      label: 'new-import',
+      value: {
+        url: '',
+        name: ''
+      }
+    });
+
+    return options;
+  }
+
+  $: recentRepositoriesOptions = createOptions($recentRepositories);
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
@@ -71,36 +116,51 @@
       BETA
     </div>
 
-    <div class="flex items-center">
+    <div class="group flex items-center">
       {#if $settingsStore.selectedRepo !== null}
-        {@const paths = $settingsStore.selectedRepo.url.split('/')}
-        <Menu
-          let:open
-          class="relative {$page.url.pathname === '/' ? '' : 'hidden'}"
+        <Listbox
+          expandFirst
+          options={recentRepositoriesOptions}
+          selected={{ label: '', value: $settingsStore.selectedRepo }}
+          on:change={(e) => {
+            handleListboxChange(e.detail);
+          }}
+          let:option
+          let:selected
         >
-          <MenuButton class="mr-2 flex items-center">
-            <ExpandIcon class="h-5 w-5" expanded={!open} />
-          </MenuButton>
-          <MenuItems
-            class="bg-background-secondary border-stroke-primary absolute top-full mt-4 border"
-          >
-            <MenuItem
-              as="button"
-              on:click={handleImportRepo}
-              class="body-regular text-content-secondary hover:text-content-primary flex h-10 items-center whitespace-nowrap px-3"
-            >
-              <GitHubIcon class="mr-2 h-4 w-4" />
-              {$_('header.importRepoButton')}
-            </MenuItem>
-          </MenuItems>
-        </Menu>
+          <div slot="selected-option" class="">
+            {@const labelParts = getLabelPartsForRepo(
+              $settingsStore.selectedRepo
+            )}
+            <span class="text-content-secondary headline-large">
+              {labelParts.start + ' / '}
+            </span>
+            <span class="text-content-primary headline-large ml-2">
+              {labelParts.end}
+            </span>
+          </div>
 
-        <span class="text-content-secondary headline-large">
-          {paths[paths.length - 2] + ' / '}
-        </span>
-        <span class="text-content-primary headline-large ml-2">
-          {paths[paths.length - 1]}
-        </span>
+          {#if option.label === 'new-import'}
+            <div class="flex flex-col">
+              <Divider class="w-full" />
+              <div
+                class="text-content-secondary hover:text-content-primary label-small flex h-9 items-center"
+              >
+                <PlusIcon class="mr-2 h-4 w-4" />
+                {$_('header.importRepoButton')}
+              </div>
+            </div>
+          {:else}
+            <div
+              class="{selected
+                ? 'text-content-primary'
+                : 'text-content-secondary'} label-small flex h-9 items-center"
+            >
+              <FolderIcon class="mr-2 h-4 w-4" />
+              {option.label}
+            </div>
+          {/if}
+        </Listbox>
       {:else}
         <Button
           variant="secondary"

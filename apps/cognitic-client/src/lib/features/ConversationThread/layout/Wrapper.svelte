@@ -19,7 +19,7 @@
 
     const offsetDiff =
       scrollToDiv.offsetTop - list.getOffset() - list.getClientSize();
-    if (offsetDiff < 100 || force) {
+    if (offsetDiff < 20 || force) {
       currentScrollTimeoutRef = setTimeout(() => {
         list.scrollToBottom();
         currentScrollTimeoutRef = null;

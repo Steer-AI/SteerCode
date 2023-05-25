@@ -17,7 +17,7 @@ export function getUIDHeader(): string {
   return Cookies.get(USER_COOKIE_ANONYMOUS_ID_NAME) || '';
 }
 
-export function getBackendUrl(version: string = 'v1'): string {
+export function getBackendUrl(version: string = 'v2'): string {
   const sv = settingsStore.getValue();
   if (sv.customBackendUrl && sv.useCustomBackend) {
     return sv.customBackendUrl + '/api/' + version;

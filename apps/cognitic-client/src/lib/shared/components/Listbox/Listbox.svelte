@@ -1,3 +1,12 @@
+<script lang="ts" context="module">
+  export type Option<T = any> = {
+    label: string;
+    value: T;
+    disabled?: boolean;
+    [key: string]: any;
+  };
+</script>
+
 <script lang="ts">
   import { clickOutside } from '$lib/shared/utils/hooks';
   import {
@@ -7,7 +16,6 @@
     ListboxOptions
   } from '@rgossiaux/svelte-headlessui';
   import { createEventDispatcher } from 'svelte';
-  import type { Option } from './types';
   import ExpandIcon from '../Icons/ExpandIcon.svelte';
 
   type T = $$Generic<Option>;
@@ -92,9 +100,9 @@
             ? 'text-content-primary'
             : 'text-content-secondary'}"
         >
-          <slot option={opt} selected={opt.value === selected.value}
-            >{opt.label}</slot
-          >
+          <slot option={opt} selected={opt.value === selected.value}>
+            {opt.label}
+          </slot>
         </ListboxOption>
       {/each}
     </ListboxOptions>
