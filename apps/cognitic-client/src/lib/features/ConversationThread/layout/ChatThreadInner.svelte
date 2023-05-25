@@ -94,7 +94,7 @@
       return {
         page_content: content.fileContent,
         metadata: {
-          file_name: content.fileName
+          file_path: content.filePath
         }
       };
     });
