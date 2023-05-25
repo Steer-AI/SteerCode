@@ -3,18 +3,20 @@
   import type { IFileTreeItem } from 'cognitic-models';
   export let file: IFileTreeItem;
   export let selected: boolean;
+  export let depth = 1;
   import { getClassWithColor } from 'file-icons-js';
 
   $: iconClassName = getClassWithColor(file.fileName);
 </script>
 
 <div
-  class="h-7 w-full {selected
+  class="h-7 w-full pr-5 {selected
     ? 'bg-background-primary bg-opacity-10'
-    : ''} flex items-center"
+    : ''} flex items-center hover:bg-background-inverse hover:bg-opacity-10 cursor-pointer"
+  style="padding-left: calc(1rem + (1.25rem * {depth-1}))"
 >
   <Checkbox
-    class="flex w-full items-center"
+    class="flex w-full items-center cursor-pointer"
     checkboxClass="w-3 h-3 ml-auto flex-shrink-0"
     checked={selected}
     on:click

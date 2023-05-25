@@ -71,7 +71,7 @@
     </div>
 
     <!-- scrollable file tree -->
-    <section class="flex-[2] overflow-y-scroll px-4">
+    <section class="flex-[2] overflow-y-auto">
       {#if initialFileTreeFile}
         <FileTreeItem
           file={initialFileTreeFile}

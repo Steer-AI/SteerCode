@@ -26,7 +26,7 @@
   }
 </script>
 
-<button class="flex h-7 w-full items-center" on:click={toggle}>
+<button class="flex h-7 w-full pr-4 items-center hover:bg-background-inverse hover:bg-opacity-10" on:click={toggle}  style="padding-left: calc(1rem + (1.25rem * {depth-1}))">
   {#if expanded}
     <ArrowDownIcon class="h-5 w-5" />
   {:else}
@@ -51,7 +51,7 @@
 </button>
 
 {#if expanded}
-  <ul class="w-full overflow-auto" style="padding-left: 20px">
+  <ul class="w-full overflow-auto">
     {#each file.children.sort(sortFileTreeItems) as f (f.filePath)}
       {@const selected = $selectedEntities.find(
         (s) => s.filePath === f.filePath
@@ -70,6 +70,7 @@
             }}
             file={f}
             selected={Boolean(selected)}
+            depth={depth + 1}
           />
         {/if}
       </li>
