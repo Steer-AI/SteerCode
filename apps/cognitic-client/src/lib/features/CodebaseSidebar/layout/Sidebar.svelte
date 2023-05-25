@@ -36,9 +36,9 @@
   }
 
   function handleUpdate(selectedRepo: RepositoryOption | null) {
-    selectedEntities.clear();
     if (!selectedRepo) {
       initialFileTreeFile = null;
+      selectedEntities.clear();
       return;
     }
 
@@ -49,6 +49,7 @@
         filePath: selectedRepo.url,
         children: []
       };
+      selectedEntities.clear();
       fetchFileTreeItem(initialFileTreeFile, 1);
       return;
     }
@@ -60,6 +61,7 @@
         filePath: selectedRepo.url,
         children: []
       };
+      selectedEntities.clear();
       fetchFileTreeItem(initialFileTreeFile, 1);
       return;
     }

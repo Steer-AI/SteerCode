@@ -272,7 +272,7 @@
   <svelte:fragment slot="footer">
     {#if answer}
       <Button
-        class="mx-auto mb-2"
+        class="bg-background-primary mx-auto"
         variant="tertiary"
         type="button"
         on:click={() => {
