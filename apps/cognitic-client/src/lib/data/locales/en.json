@@ -73,6 +73,8 @@
         },
         "copy": "Copy",
         "copied": "Copied",
+        "apply": "Apply changes",
+        "applied": "changes applied",
         "saveEdit": "Save",
         "cancelEdit": "Cancel",
         "stop": "Stop generating response.",

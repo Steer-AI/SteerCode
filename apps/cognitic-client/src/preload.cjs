@@ -3,6 +3,9 @@ const {
   getContentsForFiles,
   getFileTree
 } = require('./lib/data/localQueries.cjs');
+const {
+  applyDiff
+} = require('./lib/data/fileEdit.cjs');
 
 contextBridge.exposeInMainWorld('electron', {
   openDialog: async (method, config) => {
@@ -13,5 +16,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
   getTree: async (path, maxDepth) => {
     return getFileTree(path, maxDepth);
+  },
+  applyDiff: async (diff) => {
+    return applyDiff(diff);
   }
 });
