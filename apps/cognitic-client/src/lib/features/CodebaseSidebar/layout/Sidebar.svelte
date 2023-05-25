@@ -1,36 +1,21 @@
 <script lang="ts">
   import Divider from '$lib/shared/components/Divider.svelte';
   import { _ } from 'svelte-i18n';
-  import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { selectedEntities } from '../stores/selection';
   import SelectedContextItem from '../components/SelectedContextItem.svelte';
-  import type {
-    IErrorResponse,
-    IFileTreeItem,
-    IFileTreeResponse
-  } from 'cognitic-models';
+  import type { IFileTreeItem } from 'cognitic-models';
   import FileTreeItem from '../components/FileTreeItem.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
-  import { onMount } from 'svelte';
   import 'file-icons-js/css/style.css';
+  import type { RepositoryOption } from '$lib/models/types/conversation.type';
 
-  export let conversation: Conversation;
-  let initialFileTreeFile: IFileTreeItem;
+  export let selectedRepo: RepositoryOption | null;
+  let initialFileTreeFile: IFileTreeItem | null;
 
-  function isSuccesResponse(
-    x: IFileTreeResponse | IErrorResponse
-  ): x is IFileTreeResponse {
-    return x.success;
-  }
-
-  async function fetchFileTreeItem(
-    root: IFileTreeItem,
-    item: IFileTreeItem,
-    depth: number
-  ) {
-    Log.INFO('fetchFileTreeItem', { root, item, depth });
+  async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
+    Log.INFO('fetchFileTreeItem', { item, depth });
 
     if (!item.isDirectory) return;
     if (item.children.length !== 0) return;
@@ -38,7 +23,7 @@
     try {
       const fileTree = await window.electron.getTree(item.filePath, depth);
       item.children = fileTree;
-      initialFileTreeFile = root;
+      initialFileTreeFile = initialFileTreeFile;
       Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, fileTree });
     } catch (error: any) {
       Log.ERROR(error.message);
@@ -50,22 +35,44 @@
     }
   }
 
-  onMount(() => {
-    initialFileTreeFile = {
-      isDirectory: true,
-      fileName: conversation.value.repository.name,
-      filePath: conversation.value.repository.url,
-      children: []
-    };
-    fetchFileTreeItem(initialFileTreeFile, initialFileTreeFile, 1);
-  });
+  function handleUpdate(selectedRepo: RepositoryOption | null) {
+    selectedEntities.clear();
+    if (!selectedRepo) {
+      initialFileTreeFile = null;
+      return;
+    }
+
+    if (!initialFileTreeFile) {
+      initialFileTreeFile = {
+        isDirectory: true,
+        fileName: selectedRepo.name,
+        filePath: selectedRepo.url,
+        children: []
+      };
+      fetchFileTreeItem(initialFileTreeFile, 1);
+      return;
+    }
+
+    if (selectedRepo.url !== initialFileTreeFile.filePath) {
+      initialFileTreeFile = {
+        isDirectory: true,
+        fileName: selectedRepo.name,
+        filePath: selectedRepo.url,
+        children: []
+      };
+      fetchFileTreeItem(initialFileTreeFile, 1);
+      return;
+    }
+  }
+
+  $: handleUpdate(selectedRepo);
 </script>
 
 <aside class="flex" style={$$props.style}>
   <Divider vertical />
   <div class="bg-background-primary flex w-[400px] flex-col">
     <div
-      class="headline-large text-content-primary flex items-center px-6 pt-6 pb-4"
+      class="headline-large text-content-primary flex h-14 items-center px-6"
     >
       {$_('conversation.cosebaseSidebar.codebaseTitle')}
     </div>
@@ -77,33 +84,38 @@
           expanded={true}
           file={initialFileTreeFile}
           on:expand={(e) => {
-            fetchFileTreeItem(initialFileTreeFile, e.detail, 1);
+            fetchFileTreeItem(e.detail, 1);
           }}
         />
+      {:else}
+        <div class="text-content-secondary body-regular flex-1 px-6">
+          {$_('conversation.cosebaseSidebar.noCodebase')}
+        </div>
       {/if}
     </section>
 
     <Divider />
 
     <div
-      class="headline-large text-content-primary flex items-center px-6 pt-6 pb-4"
+      class="headline-large text-content-primary flex h-14 items-center px-6"
     >
       {$_('conversation.cosebaseSidebar.contextTitle')}
     </div>
 
-    {#if $selectedEntities.length === 0}
-      <div class="flex-1 text-content-primarySub body-regular px-6">
+    {#if $selectedEntities.length === 0 || !initialFileTreeFile}
+      <div class="text-content-secondary body-regular flex-1 px-6">
         {$_('conversation.cosebaseSidebar.noContext')}
       </div>
     {:else}
       <!-- scrollable selected files -->
-      <section class="flex-1 overflow-y-scroll px-6">
+      <section class="flex-1 overflow-y-scroll">
         {#each $selectedEntities as entity (entity.filePath)}
-          <SelectedContextItem item={entity} {conversation} />
+          <SelectedContextItem
+            item={entity}
+            prefixPath={initialFileTreeFile.filePath}
+          />
         {/each}
       </section>
     {/if}
-
-    
   </div>
 </aside>

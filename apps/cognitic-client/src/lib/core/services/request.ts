@@ -17,13 +17,12 @@ export function getUIDHeader(): string {
   return Cookies.get(USER_COOKIE_ANONYMOUS_ID_NAME) || '';
 }
 
-const apiVersionPath = '/api/v1';
-export function getBackendUrl(): string {
+export function getBackendUrl(version: string = 'v1'): string {
   const sv = settingsStore.getValue();
   if (sv.customBackendUrl && sv.useCustomBackend) {
-    return sv.customBackendUrl + apiVersionPath;
+    return sv.customBackendUrl + '/api/' + version;
   }
-  return 'https://api.steercode.com' + apiVersionPath;
+  return 'https://api.steercode.com' + '/api/' + version;
 }
 
 export async function customFetch(

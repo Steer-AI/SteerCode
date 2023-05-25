@@ -18,6 +18,7 @@
   export let listboxClass = '';
   export let buttonClass = 'h-6';
   export let inverted: boolean = false;
+  export let expandFirst: boolean = false;
   export let variant: 'primary' | 'secondary' = 'secondary';
 
   const dispatch = createEventDispatcher();
@@ -55,16 +56,26 @@
         ? 'text-content-primary'
         : 'text-content-secondary'} {buttonClass}"
     >
+      {#if expandFirst}
+        <ExpandIcon
+          expanded={inverted ? open : !open}
+          class="{open
+            ? 'text-content-primary'
+            : 'text-content-tertiary'} mr-2 h-4 w-4"
+        />
+      {/if}
       <slot name="selected-option" {selected}>
         <span class="">{selected.label}</span>
       </slot>
 
-      <ExpandIcon
-        expanded={inverted ? open : !open}
-        class="{open
-          ? 'text-content-primary'
-          : 'text-content-tertiary'} ml-2 h-4 w-4"
-      />
+      {#if !expandFirst}
+        <ExpandIcon
+          expanded={inverted ? open : !open}
+          class="{open
+            ? 'text-content-primary'
+            : 'text-content-tertiary'} ml-2 h-4 w-4"
+        />
+      {/if}
     </ListboxButton>
 
     <ListboxOptions
@@ -81,15 +92,9 @@
             ? 'text-content-primary'
             : 'text-content-secondary'}"
         >
-          {#if opt.renderComponent}
-            <svelte:component
-              this={opt.renderComponent}
-              option={opt}
-              selected={opt.value === selected.value}
-            />
-          {:else}
-            {opt.label}
-          {/if}
+          <slot option={opt} selected={opt.value === selected.value}
+            >{opt.label}</slot
+          >
         </ListboxOption>
       {/each}
     </ListboxOptions>

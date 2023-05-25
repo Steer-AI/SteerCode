@@ -103,7 +103,7 @@
       headers: headers,
       payload: JSON.stringify({ ...conversation.value, documents: documents })
     };
-    eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
+    eventSource = new SSE(getBackendUrl('v2') + '/chat/stream', sseOptions);
 
     eventSource.addEventListener('error', (e) => handleError(e));
 
