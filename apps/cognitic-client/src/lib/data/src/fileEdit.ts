@@ -1,9 +1,11 @@
 
-import fs from 'fs';
 import {parse } from 'diff2html'; // Update this to your actual imports
-import { DiffFile, DiffBlock, DiffLine, LineType } from 'diff2html/lib/types';
+import type { DiffFile, DiffBlock } from 'diff2html/lib/types';
+import { LineType } from 'diff2html/lib/types';
+const fs = require('fs');
 
-const applyDiff = (diff: string) => {
+
+export const applyDiff = (diff: string) => {
     const change = parse(diff);
 
 

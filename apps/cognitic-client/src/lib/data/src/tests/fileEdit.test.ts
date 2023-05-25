@@ -1,4 +1,4 @@
-import {applyBlockChangesToExistingFile, applyFileDiff} from '../routes/fileEdit';
+import {applyBlockChangesToExistingFile, applyFileDiff} from '../fileEdit';
 import {parse} from 'diff2html';
 const fs = require('fs');
 const path = require('path');
