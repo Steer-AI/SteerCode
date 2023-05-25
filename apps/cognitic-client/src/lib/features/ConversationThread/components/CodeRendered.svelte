@@ -9,6 +9,7 @@
   import { _ } from 'svelte-i18n';
   import { parse } from 'diff2html';
 
+  let fileName: string = "";
   export let lang: string;
   export let text: string;
 
@@ -16,6 +17,7 @@
 
   function isEmptyDiff(diff: string): boolean {
     const change = parse(diff);
+    if (change.length > 0) fileName = change[0].newName;
     return change.length > 0;
   }
 
@@ -96,9 +98,15 @@
   <div
     class="bg-background-primary flex h-10 items-center justify-between px-3"
   >
-    <span class="text-xs font-bold text-white">{highlighted.language}</span>
+    {#if isDiff}
+      <span class="text-xs font-bold text-white">{fileName}</span>
+    {:else}
+      <span class="text-xs font-bold text-white">{highlighted.language}</span>
+    {/if}
 
-    <div class="flex items-center justify-between space-x-2">
+    <div
+    class="flex items-center justify-between space-x-2"
+    >
       <Button
         variant="tertiary"
         size="small"
