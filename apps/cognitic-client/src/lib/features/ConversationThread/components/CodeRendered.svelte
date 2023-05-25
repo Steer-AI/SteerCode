@@ -7,7 +7,7 @@
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import hljs from 'highlight.js';
   import { _ } from 'svelte-i18n';
-  import {parse } from 'diff2html';
+  import { parse } from 'diff2html';
 
   export let lang: string;
   export let text: string;
@@ -21,7 +21,7 @@
 
   function highlight(code: string, lang: string | undefined) {
     if (isDiff) {
-      lang = "diff";
+      lang = 'diff';
     }
 
     if (lang && hljs.getLanguage(lang)) {
@@ -74,21 +74,22 @@
   }
 
   function applyChange(diff: string): void {
-    window.electron.applyDiff(diff).then(() => {
-          applied = true;
-          setTimeout(() => (applied = false), 2000);
-        })
-        .catch((error) => {
-          Log.ERROR('Clipboard writeText failed', error);
+    window.electron
+      .applyDiff(diff)
+      .then(() => {
+        applied = true;
+        setTimeout(() => (applied = false), 2000);
+      })
+      .catch((error) => {
+        Log.ERROR('Clipboard writeText failed', error);
 
-          notificationStore.addNotification({
-            type: NotificationType.GeneralError,
-            message: $_('notifications.failedCopyClipboard'),
-            position: Position.BottomRight
-          });
+        notificationStore.addNotification({
+          type: NotificationType.GeneralError,
+          message: $_('notifications.failedCopyClipboard'),
+          position: Position.BottomRight
         });
+      });
   }
-
 </script>
 
 <div class="not-prose" style="min-width: 256px">
@@ -97,9 +98,7 @@
   >
     <span class="text-xs font-bold text-white">{highlighted.language}</span>
 
-    <div 
-    class="flex items-center justify-between space-x-2"
-    >
+    <div class="flex items-center justify-between space-x-2">
       <Button
         variant="tertiary"
         size="small"
@@ -116,23 +115,22 @@
       </Button>
 
       {#if isDiff}
-      <Button
-        variant="secondary"
-        size="small"
-        class="w-40"
-        on:click={() => applyChange(text)}
-      >
-        {#if applied}
-          <DoneIcon class="mr-1 h-3 w-3" />
-          {$_('conversation.applied')}
-        {:else}
-          <CopyIcon class="mr-1 h-3 w-3" />
-          {$_('conversation.apply')}
-        {/if}
-      </Button>
+        <Button
+          variant="secondary"
+          size="small"
+          class="w-40"
+          on:click={() => applyChange(text)}
+        >
+          {#if applied}
+            <DoneIcon class="mr-1 h-3 w-3" />
+            {$_('conversation.applied')}
+          {:else}
+            <CopyIcon class="mr-1 h-3 w-3" />
+            {$_('conversation.apply')}
+          {/if}
+        </Button>
       {/if}
     </div>
-
   </div>
   <pre class="{highlighted.language} hljs bg p-3">
     <code class="mono-regular">{@html highlighted.value}</code>

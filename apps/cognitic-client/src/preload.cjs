@@ -1,11 +1,9 @@
-const { contextBridge, ipcRenderer, dialog } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 const {
   getContentsForFiles,
   getFileTree
 } = require('./lib/data/localQueries.cjs');
-const {
-  applyDiff
-} = require('./lib/data/fileEdit.cjs');
+const { applyDiff } = require('./lib/data/fileEdit.cjs');
 const { machineIdSync } = require('node-machine-id');
 
 contextBridge.exposeInMainWorld('electron', {
@@ -20,6 +18,7 @@ contextBridge.exposeInMainWorld('electron', {
   },
   applyDiff: async (diff) => {
     return applyDiff(diff);
+  },
   getUid: () => {
     return machineIdSync(true);
   }

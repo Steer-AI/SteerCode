@@ -1,14 +1,14 @@
-import {applyBlockChangesToExistingFile, applyFileDiff} from '../fileEdit';
-import {parse} from 'diff2html';
+import { parse } from 'diff2html';
+import { applyBlockChangesToExistingFile, applyFileDiff } from '../fileEdit';
 const fs = require('fs');
 const path = require('path');
 
 const getFiles = () => {
-
- return {
-  ogFile: ["Apple", "Banana", "Cherry", "", "Elderberry"], 
-  newFile: ["Apple", "Blueberry", "Cherry", "Durian", "", "Elderberry"]
-};}
+  return {
+    ogFile: ['Apple', 'Banana', 'Cherry', '', 'Elderberry'],
+    newFile: ['Apple', 'Blueberry', 'Cherry', 'Durian', '', 'Elderberry']
+  };
+};
 
 test('deleting and inserting on same line', () => {
   const diff = `
@@ -20,18 +20,17 @@ test('deleting and inserting on same line', () => {
 +Blueberry
   Cherry
 +Durian
-`
+`;
 
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
 
-  const {ogFile, newFile} = getFiles();
+  const { ogFile, newFile } = getFiles();
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
-
 
 test('inserting and deleting on same line', () => {
   const diff = `
@@ -43,15 +42,15 @@ test('inserting and deleting on same line', () => {
 -Banana
   Cherry
 +Durian
-`
+`;
 
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
 
-  const {ogFile, newFile} = getFiles();
+  const { ogFile, newFile } = getFiles();
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -71,17 +70,35 @@ test('multiple edits in document', () => {
 +Grape
   Honeydew
 +Ice Cream Bean
-`
-  const ogFile = ["Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Honeydew"];
-  const newFile = ["Apple", "Blueberry", "Cherry", "Durian", "Durian", "Elderberry", "Grape", "Honeydew", "Ice Cream Bean"];
+`;
+  const ogFile = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Durian',
+    'Elderberry',
+    'Fig',
+    'Honeydew'
+  ];
+  const newFile = [
+    'Apple',
+    'Blueberry',
+    'Cherry',
+    'Durian',
+    'Durian',
+    'Elderberry',
+    'Grape',
+    'Honeydew',
+    'Ice Cream Bean'
+  ];
   const change = parse(diff);
   const file = change[0];
   let lines = [...ogFile];
-  
-  for(let block of file.blocks) {
+
+  for (let block of file.blocks) {
     lines = applyBlockChangesToExistingFile(lines, block);
   }
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -93,15 +110,15 @@ test('no edits in document', () => {
   Apple
   Banana
   Cherry
-`
-  const ogFile = ["Apple", "Banana", "Cherry"];
-  const newFile = ["Apple", "Banana", "Cherry"];
+`;
+  const ogFile = ['Apple', 'Banana', 'Cherry'];
+  const newFile = ['Apple', 'Banana', 'Cherry'];
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
-  
+
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -113,15 +130,15 @@ test('edits at the beginning of document', () => {
 -Apple
 +Avocado
   Banana
-`
-  const ogFile = ["Apple", "Banana", "Cherry"];
-  const newFile = ["Avocado", "Banana", "Cherry"];
+`;
+  const ogFile = ['Apple', 'Banana', 'Cherry'];
+  const newFile = ['Avocado', 'Banana', 'Cherry'];
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
-  
+
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -133,15 +150,15 @@ test('edits at the end of document', () => {
   Banana
 -Cherry
 +Cheese Fruit
-`
-  const ogFile = ["Apple", "Banana", "Cherry"];
-  const newFile = ["Apple", "Banana", "Cheese Fruit"];
+`;
+  const ogFile = ['Apple', 'Banana', 'Cherry'];
+  const newFile = ['Apple', 'Banana', 'Cheese Fruit'];
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
-  
+
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -157,15 +174,15 @@ test('changes interspersed with unchanged lines', () => {
 -Durian
 +Elderberry
   Fig
-`
-  const ogFile = ["Apple", "Banana", "Cherry", "Durian", "Fig"];
-  const newFile = ["Apple", "Blueberry", "Cherry", "Elderberry", "Fig"];
+`;
+  const ogFile = ['Apple', 'Banana', 'Cherry', 'Durian', 'Fig'];
+  const newFile = ['Apple', 'Blueberry', 'Cherry', 'Elderberry', 'Fig'];
   const change = parse(diff);
   const file = change[0];
   const block = file.blocks[0];
-  
+
   const lines = applyBlockChangesToExistingFile(ogFile, block);
-  
+
   expect(lines).toEqual(newFile);
 });
 
@@ -177,8 +194,8 @@ test('create a file', () => {
 @@ -0,0 +1,2 @@
 +Apple
 +Banana
-`
-  const newFileContent = "Apple\nBanana";
+`;
+  const newFileContent = 'Apple\nBanana';
   const change = parse(diff);
   const file = change[0];
   file.newName = newFilePath; // Replace relative path with absolute path in the diff object
@@ -205,7 +222,7 @@ test('remove a file', () => {
 @@ -1,2 +0,0 @@
 -Apple
 -Banana
-`
+`;
   const change = parse(diff);
   const file = change[0];
   file.oldName = oldFilePath; // Replace relative path with absolute path in the diff object
@@ -219,7 +236,6 @@ test('remove a file', () => {
   expect(fs.existsSync(oldFilePath)).toEqual(false);
 });
 
-
 test('rename a file', () => {
   const oldFilePath = path.join(process.cwd(), 'file1.txt');
   const newFilePath = path.join(process.cwd(), 'file2.txt');
@@ -230,8 +246,8 @@ test('rename a file', () => {
  Apple
 -Banana
 +Blueberry
-`
-  const newFileContent = "Apple\nBlueberry";
+`;
+  const newFileContent = 'Apple\nBlueberry';
   const change = parse(diff);
   const file = change[0];
   file.oldName = oldFilePath; // Replace relative path with absolute path in the diff object
@@ -240,7 +256,7 @@ test('rename a file', () => {
 
   // Make sure the old file exists before the test
   fs.writeFileSync(oldFilePath, 'Apple\nBanana');
-  
+
   // Make sure the new file does not exist before the test
   if (fs.existsSync(newFilePath)) {
     fs.unlinkSync(newFilePath);
