@@ -46,7 +46,7 @@
       message: query,
       conversationId: agent.value.id
     });
-    goto(`/chat/${agent.value.id}`);
+    goto(`/chat?id=${agent.value.id}`);
 
     setTimeout(() => {
       // refetch after 10s to get a conversation title

@@ -17,6 +17,7 @@
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
+  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -220,6 +221,7 @@
     settingsStore.updateSettings({
       selectedRepo: conversation.value.repository
     });
+    recentRepositories.add(conversation.value.repository);
 
     let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {

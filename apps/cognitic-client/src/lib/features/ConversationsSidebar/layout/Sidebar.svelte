@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
   import Button from '$lib/shared/components/Button.svelte';
   import Divider from '$lib/shared/components/Divider.svelte';
   import PlusIcon from '$lib/shared/components/Icons/PlusIcon.svelte';
@@ -8,7 +7,10 @@
     type DispatchEvents
   } from '../components/ConversationButton.svelte';
   import ActionModal from '$lib/shared/components/ActionModal.svelte';
-  import { conversationsStore } from '$lib/shared/stores/conversations';
+  import {
+    conversationsStore,
+    selectedConversationId
+  } from '$lib/shared/stores/conversations';
   import { trackEvent } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
@@ -92,7 +94,7 @@
         {#each $conversationsStore as agent (agent.value.id)}
           <ConversationButton
             {agent}
-            selected={$page.params.chatId === agent.value.id}
+            selected={$selectedConversationId === agent.value.id}
             on:delete={handleAgentDelete}
           />
         {/each}

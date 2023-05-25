@@ -7,7 +7,7 @@ import '$lib/core/services/i18n';
 import { locale, waitLocale } from 'svelte-i18n';
 import type { LayoutLoad } from './$types';
 
-export const prerender = false;
+export const prerender = true;
 export const ssr = false;
 export const csr = true;
 

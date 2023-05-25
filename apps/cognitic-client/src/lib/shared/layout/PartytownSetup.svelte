@@ -40,8 +40,7 @@
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
       tracesSampleRate: 0.1,
-      debug: false,
-      tunnel: '/api/sentry'
+      debug: false
     });
   });
 </script>

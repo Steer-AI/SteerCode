@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { page } from '$app/stores';
   import Error from '$lib/shared/layout/Error.svelte';
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import ChatThreadInner from '$lib/features/ConversationThread/layout/ChatThreadInner.svelte';
+  import type { PageData } from './$types';
 
-  $: conversation = conversationsStore.getById($page.params.chatId);
+  export let data: PageData;
+  $: conversation = conversationsStore.getById(data.id);
 </script>
 
 <div class="flex h-full">

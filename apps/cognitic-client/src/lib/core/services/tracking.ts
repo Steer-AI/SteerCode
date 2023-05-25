@@ -11,7 +11,6 @@ export function loadAnalytics(): void {
   analytics = AnalyticsBrowser.load(
     {
       writeKey: PUBLIC_ANALYTICS_WRITE_KEY
-      // cdnURL: '/api/tracking'
     }
     // {
     //   integrations: {

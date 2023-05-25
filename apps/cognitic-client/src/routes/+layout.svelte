@@ -4,8 +4,13 @@
   import { loadAnalytics } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import { onMount } from 'svelte';
+  import Cookies from 'js-cookie';
 
   onMount(() => {
+    if (!window.electron) return;
+    const uid = window.electron.getUid();
+    console.log('uid', uid);
+    Cookies.set('uid', uid);
     loadAnalytics();
   });
 </script>

@@ -1,83 +1,104 @@
-// Modules to control application life and create native browser window
+const windowStateManager = require('electron-window-state');
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const path = require('path');
+const contextMenu = require('electron-context-menu');
 const serve = require('electron-serve');
-const loadURL = serve({ directory: 'public' });
+const path = require('path');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-
-let mainWindow;
-
-function isDev() {
-  return !app.isPackaged;
+try {
+  require('electron-reloader')(module);
+} catch (e) {
+  console.error(e);
 }
 
+const serveURL = serve({ directory: '.' });
+const port = process.env.PORT || 5173;
+const dev = !app.isPackaged;
+let mainWindow;
+
 function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    fullscreen: true, // Start the app in full screen mode
-    webPreferences: {
-      nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.cjs')
-      // enableRemoteModule: true,
-      // contextIsolation: false
-    },
-    icon: path.join(__dirname, 'public/favicon.png'),
-    show: false
+  let windowState = windowStateManager({
+    defaultWidth: 1024,
+    defaultHeight: 600
   });
 
-  // This block of code is intended for development purpose only.
-  // Delete this entire block of code when you are ready to package the application.
-  if (isDev()) {
-    mainWindow.loadURL('http://localhost:5173/');
-  } else {
-    loadURL(mainWindow);
-  }
+  const mainWindow = new BrowserWindow({
+    backgroundColor: 'whitesmoke',
+    titleBarStyle: 'default',
+    autoHideMenuBar: true,
+    movable: true,
+    trafficLightPosition: {
+      x: 17,
+      y: 32
+    },
+    minHeight: 450,
+    minWidth: 1024,
+    webPreferences: {
+      enableRemoteModule: true,
+      contextIsolation: true,
+      nodeIntegration: true,
+      spellcheck: false,
+      devTools: true || dev, // TODO: Remove this
+      preload: path.join(__dirname, 'preload.cjs')
+    },
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height
+  });
 
-  // Uncomment the following line of code when app is ready to be packaged.
-  // loadURL(mainWindow);
+  windowState.manage(mainWindow);
 
-  // Open the DevTools and also disable Electron Security Warning.
-  // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
-  // mainWindow.webContents.openDevTools();
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+  mainWindow.on('close', () => {
+    windowState.saveState(mainWindow);
+  });
+
+  return mainWindow;
+}
+
+contextMenu({
+  showLookUpSelection: false,
+  showSearchWithGoogle: false,
+  showCopyImage: false,
+  prepend: (defaultActions, params, browserWindow) => [
+    {
+      label: 'Make App 💻'
+    }
+  ]
+});
+
+function loadVite(port) {
+  mainWindow.loadURL(`http://localhost:${port}`).catch((e) => {
+    console.log('Error loading URL, retrying', e);
+    setTimeout(() => {
+      loadVite(port);
+    }, 200);
+  });
+}
+
+function createMainWindow() {
+  mainWindow = createWindow();
+  mainWindow.once('close', () => {
     mainWindow = null;
   });
 
-  // Emitted when the window is ready to be shown
-  // This helps in showing the window gracefully.
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
+  if (dev) loadVite(port);
+  else serveURL(mainWindow);
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
+app.once('ready', createMainWindow);
+app.on('activate', () => {
+  if (!mainWindow) {
+    createMainWindow();
+  }
+});
+app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-
-app.on('activate', function () {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
-});
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
 
 app.whenReady().then(() => {
   ipcMain.handle('dialog', async (event, method, config) => {

@@ -44,12 +44,6 @@ const config = ({ mode }) => {
 
   return defineConfig({
     plugins,
-    server: {
-      open: '/',
-      fs: {
-      },
-      proxy: {}
-    },
     build: {
       sourcemap: true,
     },

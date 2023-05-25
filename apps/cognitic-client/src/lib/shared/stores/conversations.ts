@@ -184,3 +184,5 @@ function createConversationsStore(): DataStore<
 }
 
 export const conversationsStore = createConversationsStore();
+
+export const selectedConversationId = writable<string | null>(null);

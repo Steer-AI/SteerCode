@@ -6,8 +6,14 @@
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
   import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
+  import { conversationsStore } from '$lib/shared/stores/conversations';
+  import { onMount } from 'svelte';
 
   let sidebarOpen = browser ? window.innerWidth > 768 : true;
+
+  onMount(() => {
+    conversationsStore.fetchFromServer();
+  });
 </script>
 
 <div class="main-template">

@@ -25,7 +25,7 @@
     : 'bg-background-primary text-content-primarySub hover:text-content-primary hover:bg-background-primaryHover'}"
 >
   <a
-    href="/chat/{$agent.id}"
+    href="/chat?id={$agent.id}"
     class="relative flex h-full flex-1 items-center overflow-hidden"
     title={$agent.title}
   >
