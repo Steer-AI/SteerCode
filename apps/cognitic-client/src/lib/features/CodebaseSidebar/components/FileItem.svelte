@@ -1,19 +1,36 @@
 <script lang="ts">
   import Checkbox from '$lib/shared/components/Checkbox.svelte';
   import type { IFileTreeItem } from 'cognitic-models';
+  import { tick } from 'svelte';
+
   export let file: IFileTreeItem;
   export let selected: boolean;
   export let depth = 1;
   import { getClassWithColor } from 'file-icons-js';
 
   $: iconClassName = getClassWithColor(file.fileName);
+
+  let divElement: HTMLElement;
+
+  async function handleInteraction(event: MouseEvent | KeyboardEvent) {
+    if (event instanceof KeyboardEvent && event.key !== 'Enter') return;
+    event.stopPropagation();
+
+    await tick();
+    (divElement.querySelector('.checkbox-container input') as HTMLElement)?.click();
+  }
 </script>
 
 <div
-  class="h-7 w-full pr-5 {selected
-    ? 'bg-background-primary bg-opacity-10'
-    : ''} flex items-center hover:bg-background-inverse hover:bg-opacity-10 cursor-pointer"
-  style="padding-left: calc(1rem + (1.25rem * {depth-1}))"
+  bind:this={divElement}
+  on:click={handleInteraction}
+  on:keydown={handleInteraction}
+  role="button"
+  tabindex="0"
+  class="h-7 w-full pr-6 {selected
+    ? 'bg-primary bg-opacity-5'
+    : ''} flex items-center hover:bg-primary hover:bg-opacity-10 cursor-pointer"
+  style="padding-left: calc(1.5rem + (1.25rem * {depth-1}))"
 >
   <Checkbox
     class="flex w-full items-center cursor-pointer"

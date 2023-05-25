@@ -57,7 +57,7 @@
       filePath: conversation.value.repository.url,
       children: []
     };
-    fetchFileTreeItem(initialFileTreeFile, initialFileTreeFile, 0);
+    fetchFileTreeItem(initialFileTreeFile, initialFileTreeFile, 1);
   });
 </script>
 
@@ -65,7 +65,7 @@
   <Divider vertical />
   <div class="bg-background-primary flex w-[400px] flex-col">
     <div
-      class="headline-large text-content-primary flex h-14 items-center px-4"
+      class="headline-large text-content-primary flex items-center px-6 pt-6 pb-4"
     >
       {$_('conversation.cosebaseSidebar.codebaseTitle')}
     </div>
@@ -74,6 +74,7 @@
     <section class="flex-[2] overflow-y-auto">
       {#if initialFileTreeFile}
         <FileTreeItem
+          expanded={true}
           file={initialFileTreeFile}
           on:expand={(e) => {
             fetchFileTreeItem(initialFileTreeFile, e.detail, 1);
@@ -85,16 +86,24 @@
     <Divider />
 
     <div
-      class="headline-large text-content-primary flex h-14 items-center px-4"
+      class="headline-large text-content-primary flex items-center px-6 pt-6 pb-4"
     >
       {$_('conversation.cosebaseSidebar.contextTitle')}
     </div>
 
-    <!-- scrollable selected files -->
-    <section class="flex-1 overflow-y-scroll px-4">
-      {#each $selectedEntities as entity (entity.filePath)}
-        <SelectedContextItem item={entity} {conversation} />
-      {/each}
-    </section>
+    {#if $selectedEntities.length === 0}
+      <div class="flex-1 text-content-primarySub body-regular px-6">
+        {$_('conversation.cosebaseSidebar.noContext')}
+      </div>
+    {:else}
+      <!-- scrollable selected files -->
+      <section class="flex-1 overflow-y-scroll px-6">
+        {#each $selectedEntities as entity (entity.filePath)}
+          <SelectedContextItem item={entity} {conversation} />
+        {/each}
+      </section>
+    {/if}
+
+    
   </div>
 </aside>

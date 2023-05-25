@@ -26,7 +26,7 @@
   }
 </script>
 
-<button class="flex h-7 w-full pr-4 items-center hover:bg-background-inverse hover:bg-opacity-10" on:click={toggle}  style="padding-left: calc(1rem + (1.25rem * {depth-1}))">
+<button class="flex h-7 w-full pr-4 items-center hover:bg-primary hover:bg-opacity-10" on:click={toggle}  style="padding-left: calc(1.5rem + (1.25rem * {depth-1}))">
   {#if expanded}
     <ArrowDownIcon class="h-5 w-5" />
   {:else}

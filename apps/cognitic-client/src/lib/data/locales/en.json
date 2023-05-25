@@ -79,7 +79,8 @@
         "disclaimer": "SteerCode Chat may provide inaccurate information about the Langchain codebase. If you find any mistakes, please let us know so we can do better job next-time.",
         "cosebaseSidebar": {
             "codebaseTitle": "Codebase",
-            "contextTitle": "Selected context"
+            "contextTitle": "Selected context",
+            "noContext": "The files you select will be added to your prompt as a context."
         }
     }, 
 
