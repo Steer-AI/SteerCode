@@ -87,6 +87,20 @@ export function applyBlockChangesToExistingFile(
 ) {
   let insertOffset = 0;
   for (let diffLine of block.lines) {
+    if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
+        const adjustedLine = block.newStartLine + insertOffset - 1;
+        if (lines[adjustedLine] !== diffLine.content.slice(1)) {
+            if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
+                block.newStartLine++;
+            } else if (adjustedLine > 0 && lines[adjustedLine - 1] === diffLine.content.slice(1)) {
+                block.newStartLine--;
+            } else {
+                console.error(`Error: Cannot find matching context line at ${adjustedLine} for file`);
+                return lines;
+            }
+        }
+    }
+    
     const adjustedLine = block.newStartLine + insertOffset - 1;
     if (diffLine.type === LineType.INSERT) {
       lines.splice(adjustedLine, 0, diffLine.content.slice(1));
