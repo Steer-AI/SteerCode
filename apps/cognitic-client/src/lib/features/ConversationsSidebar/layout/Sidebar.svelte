@@ -69,7 +69,7 @@
     : '-left-full'}"
   style={$$props.style}
 >
-  <div class="bg-background-primary flex w-64 flex-col">
+  <div class="bg-background-primary flex w-[290px] flex-col">
     <div class="flex h-14 flex-shrink-0 items-center px-6">
       <Button
         variant="secondary"

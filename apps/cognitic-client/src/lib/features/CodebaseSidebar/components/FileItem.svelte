@@ -9,7 +9,7 @@
 </script>
 
 <div
-  class="h-8 w-full {selected
+  class="h-7 w-full {selected
     ? 'bg-background-primary bg-opacity-10'
     : ''} flex items-center"
 >

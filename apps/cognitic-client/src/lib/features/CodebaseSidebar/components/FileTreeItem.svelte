@@ -18,16 +18,22 @@
       dispatch('expand', file);
     }
   }
+
+  function sortFileTreeItems(a: IFileTreeItem, b: IFileTreeItem) {
+    if (a.isDirectory && !b.isDirectory) return -1;
+    if (!a.isDirectory && b.isDirectory) return 1;
+    return a.fileName.localeCompare(b.fileName);
+  }
 </script>
 
-<button class="flex h-8 w-full items-center" on:click={toggle}>
+<button class="flex h-7 w-full items-center" on:click={toggle}>
   {#if expanded}
     <ArrowDownIcon class="h-5 w-5" />
   {:else}
     <ArrowRightIcon class="h-5 w-5" />
   {/if}
 
-  <div class="ml-2 w-5">
+  <!-- <div class="ml-1 w-5">
     <svg
       viewBox="0 0 16 14"
       fill="none"
@@ -39,14 +45,14 @@
         fill="#3398FF"
       />
     </svg>
-  </div>
+  </div> -->
 
-  <span class="text-content-primarySub body-regular ml-2">{file.fileName}</span>
+  <span class="text-content-primarySub body-regular ml-1">{file.fileName}</span>
 </button>
 
 {#if expanded}
-  <ul class="w-full overflow-auto" style="padding-left: 28px">
-    {#each file.children as f (f.filePath)}
+  <ul class="w-full overflow-auto" style="padding-left: 20px">
+    {#each file.children.sort(sortFileTreeItems) as f (f.filePath)}
       {@const selected = $selectedEntities.find(
         (s) => s.filePath === f.filePath
       )}

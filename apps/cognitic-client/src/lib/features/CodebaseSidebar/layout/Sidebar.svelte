@@ -63,7 +63,7 @@
 
 <aside class="flex" style={$$props.style}>
   <Divider vertical />
-  <div class="bg-background-primary flex w-80 flex-col">
+  <div class="bg-background-primary flex w-[400px] flex-col">
     <div
       class="headline-large text-content-primary flex h-14 items-center px-4"
     >
