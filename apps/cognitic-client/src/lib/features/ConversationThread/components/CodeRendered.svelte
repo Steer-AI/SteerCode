@@ -9,6 +9,7 @@
   import { _ } from 'svelte-i18n';
   import { parse } from 'diff2html';
   import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { LineType, type DiffBlock } from 'diff2html/lib/types';
 
   let fileName: string = '';
   export let lang: string;
@@ -57,8 +58,9 @@
 
   function copyToClipboard(text: string): void {
     if (navigator.clipboard) {
+      navigator.clipboard;
       navigator.clipboard
-        .writeText(text)
+        .writeText(isDiff ? getNewVersionFromDiff(text) : text)
         .then(() => {
           copied = true;
           setTimeout(() => (copied = false), 2000);
@@ -81,6 +83,44 @@
     }
   }
 
+  export function getNewVersionFromDiff(diff: string): string {
+    const change = parse(diff);
+
+    const changes = [];
+    for (const file of change) {
+      for (const block of file.blocks) {
+        const blockChangesNew = [];
+        const blockChangesOld = [];
+        for (const diffLine of block.lines) {
+          if (diffLine.type === LineType.CONTEXT) {
+            blockChangesNew.push(diffLine.content.slice(1));
+            blockChangesOld.push(diffLine.content.slice(1));
+          }
+          if (diffLine.type === LineType.INSERT) {
+            blockChangesNew.push(diffLine.content.slice(1));
+          }
+          if (diffLine.type === LineType.DELETE) {
+            blockChangesOld.push(diffLine.content.slice(1));
+          }
+        }
+        const blockChangeNew = blockChangesNew.join('\n');
+        const blockChangeOld = blockChangesOld.join('\n');
+
+        const blockChange =
+          '<<<<<<<  HEAD\n' +
+          blockChangeOld +
+          '\n=======\n' +
+          blockChangeNew +
+          '\n>>>>>>>  updeted version\n';
+
+        changes.push(blockChange);
+      }
+    }
+
+    const newVersion = changes.join('\n\n\n\n\n');
+    return newVersion;
+  }
+
   function applyChange(diff: string): void {
     window.electron
       .applyDiff(diff)
@@ -89,11 +129,11 @@
         setTimeout(() => (applied = false), 2000);
       })
       .catch((error) => {
-        Log.ERROR('Clipboard writeText failed', error);
+        Log.ERROR('Apply code change failed', error);
 
         notificationStore.addNotification({
           type: NotificationType.GeneralError,
-          message: $_('notifications.failedCopyClipboard'),
+          message: $_('notifications.failedApplyChange'),
           position: Position.BottomRight
         });
       });

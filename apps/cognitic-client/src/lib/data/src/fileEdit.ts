@@ -1,7 +1,7 @@
 import { parse } from 'diff2html'; // Update this to your actual imports
 import type { DiffBlock, DiffFile } from 'diff2html/lib/types';
 import { LineType } from 'diff2html/lib/types';
-const fs = require('fs');
+import * as fs from 'fs';
 
 export const applyDiff = (diff: string) => {
   const change = parse(diff);
@@ -43,11 +43,14 @@ export function applyFileDiff(diff: DiffFile) {
     lines = fileContent.split('\n');
   }
 
+  let insertOffset = 0;
   for (const block of diff.blocks) {
     if (isNew) {
       lines = lines.concat(applyBlockChangesToNewFile(block));
     } else {
-      lines = applyBlockChangesToExistingFile(lines, block);
+      const o = applyBlockChangesToExistingFile(lines, block, insertOffset);
+      lines = o.lines;
+      insertOffset = o.insertOffset;
     }
   }
 
@@ -83,9 +86,9 @@ function deleteFile(filePath: string) {
 
 export function applyBlockChangesToExistingFile(
   lines: string[],
-  block: DiffBlock
+  block: DiffBlock,
+  insertOffset: number
 ) {
-  let insertOffset = 0;
   for (const diffLine of block.lines) {
     if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
       const adjustedLine = block.newStartLine + insertOffset - 1;
@@ -101,7 +104,7 @@ export function applyBlockChangesToExistingFile(
           console.error(
             `Error: Cannot find matching context line at ${adjustedLine} for file`
           );
-          return lines;
+          return { lines: lines, insertOffset: insertOffset };
         }
       }
     }
@@ -118,7 +121,7 @@ export function applyBlockChangesToExistingFile(
 
     // For LineType.CONTEXT, do nothing because the line is unchanged
   }
-  return lines;
+  return { lines: lines, insertOffset: insertOffset };
 }
 
 function applyBlockChangesToNewFile(block: DiffBlock) {

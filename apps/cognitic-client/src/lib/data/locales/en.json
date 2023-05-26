@@ -89,6 +89,7 @@
 
     "notifications": {
         "failedCopyClipboard": "Failed to copy to clipboard",
+        "failedApplyChange": "Failed to apply change",
         "clipboardAPIError": "Clipboard API not supported by your browser, please copy the text manually instead",
         "chatAPIError": "An error occurred while processing your request.",
         "settingsSaved": "Settings saved",

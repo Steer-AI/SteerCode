@@ -22,6 +22,7 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"allowJs": true,
 		"checkJs": false,

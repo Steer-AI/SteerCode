@@ -1,7 +1,7 @@
 import { IFileTreeItem } from 'cognitic-models';
+import * as fs from 'fs';
 import ignore from 'ignore';
-const fs = require('fs');
-const path = require('path');
+import * as path from 'path';
 
 const isRelevantFile = (file: string): boolean => {
   if (file === '.git' || file === '.idea') return false;

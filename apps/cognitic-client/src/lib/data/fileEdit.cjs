@@ -44,12 +44,15 @@ function applyFileDiff(diff) {
     }
     lines = fileContent.split('\n');
   }
+  var insertOffset = 0;
   for (var _i = 0, _a = diff.blocks; _i < _a.length; _i++) {
     var block = _a[_i];
     if (isNew) {
       lines = lines.concat(applyBlockChangesToNewFile(block));
     } else {
-      lines = applyBlockChangesToExistingFile(lines, block);
+      var o = applyBlockChangesToExistingFile(lines, block, insertOffset);
+      lines = o.lines;
+      insertOffset = o.insertOffset;
     }
   }
   // Write the modified content back to the file
@@ -85,10 +88,30 @@ function deleteFile(filePath) {
   }
   return true;
 }
-function applyBlockChangesToExistingFile(lines, block) {
-  var insertOffset = 0;
+function applyBlockChangesToExistingFile(lines, block, insertOffset) {
   for (var _i = 0, _a = block.lines; _i < _a.length; _i++) {
     var diffLine = _a[_i];
+    if (diffLine.type === types_1.LineType.CONTEXT && insertOffset === 0) {
+      var adjustedLine_1 = block.newStartLine + insertOffset - 1;
+      if (lines[adjustedLine_1] !== diffLine.content.slice(1)) {
+        if (lines[adjustedLine_1 + 1] === diffLine.content.slice(1)) {
+          block.newStartLine++;
+        } else if (
+          adjustedLine_1 > 0 &&
+          lines[adjustedLine_1 - 1] === diffLine.content.slice(1)
+        ) {
+          block.newStartLine--;
+        } else {
+          console.error(
+            'Error: Cannot find matching context line at '.concat(
+              adjustedLine_1,
+              ' for file'
+            )
+          );
+          return { lines: lines, insertOffset: insertOffset };
+        }
+      }
+    }
     var adjustedLine = block.newStartLine + insertOffset - 1;
     if (diffLine.type === types_1.LineType.INSERT) {
       lines.splice(adjustedLine, 0, diffLine.content.slice(1));
@@ -100,7 +123,7 @@ function applyBlockChangesToExistingFile(lines, block) {
     }
     // For LineType.CONTEXT, do nothing because the line is unchanged
   }
-  return lines;
+  return { lines: lines, insertOffset: insertOffset };
 }
 exports.applyBlockChangesToExistingFile = applyBlockChangesToExistingFile;
 function applyBlockChangesToNewFile(block) {
