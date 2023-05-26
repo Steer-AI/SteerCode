@@ -11,9 +11,7 @@
   import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   let sidebarOpen = browser ? window.innerWidth > 768 : true;
-
   let unsub: Unsubscriber;
-
   onMount(() => {
     let lastSelectedRepoUrl: string | null = null;
     unsub = selectedRepositoryStore.subscribe((selectedRepo) => {
@@ -22,10 +20,10 @@
       conversationsStore.fetchFromServer(selectedRepo?.url);
     });
   });
-
   onDestroy(() => {
     unsub && unsub();
   });
+
 </script>
 
 <div class="main-template">

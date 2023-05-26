@@ -47,7 +47,7 @@
         conversationId: conversationToDelete.value.id
       });
 
-      goto('/');
+      goto('/new');
     }
 
     conversationToDelete = null;

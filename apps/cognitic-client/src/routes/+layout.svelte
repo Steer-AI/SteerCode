@@ -5,6 +5,7 @@
   import { _ } from 'svelte-i18n';
   import { onMount } from 'svelte';
   import Cookies from 'js-cookie';
+  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
 
   onMount(() => {
     if (!window.electron) return;
@@ -13,6 +14,8 @@
     Cookies.set('uid', uid);
     loadAnalytics();
   });
+
+    recentRepositories.fetchData();
 </script>
 
 <PartytownSetup />

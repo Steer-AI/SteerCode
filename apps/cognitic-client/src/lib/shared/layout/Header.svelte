@@ -41,7 +41,7 @@
         name: folder_path.split('/').pop() || folder_path
       };
 
-      goto('/');
+      goto('/new');
       selectedRepositoryStore.set(repo);
       recentRepositories.add(repo);
     } catch (error: any) {
@@ -68,7 +68,7 @@
     };
     selectedRepositoryStore.set(repo);
 
-    goto('/');
+    goto('/new');
   }
 
   function getLabelPartsForRepo(selectedRepo: RepositoryOption) {

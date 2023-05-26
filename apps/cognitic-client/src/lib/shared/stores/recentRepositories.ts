@@ -1,3 +1,4 @@
+import { customFetch } from '$lib/core/services/request';
 import type { RepositoryOption } from '$lib/models/types/conversation.type';
 import { writable } from 'svelte/store';
 
@@ -28,11 +29,24 @@ function createRecentRepositoriesStore() {
     });
   }
 
+  function fetchData() {
+   customFetch('/chat/recent-projects', {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(
+      resp => resp.json()
+    ).then(
+      data => items.set(data['data'] as RepositoryOption[])
+    );
+  }
+
   return {
     subscribe: items.subscribe,
     set: items.set,
     add,
-    remove
+    remove,
+    fetchData
   };
 }
 

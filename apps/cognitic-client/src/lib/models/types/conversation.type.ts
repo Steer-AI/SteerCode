@@ -3,6 +3,7 @@ export type RepositoryOption = {
   url: string;
   version?: string;
   branch?: string;
+  last_update?: string;   // iso datetime string
 };
 
 // Model used to create a new agent
