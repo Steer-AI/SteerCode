@@ -10,8 +10,8 @@
   import { Log } from '$lib/core/services/logging';
   import 'file-icons-js/css/style.css';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
-  export let selectedRepo: RepositoryOption | null;
   let initialFileTreeFile: IFileTreeItem | null;
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
@@ -67,7 +67,7 @@
     }
   }
 
-  $: handleUpdate(selectedRepo);
+  $: handleUpdate($selectedRepositoryStore);
 </script>
 
 <aside class="flex" style={$$props.style}>

@@ -18,6 +18,7 @@
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -218,9 +219,7 @@
   }
 
   onMount(async () => {
-    settingsStore.updateSettings({
-      selectedRepo: conversation.value.repository
-    });
+    selectedRepositoryStore.set(conversation.value.repository);
     recentRepositories.add(conversation.value.repository);
 
     let m = conversation.value.messages;

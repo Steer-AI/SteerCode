@@ -16,6 +16,8 @@
   import PlusIcon from '../components/Icons/PlusIcon.svelte';
   import FolderIcon from '../components/Icons/FolderIcon.svelte';
   import { recentRepositories } from '../stores/recentRepositories';
+  import { goto } from '$app/navigation';
+  import { selectedRepositoryStore } from '../stores/selectedRepository';
 
   export let sidebarOpen: boolean;
 
@@ -38,9 +40,9 @@
         url: folder_path,
         name: folder_path.split('/').pop() || folder_path
       };
-      settingsStore.updateSettings({
-        selectedRepo: repo
-      });
+
+      goto('/');
+      selectedRepositoryStore.set(repo);
       recentRepositories.add(repo);
     } catch (error: any) {
       Log.ERROR(
@@ -60,12 +62,13 @@
       return;
     }
 
-    settingsStore.updateSettings({
-      selectedRepo: {
-        url: opt.value.url,
-        name: opt.value.url.split('/').pop() || opt.value.url
-      }
-    });
+    const repo: RepositoryOption = {
+      url: opt.value.url,
+      name: opt.value.url.split('/').pop() || opt.value.url
+    };
+    selectedRepositoryStore.set(repo);
+
+    goto('/');
   }
 
   function getLabelPartsForRepo(selectedRepo: RepositoryOption) {
@@ -117,11 +120,11 @@
     </div>
 
     <div class="group flex items-center">
-      {#if $settingsStore.selectedRepo !== null}
+      {#if $selectedRepositoryStore !== null}
         <Listbox
           expandFirst
           options={recentRepositoriesOptions}
-          selected={{ label: '', value: $settingsStore.selectedRepo }}
+          selected={{ label: '', value: $selectedRepositoryStore }}
           on:change={(e) => {
             handleListboxChange(e.detail);
           }}
@@ -129,9 +132,7 @@
           let:selected
         >
           <div slot="selected-option" class="">
-            {@const labelParts = getLabelPartsForRepo(
-              $settingsStore.selectedRepo
-            )}
+            {@const labelParts = getLabelPartsForRepo($selectedRepositoryStore)}
             <span class="text-content-secondary headline-large">
               {labelParts.start + ' / '}
             </span>

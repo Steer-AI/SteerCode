@@ -1,7 +1,7 @@
 import { parse } from 'diff2html';
+import fs from 'fs';
+import path from 'path';
 import { applyBlockChangesToExistingFile, applyFileDiff } from '../fileEdit';
-const fs = require('fs');
-const path = require('path');
 
 const getFiles = () => {
   return {
@@ -95,7 +95,7 @@ test('multiple edits in document', () => {
   const file = change[0];
   let lines = [...ogFile];
 
-  for (let block of file.blocks) {
+  for (const block of file.blocks) {
     lines = applyBlockChangesToExistingFile(lines, block);
   }
 

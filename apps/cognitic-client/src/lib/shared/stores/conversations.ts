@@ -19,7 +19,10 @@ export type DataStore<T = any, K = any> = {
   remove: (id: string) => Promise<boolean>;
   getById: (id: string) => Readable<T | null>;
   fetchById: (id: string) => Promise<void>;
-  fetchFromServer: (nextPage?: boolean) => Promise<{ moreToFetch: boolean }>;
+  fetchFromServer: (
+    projectUrl: string | undefined,
+    nextPage?: boolean
+  ) => Promise<{ moreToFetch: boolean }>;
 };
 
 function createConversationsStore(): DataStore<
@@ -107,13 +110,15 @@ function createConversationsStore(): DataStore<
   }
 
   async function fetchFromServer(
+    projectUrl: string | undefined,
     nextPage: boolean = false
   ): Promise<{ moreToFetch: boolean }> {
     Log.DEBUG('createConversationsStore.fetchFromerver');
     const fetchLimit = 10;
     const conversations = await getAllConversations({
       limit: fetchLimit,
-      offset: nextPage ? get(_conversations).length : 0
+      offset: nextPage ? get(_conversations).length : 0,
+      projectUrl
     });
     const res: Conversation[] = conversations.map(
       (conv) => new Conversation(conv)

@@ -1,19 +1,19 @@
 import { parse } from 'diff2html'; // Update this to your actual imports
 import type { DiffBlock, DiffFile } from 'diff2html/lib/types';
 import { LineType } from 'diff2html/lib/types';
-const fs = require('fs');
+import fs from 'fs';
 
 export const applyDiff = (diff: string) => {
   const change = parse(diff);
 
-  for (let file of change) {
+  for (const file of change) {
     applyFileDiff(file);
   }
 };
 
 export function applyFileDiff(diff: DiffFile) {
-  let oldFilePath = diff.oldName;
-  let newFilePath = diff.newName;
+  const oldFilePath = diff.oldName;
+  const newFilePath = diff.newName;
 
   // check if the file is new
   const isNew = oldFilePath === '/dev/null';
@@ -43,7 +43,7 @@ export function applyFileDiff(diff: DiffFile) {
     lines = fileContent.split('\n');
   }
 
-  for (let block of diff.blocks) {
+  for (const block of diff.blocks) {
     if (isNew) {
       lines = lines.concat(applyBlockChangesToNewFile(block));
     } else {
@@ -86,21 +86,26 @@ export function applyBlockChangesToExistingFile(
   block: DiffBlock
 ) {
   let insertOffset = 0;
-  for (let diffLine of block.lines) {
+  for (const diffLine of block.lines) {
     if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
-        const adjustedLine = block.newStartLine + insertOffset - 1;
-        if (lines[adjustedLine] !== diffLine.content.slice(1)) {
-            if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
-                block.newStartLine++;
-            } else if (adjustedLine > 0 && lines[adjustedLine - 1] === diffLine.content.slice(1)) {
-                block.newStartLine--;
-            } else {
-                console.error(`Error: Cannot find matching context line at ${adjustedLine} for file`);
-                return lines;
-            }
+      const adjustedLine = block.newStartLine + insertOffset - 1;
+      if (lines[adjustedLine] !== diffLine.content.slice(1)) {
+        if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
+          block.newStartLine++;
+        } else if (
+          adjustedLine > 0 &&
+          lines[adjustedLine - 1] === diffLine.content.slice(1)
+        ) {
+          block.newStartLine--;
+        } else {
+          console.error(
+            `Error: Cannot find matching context line at ${adjustedLine} for file`
+          );
+          return lines;
         }
+      }
     }
-    
+
     const adjustedLine = block.newStartLine + insertOffset - 1;
     if (diffLine.type === LineType.INSERT) {
       lines.splice(adjustedLine, 0, diffLine.content.slice(1));
@@ -117,8 +122,8 @@ export function applyBlockChangesToExistingFile(
 }
 
 function applyBlockChangesToNewFile(block: DiffBlock) {
-  let lines: string[] = [];
-  for (let diffLine of block.lines) {
+  const lines: string[] = [];
+  for (const diffLine of block.lines) {
     if (diffLine.type === LineType.INSERT) {
       lines.push(diffLine.content.slice(1));
     } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file

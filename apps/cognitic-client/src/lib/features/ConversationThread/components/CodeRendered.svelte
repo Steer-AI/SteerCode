@@ -9,7 +9,7 @@
   import { _ } from 'svelte-i18n';
   import { parse } from 'diff2html';
 
-  let fileName: string = "";
+  let fileName: string = '';
   export let lang: string;
   export let text: string;
 
@@ -104,9 +104,7 @@
       <span class="text-xs font-bold text-white">{highlighted.language}</span>
     {/if}
 
-    <div
-    class="flex items-center justify-between space-x-2"
-    >
+    <div class="flex items-center justify-between space-x-2">
       <Button
         variant="tertiary"
         size="small"

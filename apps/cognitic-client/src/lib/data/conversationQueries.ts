@@ -106,10 +106,12 @@ export async function getConversation(
 
 const promiseCache = new Map<string, Promise<ConversationDTO[]>>();
 export async function getAllConversations(
-  opt: { limit?: number; offset?: number } = {}
+  opt: { limit?: number; offset?: number; projectUrl?: string } = {}
 ): Promise<ConversationDTO[]> {
   const url = `/chat/conversations?limit=${opt.limit || 10}&offset=${
     opt.offset || 0
+  }${
+    opt.projectUrl ? `&project_url=${encodeURIComponent(opt.projectUrl)}` : ''
   }`;
 
   if (promiseCache.has(url)) {

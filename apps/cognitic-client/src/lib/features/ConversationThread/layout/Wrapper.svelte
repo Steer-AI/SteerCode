@@ -41,48 +41,50 @@
 <section class="relative flex h-full w-full flex-col items-center">
   <slot name="title" />
 
-  {#if browser}
-    <VirtualScroll bind:this={list} data={messages} key="id" let:data>
-      <ChatMessage
-        type={data.role}
-        message={data.content}
-        messageFeedback={data.user_feedback}
-        on:delete={() => {
-          dispatch('deleteMessage', data);
-        }}
-        deletable={false}
-        editable={data.role === 'user'}
-        on:feedback={(e) => {
-          dispatch('feedback', { message: data, feedback: e.detail });
-        }}
-        on:edit={(e) => {
-          dispatch('edit', { message: data, content: e.detail });
-        }}
-      />
-      <div slot="footer">
-        <slot />
-        {#if loading}
-          <ChatMessage
-            type="system"
-            message={$_('conversation.message.loading')}
-          />
-        {/if}
-        <div role="separator" style="height: {formHeight}px;">
-          <div class="" bind:this={scrollToDiv} />
-        </div>
-      </div></VirtualScroll
-    >
-  {/if}
+  <div class="h-full w-full">
+    {#if browser}
+      <VirtualScroll bind:this={list} data={messages} key="id" let:data>
+        <ChatMessage
+          type={data.role}
+          message={data.content}
+          messageFeedback={data.user_feedback}
+          on:delete={() => {
+            dispatch('deleteMessage', data);
+          }}
+          deletable={false}
+          editable={data.role === 'user'}
+          on:feedback={(e) => {
+            dispatch('feedback', { message: data, feedback: e.detail });
+          }}
+          on:edit={(e) => {
+            dispatch('edit', { message: data, content: e.detail });
+          }}
+        />
+        <div slot="footer">
+          <slot />
+          {#if loading}
+            <ChatMessage
+              type="system"
+              message={$_('conversation.message.loading')}
+            />
+          {/if}
+          <div role="separator" style="height: {formHeight}px;">
+            <div class="" bind:this={scrollToDiv} />
+          </div>
+        </div></VirtualScroll
+      >
+    {/if}
+  </div>
 
   <div
-    class="absolute bottom-0 left-1/2 z-10 w-full -translate-x-1/2"
+    class="absolute bottom-0 left-1/2 z-10 w-full max-w-5xl -translate-x-1/2"
     style="background: linear-gradient(0deg, #09090B 25%, rgba(9, 9, 11, 0) 100%);"
     bind:clientHeight={formHeight}
   >
     <slot name="footer" />
 
     <form
-      class="flex w-full max-w-5xl flex-shrink-0 items-end px-6 py-4"
+      class="flex w-full flex-shrink-0 items-end px-6 py-4"
       on:submit|preventDefault={() => {
         dispatch('submit', query);
         query = '';

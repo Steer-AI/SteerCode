@@ -1,14 +1,13 @@
 import { Log } from '$lib/core/services/logging';
 import type { Settings } from '$lib/models/types/settings.type';
 import { localStorageWritable } from '$lib/shared/stores/localStorageStore';
-import { derived, writable, type Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 
 function createSettingsStore() {
   let currentSettingsValue: Settings = {
     openaiAPIKey: '',
     customBackendUrl: '',
-    useCustomBackend: false,
-    selectedRepo: null
+    useCustomBackend: false
   };
 
   const stringValueSerialiser = {
@@ -30,8 +29,7 @@ function createSettingsStore() {
     useCustomBackend: localStorageWritable(
       'cognitic.useCustomBackend',
       currentSettingsValue.useCustomBackend
-    ),
-    selectedRepo: writable(currentSettingsValue.selectedRepo)
+    )
   };
 
   type StoreKeys = keyof typeof settingStores;
@@ -52,15 +50,13 @@ function createSettingsStore() {
     [
       settingStores.openaiAPIKey,
       settingStores.customBackendUrl,
-      settingStores.useCustomBackend,
-      settingStores.selectedRepo
+      settingStores.useCustomBackend
     ],
     ($) => {
       return {
         openaiAPIKey: $[0],
         customBackendUrl: $[1],
-        useCustomBackend: $[2],
-        selectedRepo: $[3]
+        useCustomBackend: $[2]
       };
     }
   );

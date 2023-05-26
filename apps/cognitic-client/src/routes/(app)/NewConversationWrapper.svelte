@@ -12,6 +12,7 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   // form variables
   let pendingRequest = false;
@@ -21,7 +22,7 @@
   async function handleSubmit(query: string) {
     const settings = get(settingsStore);
 
-    if (settings.selectedRepo === null) {
+    if ($selectedRepositoryStore === null) {
       Log.ERROR('NewConversation.handleSubmit', 'No repository selected');
       notificationStore.addNotification({
         type: NotificationType.GeneralError,
@@ -37,7 +38,7 @@
     Log.DEBUG('NewConversation.handleSubmit', query);
     const toAdd: NewConversationDTO = {
       content: query,
-      repository: settings.selectedRepo
+      repository: $selectedRepositoryStore
     };
     const agent = await conversationsStore.add(toAdd);
     pendingRequest = false;

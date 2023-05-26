@@ -1,19 +1,31 @@
-import {
-  IErrorResponse,
-  IFileTreeItem,
-  IFileTreeReqParams,
-  IFileTreeResponse
-} from 'cognitic-models';
-const fs = require('fs');
-const path = require('path');
+import { IFileTreeItem } from 'cognitic-models';
+import fs from 'fs';
+import path from 'path';
 
 const isRelevantFile = (file: string): boolean => {
-  if (file.startsWith('.') || file === 'node_modules' || file === '.git' || file === '.idea') return false;
-  
-  if (file === '__pycache__' || file === '.DS_Store' || file === '__MACOSX') return false;
+  if (
+    file.startsWith('.') ||
+    file === 'node_modules' ||
+    file === '.git' ||
+    file === '.idea'
+  )
+    return false;
+
+  if (file === '__pycache__' || file === '.DS_Store' || file === '__MACOSX')
+    return false;
 
   // Additional files and folders to ignore
-  if (file === '.vscode' || file === '.svn' || file === '.hg' || file === '.settings' || file.match(/.*\.log$/) || file.match(/.*\.tmp$/) || file.match(/.*\.bak$/) || file.match(/.*~$/)) return false;
+  if (
+    file === '.vscode' ||
+    file === '.svn' ||
+    file === '.hg' ||
+    file === '.settings' ||
+    file.match(/.*\.log$/) ||
+    file.match(/.*\.tmp$/) ||
+    file.match(/.*\.bak$/) ||
+    file.match(/.*~$/)
+  )
+    return false;
 
   return true;
 };

@@ -1,9 +1,6 @@
-import {
-  IFileContentItem,
-} from 'cognitic-models';
-const fs = require('fs');
-const path = require('path');
-
+import { IFileContentItem } from 'cognitic-models';
+import fs from 'fs';
+import path from 'path';
 
 class LoadFileError extends Error {
   filePath: string;
@@ -47,5 +44,4 @@ export const getContentsForFiles = async (paths: string[]) => {
   });
 
   return files;
-}
-
+};

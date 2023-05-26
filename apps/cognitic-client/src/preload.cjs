@@ -2,7 +2,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 const { getContentsForFiles } = require('./lib/data/fileContent.cjs');
 const { getFileTree } = require('./lib/data/fileTree.cjs');
-
 const { applyDiff } = require('./lib/data/fileEdit.cjs');
 const { machineIdSync } = require('node-machine-id');
 

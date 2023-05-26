@@ -21,6 +21,7 @@
   import Spinner from '$lib/shared/components/Spinner.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   export let open: boolean;
 
@@ -55,7 +56,10 @@
   async function fetchMoreConversations(nextPage: boolean) {
     if (fetching) return;
     fetching = true;
-    const res = await conversationsStore.fetchFromServer(nextPage);
+    const res = await conversationsStore.fetchFromServer(
+      $selectedRepositoryStore?.url,
+      nextPage
+    );
     moreToFetch = res.moreToFetch;
     fetching = false;
   }
