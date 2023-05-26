@@ -35,9 +35,9 @@ function createRecentRepositoriesStore() {
         "Content-Type": "application/json"
       }
     }).then(
-      resp => resp.json() as Promise<RepositoryOption[]>
+      resp => resp.json()
     ).then(
-      data => items.set(data)
+      data => items.set(data['data'] as RepositoryOption[])
     );
   }
 
