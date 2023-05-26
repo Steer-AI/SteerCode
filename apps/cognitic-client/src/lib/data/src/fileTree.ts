@@ -1,11 +1,11 @@
 import { IFileTreeItem } from 'cognitic-models';
-import fs from 'fs';
-import path from 'path';
+import ignore from 'ignore';
+const fs = require('fs');
+const path = require('path');
+
 
 const isRelevantFile = (file: string): boolean => {
   if (
-    file.startsWith('.') ||
-    file === 'node_modules' ||
     file === '.git' ||
     file === '.idea'
   )
@@ -45,6 +45,30 @@ const getDirectoryContent = (
     if (!isRelevantFile(file)) {
       return;
     }
+    
+    // Check for .gitignore files at multiple levels
+    const gitignoreFiles: string[] = [];
+    let currentPath = dirPath;
+    while (currentPath !== path.dirname(currentPath)) {
+      const gitignorePath = path.join(currentPath, '.gitignore');
+      if (fs.existsSync(gitignorePath)) {
+        gitignoreFiles.push(gitignorePath);
+      }
+      currentPath = path.dirname(currentPath);
+    }
+
+    // Parse .gitignore files and check if the current file should be ignored
+    const ig = ignore();
+    gitignoreFiles.forEach((gitignorePath) => {
+      const gitignoreContent = fs.readFileSync(gitignorePath).toString();
+      ig.add(gitignoreContent);
+    });
+
+    const relativePath = path.relative(dirPath, absolutePath);
+    if (ig.ignores(relativePath)) {
+      return;
+    }
+
     const item: IFileTreeItem = {
       fileName: file,
       filePath: absolutePath,
