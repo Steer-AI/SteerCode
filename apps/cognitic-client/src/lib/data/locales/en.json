@@ -82,7 +82,8 @@
             "codebaseTitle": "Codebase",
             "contextTitle": "Selected context",
             "noContext": "The files you select will be added to your prompt as a context.",
-            "noCodebase": "Select a repository to get started."
+            "noCodebase": "Select a repository to get started.",
+            "emptySearch": "No files found."
         }
     }, 
 

@@ -20,7 +20,7 @@
     const change = parse(diff);
     if (change.length > 0) {
       fileName = change[0].newName;
-      if ($selectedRepositoryStore){
+      if ($selectedRepositoryStore) {
         fileName = fileName.replace($selectedRepositoryStore?.url, '');
       }
     }

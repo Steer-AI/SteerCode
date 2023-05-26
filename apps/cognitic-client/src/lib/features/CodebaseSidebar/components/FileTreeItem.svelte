@@ -9,6 +9,7 @@
   export let expanded = false;
   export let file: IFileTreeItem;
   export let depth = 1;
+  export let childExpanded = false;
 
   const dispatch = createEventDispatcher<{ expand: IFileTreeItem }>();
 
@@ -62,7 +63,13 @@
       )}
       <li class="flex w-full flex-col items-center">
         {#if f.isDirectory}
-          <svelte:self file={f} depth={depth + 1} on:expand />
+          <svelte:self
+            file={f}
+            depth={depth + 1}
+            on:expand
+            expanded={childExpanded}
+            {childExpanded}
+          />
         {:else}
           <FileItem
             on:click={() => {

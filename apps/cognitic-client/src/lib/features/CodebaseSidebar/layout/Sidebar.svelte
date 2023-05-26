@@ -1,5 +1,7 @@
 <script lang="ts">
   import Divider from '$lib/shared/components/Divider.svelte';
+  import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
+
   import { _ } from 'svelte-i18n';
   import { selectedEntities } from '../stores/selection';
   import SelectedContextItem from '../components/SelectedContextItem.svelte';
@@ -9,6 +11,8 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
   import 'file-icons-js/css/style.css';
+  import { onMount } from 'svelte';
+  import { filteredFiles } from '../stores/filteredFiles';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
   import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
@@ -50,7 +54,7 @@
         children: []
       };
       selectedEntities.clear();
-      fetchFileTreeItem(initialFileTreeFile, 1);
+      fetchFileTreeItem(initialFileTreeFile, -1);
       return;
     }
 
@@ -62,7 +66,7 @@
         children: []
       };
       selectedEntities.clear();
-      fetchFileTreeItem(initialFileTreeFile, 1);
+      fetchFileTreeItem(initialFileTreeFile, -1);
       return;
     }
   }
@@ -79,16 +83,43 @@
       {$_('conversation.cosebaseSidebar.codebaseTitle')}
     </div>
 
+    {#if initialFileTreeFile}
+      <TextAreaField
+        class="search-input mx-4 mb-3 h-8 w-full px-3 py-2 pr-10 text-sm"
+        type="text"
+        placeholder="Search..."
+        on:input={(e) =>
+          filteredFiles.search(e?.target?.value, initialFileTreeFile)}
+      />
+    {/if}
+
     <!-- scrollable file tree -->
     <section class="flex-[2] overflow-y-auto">
       {#if initialFileTreeFile}
-        <FileTreeItem
-          expanded={true}
-          file={initialFileTreeFile}
-          on:expand={(e) => {
-            fetchFileTreeItem(e.detail, 1);
-          }}
-        />
+        {#if $filteredFiles}
+          {#if $filteredFiles.children.length > 0}
+            <FileTreeItem
+              expanded={true}
+              childExpanded={true}
+              file={$filteredFiles}
+              on:expand={(e) => {
+                fetchFileTreeItem(e.detail, 1);
+              }}
+            />
+          {:else}
+            <div class="text-content-secondary body-regular flex-1 px-6">
+              {$_('conversation.cosebaseSidebar.emptySearch')}
+            </div>
+          {/if}
+        {:else}
+          <FileTreeItem
+            expanded={true}
+            file={initialFileTreeFile}
+            on:expand={(e) => {
+              fetchFileTreeItem(e.detail, 1);
+            }}
+          />
+        {/if}
       {:else}
         <div class="text-content-secondary body-regular flex-1 px-6">
           {$_('conversation.cosebaseSidebar.noCodebase')}

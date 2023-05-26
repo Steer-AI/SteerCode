@@ -3,13 +3,8 @@ import ignore from 'ignore';
 const fs = require('fs');
 const path = require('path');
 
-
 const isRelevantFile = (file: string): boolean => {
-  if (
-    file === '.git' ||
-    file === '.idea'
-  )
-    return false;
+  if (file === '.git' || file === '.idea') return false;
 
   if (file === '__pycache__' || file === '.DS_Store' || file === '__MACOSX')
     return false;
@@ -45,7 +40,7 @@ const getDirectoryContent = (
     if (!isRelevantFile(file)) {
       return;
     }
-    
+
     // Check for .gitignore files at multiple levels
     const gitignoreFiles: string[] = [];
     let currentPath = dirPath;
