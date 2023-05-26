@@ -3,41 +3,47 @@
   import FolderIcon from '$lib/shared/components/Icons/FolderIcon.svelte';
 
   export let repository: RepositoryOption;
-  export let lastEditDate: Date | null = null;
 
-  const timeSinceLastEdit = (lastDate: Date | null): string => {
-    if (!lastDate) {
+  const timeSinceLastEdit = (lastEditTimestamp: string | undefined): string => {
+    if (!lastEditTimestamp) {
       return 'Never edited';
     }
-    let seconds = Math.floor(
-      (new Date().getTime() - lastDate.getTime()) / 1000
-    );
 
-    let interval = seconds / 31536000;
+    try {
+      const lastEdit = new Date(lastEditTimestamp);
+      let seconds = Math.floor(
+      (new Date().getTime() - lastEdit.getTime()) / 1000
+      );
 
-    if (interval > 1) {
-      return 'Edited ' + Math.floor(interval) + ' years ago';
+      let interval = seconds / 31556926;
+
+      if (interval > 1) {
+        return 'Edited ' + Math.floor(interval) + ' years ago';
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return 'Edited ' + Math.floor(interval) + ' months ago';
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return 'Edited ' + Math.floor(interval) + ' days ago';
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return 'Edited ' + Math.floor(interval) + ' hours ago';
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return 'Edited ' + Math.floor(interval) + ' minutes ago';
+      }
+      return 'Edited ' + Math.floor(seconds) + ' seconds ago';
+    } catch (e) {
+      console.warn('Invalid last edit timestamp', lastEditTimestamp, e)
+      return 'Never edited';
     }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return 'Edited ' + Math.floor(interval) + ' months ago';
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return 'Edited ' + Math.floor(interval) + ' days ago';
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return 'Edited ' + Math.floor(interval) + ' hours ago';
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return 'Edited ' + Math.floor(interval) + ' minutes ago';
-    }
-    return 'Edited ' + Math.floor(seconds) + ' seconds ago';
   };
 
-  const lastEditFormat = timeSinceLastEdit(lastEditDate);
+  const lastEditFormat = timeSinceLastEdit(repository.last_update);
 
   const [repoFolder, repoName] = repository.url.split('/').slice(-2);
 </script>
