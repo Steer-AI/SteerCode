@@ -8,6 +8,7 @@
   import hljs from 'highlight.js';
   import { _ } from 'svelte-i18n';
   import { parse } from 'diff2html';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   let fileName: string = '';
   export let lang: string;
@@ -17,7 +18,12 @@
 
   function isEmptyDiff(diff: string): boolean {
     const change = parse(diff);
-    if (change.length > 0) fileName = change[0].newName;
+    if (change.length > 0) {
+      fileName = change[0].newName;
+      if ($selectedRepositoryStore){
+        fileName = fileName.replace($selectedRepositoryStore?.url, '');
+      }
+    }
     return change.length > 0;
   }
 
