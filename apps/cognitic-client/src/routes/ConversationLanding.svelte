@@ -1,32 +1,7 @@
 <script lang="ts">
     import { recentRepositories } from '$lib/shared/stores/recentRepositories';
     import CodebaseButton from "$lib/features/CodebasesDashboard/components/CodebaseButton.svelte";
-    import type { RepositoryOption } from '$lib/models/types/conversation.type';
-    import Header from '$lib/shared/layout/Header.svelte';
-  import ImportCodebaseButton from '$lib/features/CodebasesDashboard/components/ImportCodebaseButton.svelte';
-
-    const fetchData = async () => {
-        // tmp mock
-
-        const mock = [{
-            name: 'svelte',
-            url: '~/projects/svelte'
-        }, {
-            name: 'cognitic',
-            url: '~/projects/cognitic'
-        }, {
-            name: 'cognitic-client',
-            url: '~/projects/cognitic-client'
-        }, {
-            name: 'cognitic-server',
-            url: '~/projects/cognitic-server'
-        }, {
-            name: 'SuperGPT',
-            url: '~/projects/SuperGPT'
-        }] as RepositoryOption[]
-        mock.forEach(repo => recentRepositories.add(repo))
-    }
-    fetchData()
+    import ImportCodebaseButton from '$lib/features/CodebasesDashboard/components/ImportCodebaseButton.svelte';
     
 </script>
 <div class="px-6">
