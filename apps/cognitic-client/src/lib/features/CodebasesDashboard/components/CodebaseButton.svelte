@@ -43,7 +43,7 @@
 </script>
 
 <button
-  class="text-content-secondary border-0 border-solid border-white px-6 pb-6 pt-5"
+  class="text-content-secondary border border-solid border-stroke-secondary px-6 pb-6 pt-5"
 >
   <div class="flex items-center">
     <FolderIcon class="mr-3.5 h-[19.5px] w-[22px]" />
@@ -53,8 +53,8 @@
       <span class="text-content-primary">{repoName}</span>
     </p>
   </div>
-  <div>
-    <p class="">
+  <div class='mt-4 ml-9'>
+    <p class="text-left font-normal">
       {lastEditFormat}
     </p>
   </div>

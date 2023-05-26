@@ -1,8 +1,9 @@
 <script lang="ts">
-    import ConversationLanding from './ConversationLanding.svelte';
+    import Header from '$lib/shared/layout/Header.svelte';
+import ConversationLanding from './ConversationLanding.svelte';
 </script>
+<Header />
 <div>
-    <h1>Recent projects</h1>
     <ConversationLanding />
 </div>
 
