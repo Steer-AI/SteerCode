@@ -1,9 +1,11 @@
-import { parse } from 'diff2html'; // Update this to your actual imports
+ // import { parse } from 'diff2html'; // Update this to your actual imports
 import type { DiffBlock, DiffFile } from 'diff2html/lib/types';
 import { LineType } from 'diff2html/lib/types';
 import * as fs from 'fs';
+import { parse } from './conflictParser';
+import { IMergeMarkersDiff } from './types';
 
-export const applyDiff = (diff: string) => {
+export const applyDiff = async (diff: string) => {
   const change = parse(diff);
 
   for (const file of change) {
@@ -11,55 +13,26 @@ export const applyDiff = (diff: string) => {
   }
 };
 
-export function applyFileDiff(diff: DiffFile) {
-  const oldFilePath = diff.oldName;
-  const newFilePath = diff.newName;
+const applyFileDiff = async (diff: IMergeMarkersDiff) => {
+  let isNewFile = false;
+  fs.access(diff.fileName, fs.constants.F_OK, (err) => {
+    isNewFile = err ? true : false;
+  });
 
-  // check if the file is new
-  const isNew = oldFilePath === '/dev/null';
-  // check if the file has been renamed
-  const isRenamed = oldFilePath !== newFilePath && oldFilePath !== '/dev/null';
-  // check if the file has been deleted
-  const isDeleted = newFilePath === '/dev/null';
-
-  if (isDeleted && deleteFile(oldFilePath)) {
-    return; // No need to apply diff to a deleted file
+  if (isNewFile) {
+    if (diff.head) throw new Error("There is existing content for file that is supposed to be new, LLM probably used wrong file name");
+    fs.writeFile(diff.fileName, diff.incoming, "utf-8", (err) => {
+      if (err) throw err;
+    });
   }
+  else {
 
-  if (isRenamed && !renameFile(oldFilePath, newFilePath)) {
-    return;
   }
+}
 
-  let lines: string[] = [];
-  if (!isNew) {
-    // Read the current file
-    let fileContent = '';
-    try {
-      fileContent = fs.readFileSync(newFilePath, 'utf8');
-    } catch (err) {
-      console.error(`Error reading file ${newFilePath}: ${err}`);
-      return;
-    }
-    lines = fileContent.split('\n');
-  }
-
-  let insertOffset = 0;
-  for (const block of diff.blocks) {
-    if (isNew) {
-      lines = lines.concat(applyBlockChangesToNewFile(block));
-    } else {
-      const o = applyBlockChangesToExistingFile(lines, block, insertOffset);
-      lines = o.lines;
-      insertOffset = o.insertOffset;
-    }
-  }
-
-  // Write the modified content back to the file
-  try {
-    fs.writeFileSync(newFilePath, lines.join('\n'));
-  } catch (err) {
-    console.error(`Error writing to file ${newFilePath}: ${err}`);
-  }
+const applyDiffConflict = async (diff: IMergeMarkersDiff) => {
+  const content = fs.readFileSync(diff.fileName, 'utf-8');
+  
 }
 
 function renameFile(oldFilePath: string, newFilePath: string) {
