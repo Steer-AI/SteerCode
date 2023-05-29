@@ -15,8 +15,12 @@
   import { Log } from '$lib/core/services/logging';
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
+  import type { IFileContentItem } from 'cognitic-models';
+  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
-  export let agent: Conversation;
+  export let conversation: Conversation;
   let loading: boolean = false;
   let answer: string = '';
   let wrapContainer: ConversationWrapper;
@@ -32,7 +36,7 @@
   async function handleSubmit(query: string) {
     trackEvent('New message', {
       message: query,
-      conversationId: agent.value.id
+      conversationId: conversation.value.id
     });
     answer = '';
     loading = true;
@@ -55,10 +59,51 @@
     if (llm) {
       headers['x-llm-type'] = llm;
     }
+    // ------------------------------
+    // Mocking vvvvv
+    // const selections = [
+    //   {
+    //     fileName: 'example_1.txt',
+    //     filePath: '/path/to/example_1.txt',
+    //     isDirectory: false,
+    //     children: []
+    //   },
+    //   {
+    //     fileName: 'example_2.txt',
+    //     filePath: '/path/to/example_2.txt',
+    //     isDirectory: false,
+    //     children: []
+    //   }
+    // ];
+
+    // TODO - fetch contents from api
+    // const contents = selections.map((selection) => {
+    //   return {
+    //     filePath: selection.filePath,
+    //     fileName: selection.fileName,
+    //     fileContent: `This is the content of ${selection.fileName}`
+    //   };
+    // });
+
+    // Mocking ^^^^^
+    // ------------------------------
+
+    const selections = $selectedEntities;
+    const contents: [IFileContentItem] = await window.electron.getContents(
+      selections.map((selection) => selection.filePath)
+    );
+    const documents = contents.map((content) => {
+      return {
+        page_content: content.fileContent,
+        metadata: {
+          file_path: content.filePath
+        }
+      };
+    });
 
     const sseOptions: SSEOptions = {
       headers: headers,
-      payload: JSON.stringify(agent.value)
+      payload: JSON.stringify({ ...conversation.value, documents: documents })
     };
     eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
 
@@ -73,7 +118,7 @@
 
         if (completionResponse.done) {
           if (completionResponse.id) {
-            agent.addMessage(
+            conversation.addMessage(
               { role: 'assistant', content: answer },
               completionResponse.id
             );
@@ -146,32 +191,37 @@
     e: CustomEvent<{ message: ChatMessageDTO; content: string }>
   ) {
     const { message, content } = e.detail;
-    const index = agent.value.messages.findIndex((m) => m.id === message.id);
+    const index = conversation.value.messages.findIndex(
+      (m) => m.id === message.id
+    );
     if (index === -1) {
       return;
     }
 
     const messagesToDelete = [];
-    for (let i = index; i < agent.value.messages.length; i++) {
-      messagesToDelete.push(agent.value.messages[i]);
+    for (let i = index; i < conversation.value.messages.length; i++) {
+      messagesToDelete.push(conversation.value.messages[i]);
     }
     for (const m of messagesToDelete) {
-      agent.deleteMessage(m);
+      conversation.deleteMessage(m);
     }
 
-    agent.addMessage({ role: message.role, content }, message.id);
+    conversation.addMessage({ role: message.role, content }, message.id);
     handleSubmit(content);
     trackEvent('Edit message', {
       messageId: message.id,
       message: message.content,
-      conversationId: agent.value.id,
+      conversationId: conversation.value.id,
       messageIndex: index,
       deletedMessageCount: messagesToDelete.length
     });
   }
 
   onMount(async () => {
-    let m = agent.value.messages;
+    selectedRepositoryStore.set(conversation.value.repository);
+    recentRepositories.add(conversation.value.repository);
+
+    let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
       handleSubmit(m[m.length - 1].content);
     } else {
@@ -186,32 +236,32 @@
 
 <ConversationWrapper
   on:submit={(e) => {
-    agent.addMessage({ role: 'user', content: e.detail });
+    conversation.addMessage({ role: 'user', content: e.detail });
     handleSubmit(e.detail);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;
-    agent.addFeedback(message, feedback);
+    conversation.addFeedback(message, feedback);
     trackEvent('Feedback message', {
       messageId: message.id,
-      conversationId: agent.value.id,
+      conversationId: conversation.value.id,
       feedback: e.detail
     });
   }}
   on:deleteMessage={(e) => {
     const message = e.detail;
-    agent.deleteMessage(message);
+    conversation.deleteMessage(message);
     trackEvent('Delete message', {
       from: message.role,
       message: message.content,
-      conversationId: agent.value.id
+      conversationId: conversation.value.id
     });
   }}
   on:edit={handleEdit}
   {loading}
   submitDisabled={answer !== ''}
   bind:this={wrapContainer}
-  messages={$agent.messages}
+  messages={$conversation.messages}
 >
   <svelte:fragment>
     {#if answer}
@@ -222,11 +272,11 @@
   <svelte:fragment slot="footer">
     {#if answer}
       <Button
-        class="mx-auto mb-2"
+        class="bg-background-primary mx-auto"
         variant="tertiary"
         type="button"
         on:click={() => {
-          agent.addMessage({ role: 'assistant', content: answer });
+          conversation.addMessage({ role: 'assistant', content: answer });
           closeEventSource();
         }}
       >

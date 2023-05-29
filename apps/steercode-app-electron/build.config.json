@@ -1,0 +1,14 @@
+{
+	"appId": "com.example.app",
+	"productName": "SteerCode",
+	"directories": {
+		"output": "dist"
+	},
+	"files": [
+		"src/**/*.cjs",
+		{
+			"from": "build",
+			"to": ""
+		}
+	]
+}

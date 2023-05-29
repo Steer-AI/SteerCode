@@ -1,0 +1,107 @@
+{
+    "sidebar": {
+        "newAgent": "New Chat",
+        "deleteTooltip": "Delete Chat",
+        "loadMore": "Load more",
+        "deleteConfirmationDialog": {
+            "title": "Delete Chat?",
+            "description": "Are you sure you want to delete this Chat? This action cannot be undone. Chat name: ",
+            "confirmButton": "Yes",
+            "cancelButton": "No"
+        }
+    },
+    "header": {
+        "title": "SteerCode",
+        "importRepoButton": "Open local codebase",
+        "logIn": "Log in",
+        "logOut": "Log out",
+        "settings": "Settings"
+    },
+    "auth": {
+        "title": "Welcome to SteerCode Chat",
+        "description": "Log in to your account to start chatting.",
+        "googleButton": "Log in with Google",
+        "githubButton": "Log in with GitHub",
+        "twitterButton": "Log in with Twitter"
+    },
+
+    "dashboard": {
+        "noRecentProjects": "No recent projects",
+        "projects": "Projects"
+    },
+
+    "settings": {
+        "title": "Settings",
+        "save": "Save changes",
+
+        "general": {
+            "description": "General settings.",
+            "apiKeyInput": {
+                "label": "API Key",
+                "placeholder": "Your own OpenAI API key",
+                "helperText": "You can get your own API key from the OpenAI dashboard."
+          },
+            "persistence": {
+                "label": "Save API key for future sessions?",
+                "helperText": "If you select this option, your API key will be saved in your browser's local storage. Otherwise, you will have to enter it every time you open the app."
+            
+            }
+        },
+        "advanced": {
+            "description": "Advanced settings.",
+            "useLocalBackend": {
+                "label": "Use local backend",
+                "helperText": "If you select this option, the app will use a local backend instead of the default one. This is useful if you want to run the app locally or if you want to use a custom backend."
+            },
+            "customBackendUrlInput": {
+                    "label": "Local backend URL",
+                    "placeholder": "Local backend URL. E.g. http://127.0.0.1:8081",
+                    "helperText": "Enter the URL of your local backend. If you are running the app's backend locally, e.g. http://127.0.0.1:8081."
+                }
+        }        
+    },
+
+    "conversation": {
+        "messageInput": {
+            "placeholder": "Ask the codebase..."
+        },
+        "sendButton": "Send",
+        "loadingMessage": "Loading...",
+        "message": {
+            "me": "Me",
+            "loading": "Loading...",
+            "initialMessage": "Welcome to SteerCode Chat, your AI assistant that understands large databases. \n\n Harness the incredible power of AI assistants, like ChatGPT, but for your own codebase. To demonstrate this technology, get started by selecting a context files from the right sidebar. Enter your own question about your codebase in the text box, or try one of the examples to get started. \n\n",
+            "improveText": "Help us improve. How was this answer?",
+            "example1": "How to start this app?",
+            "example2": "Create a tutorial on how to use buffer memory.",
+            "example3": "Store pdf in vectore database and chat with it."
+        },
+        "copy": "Copy",
+        "copied": "Copied",
+        "apply": "Apply changes",
+        "applied": "changes applied",
+        "saveEdit": "Save",
+        "cancelEdit": "Cancel",
+        "stop": "Stop generating response.",
+        "cosebaseSidebar": {
+            "codebaseTitle": "Codebase",
+            "contextTitle": "Selected context",
+            "noContext": "The files you select will be added to your prompt as a context.",
+            "noCodebase": "Select a repository to get started.",
+            "emptySearch": "No files found."
+        }
+    }, 
+
+    "notifications": {
+        "failedCopyClipboard": "Failed to copy to clipboard",
+        "failedApplyChange": "Failed to apply change",
+        "clipboardAPIError": "Clipboard API not supported by your browser, please copy the text manually instead",
+        "chatAPIError": "An error occurred while processing your request.",
+        "settingsSaved": "Settings saved",
+        "failedDeleteAgent": "Failed to delete conversation",
+        "agentDeleted": "Conversation deleted",
+        "failedCreateAgent": "Failed to create conversation",
+        "agentCreated": "Conversation {name} created",
+        "noRepoSelected": "No repository selected"
+    }
+}
