@@ -19,7 +19,7 @@
       {#each $recentRepositories as repository (repository.url)}
         <CodebaseButton {repository} />
       {:else}
-        <p>{$_('dashboard.noRecentProjects')}s</p>
+        <p>{$_('dashboard.noRecentProjects')}</p>
       {/each}
     </section>
   </div>
