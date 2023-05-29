@@ -60,8 +60,8 @@ module.exports = {
         }
       }),
       gridTemplateColumns: {
-        'auto-400': 'repeat(auto-fill, minmax(400px, 1fr))',
-      },
+        'auto-400': 'repeat(auto-fill, minmax(400px, 1fr))'
+      }
     }
   },
   plugins: [require('@tailwindcss/typography')]

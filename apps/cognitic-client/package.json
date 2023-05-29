@@ -50,7 +50,6 @@
     "eslint-config-custom": "*",
     "jest": "^29.5.0",
     "js-cookie": "^3.0.5",
-    "node-machine-id": "^1.1.12",
     "postcss": "^8.4.23",
     "prettier": "^2.8.8",
     "svelte": "^3.58.0",
@@ -65,6 +64,7 @@
     "vite": "^4.3.1"
   },
   "dependencies": {
+    "node-machine-id": "^1.1.12",
     "diff2html": "^3.4.35",
     "electron-context-menu": "^3.6.1",
     "electron-reloader": "^1.2.3",

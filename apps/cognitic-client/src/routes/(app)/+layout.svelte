@@ -23,7 +23,6 @@
   onDestroy(() => {
     unsub && unsub();
   });
-
 </script>
 
 <div class="main-template">

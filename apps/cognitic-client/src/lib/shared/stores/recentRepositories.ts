@@ -30,15 +30,13 @@ function createRecentRepositoriesStore() {
   }
 
   function fetchData() {
-   customFetch('/chat/recent-projects', {
+    customFetch('/chat/recent-projects', {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
-    }).then(
-      resp => resp.json()
-    ).then(
-      data => items.set(data['data'] as RepositoryOption[])
-    );
+    })
+      .then((resp) => resp.json())
+      .then((data) => items.set(data['data'] as RepositoryOption[]));
   }
 
   return {

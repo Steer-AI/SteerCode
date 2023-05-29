@@ -46,7 +46,7 @@
       }
       return 'Edited ' + Math.floor(seconds) + ' seconds ago';
     } catch (e) {
-      console.warn('Invalid last edit timestamp', lastEditTimestamp, e)
+      console.warn('Invalid last edit timestamp', lastEditTimestamp, e);
       return 'Never edited';
     }
   };
@@ -59,24 +59,22 @@
       selectedRepositoryStore.set(repository);
       recentRepositories.add(repository);
     } catch (error: any) {
-        Log.ERROR(
-            `Error occured during the folder selection process ${error.message}`
-        );
-        notificationStore.addNotification({
-            type: NotificationType.GeneralError,
-            message: error.message,
-            position: Position.BottomRight
-        });
+      Log.ERROR(
+        `Error occured during the folder selection process ${error.message}`
+      );
+      notificationStore.addNotification({
+        type: NotificationType.GeneralError,
+        message: error.message,
+        position: Position.BottomRight
+      });
     }
-  }
-
-  
+  };
 
   const [repoFolder, repoName] = repository.url.split('/').slice(-2);
 </script>
 
 <button
-  class="text-content-secondary border border-solid border-stroke-secondary px-6 pb-6 pt-5"
+  class="text-content-secondary border-stroke-secondary border border-solid px-6 pb-6 pt-5"
   on:click={loadRepo}
 >
   <div class="flex items-center">
@@ -88,7 +86,7 @@
     </p>
   </div>
   {#if repository.last_update}
-    <div class='mt-4 ml-9'>
+    <div class="ml-9 mt-4">
       <p class="text-left font-normal">
         {lastEditFormat}
       </p>

@@ -6,16 +6,17 @@
   import { onMount } from 'svelte';
   import Cookies from 'js-cookie';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
+  import { USER_COOKIE_ANONYMOUS_ID_NAME } from '$lib/shared/utils/constants';
 
   onMount(() => {
     if (!window.electron) return;
     const uid = window.electron.getUid();
     console.log('uid', uid);
-    Cookies.set('uid', uid);
+    localStorage.setItem(USER_COOKIE_ANONYMOUS_ID_NAME, uid);
     loadAnalytics();
   });
 
-    recentRepositories.fetchData();
+  recentRepositories.fetchData();
 </script>
 
 <PartytownSetup />
