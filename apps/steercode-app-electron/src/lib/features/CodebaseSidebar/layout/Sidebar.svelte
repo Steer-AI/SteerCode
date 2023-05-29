@@ -18,8 +18,6 @@
   let initialFileTreeFile: IFileTreeItem | null;
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
-    Log.INFO('fetchFileTreeItem', { item, depth });
-
     if (!item.isDirectory) return;
     if (item.children.length !== 0) return;
 
@@ -27,7 +25,6 @@
       const fileTree = await window.electron.getTree(item.filePath, depth);
       item.children = fileTree;
       initialFileTreeFile = initialFileTreeFile;
-      Log.INFO('initialFileTreeFile + resp', { initialFileTreeFile, fileTree });
     } catch (error: any) {
       Log.ERROR(error.message);
       notificationStore.addNotification({

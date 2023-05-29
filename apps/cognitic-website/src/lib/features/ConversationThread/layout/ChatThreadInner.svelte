@@ -69,7 +69,6 @@
       try {
         loading = false;
         const completionResponse = JSON.parse(e.data) as CompletionResponse;
-        console.log({ completionResponse });
         const content = completionResponse.msg;
 
         if (completionResponse.done) {

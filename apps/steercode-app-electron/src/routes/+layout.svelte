@@ -6,11 +6,12 @@
   import { onMount } from 'svelte';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
   import { USER_COOKIE_ANONYMOUS_ID_NAME } from '$lib/shared/utils/constants';
+  import { Log } from '$lib/core/services/logging';
 
   onMount(() => {
     if (!window.electron) return;
     const uid = window.electron.getUid();
-    console.log('uid', uid);
+    Log.DEBUG('uid', uid);
     localStorage.setItem(USER_COOKIE_ANONYMOUS_ID_NAME, uid);
     loadAnalytics();
   });

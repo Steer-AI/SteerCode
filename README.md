@@ -4,8 +4,7 @@ This turborepo uses [Yarn](https://classic.yarnpkg.com/lang/en/) as a package ma
 
 ### Apps and Packages
 
-- `cognitic-website`: a [SvelteKit](https://kit.svelte.dev/) app
-- `cognitic-server`: a [Express](https://expressjs.com/) app server
+- `cognitic-website`: a [SvelteKit](https://kit.svelte.dev/) app running in https://steercode.com/
 - `steercode-app`: a [SvelteKit](https://kit.svelte.dev/) app running in the [Electron](https://www.electronjs.org/)
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
@@ -20,7 +19,7 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 yarn install
 
 # go to app root directory
-cd apps/cognitic-client
+cd apps/steercode-app-electron
 
 # (optional) run dev server
 yarn dev
@@ -28,7 +27,7 @@ yarn dev
 #  compile the app
 yarn build
 ```
-- all outputs will be in the /apps/cognitic-client/dist directory
+- all outputs will be in the /apps/steercode-app-electron/dist directory
 
 ### How to deploy steercode-app to sentry?
 1. go to sentry https://sentry.dctr.co/settings/account/api/auth-tokens/
@@ -36,7 +35,6 @@ yarn build
     - project:read
     - project:releases
     - org:read
-3. put your auth token to SENTRY_AUTH_TOKEN in the /apps/steercode-client/.env file
+3. put your auth token to SENTRY_AUTH_TOKEN in the /apps/steercode-app-electron/.env file
 4. set VITE_PUBLIC_ENV env variable to 'production'
 4. run `yarn build`  
-

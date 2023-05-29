@@ -17,7 +17,7 @@ export async function handleImportRepo() {
       return;
     }
     let folder_path = selection.filePaths[0];
-    Log.INFO(`User selected folder ${folder_path}`);
+    Log.DEBUG(`User selected folder ${folder_path}`);
     if (folder_path.endsWith('/')) folder_path = folder_path.slice(0, -1);
 
     const repo = {

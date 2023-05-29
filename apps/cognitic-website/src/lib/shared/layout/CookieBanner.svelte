@@ -60,7 +60,6 @@
 
     try {
       const { choices } = JSON.parse(cookie);
-      console.log({ choices });
       const valid = validate(selectedCoises, choices);
 
       if (!valid) {

@@ -35,17 +35,12 @@ function createFilteredFilesStore() {
       return;
     }
 
-    console.log('searching for', query);
-
     if (!query) {
-      console.log('no query');
       _filteredFiles.set(null);
       return;
     }
 
     const searchResult = filterChildren(fileTree, query);
-
-    console.log('search results', searchResult);
     _filteredFiles.set(searchResult);
   }
 

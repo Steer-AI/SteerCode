@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "name": "cognitic-client",
-  "version": "0.0.1",
+  "name": "steercode-app",
+  "version": "0.1.0",
   "main": "./src/electron.cjs",
   "private": false,
   "scripts": {
@@ -12,7 +12,6 @@
     "build:svelte": "yarn partytown && vite build",
     "build:electron": "electron-builder -mwl --config build.config.json",
     "partytown": "partytown copylib static/~partytown",
-    "preview": "vite preview",
     "format:changes": "git diff --cached --name-only --diff-filter=ACM | grep '\\.\\(js\\|ts\\|svelte\\|css\\|html\\)$' | sed 's/apps\\/cognitic-client/./g' | xargs prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write",
     "lint": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --check . && eslint \"./src\"",
     "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write .",
@@ -58,10 +57,10 @@
     "ts-jest": "^29.1.0",
     "tslib": "^2.5.0",
     "typescript": "^5.0.4",
-    "uuid": "^9.0.0",
     "vite": "^4.3.1"
   },
   "dependencies": {
+    "uuid": "^9.0.0",
     "node-machine-id": "^1.1.12",
     "diff2html": "^3.4.35",
     "electron-context-menu": "^3.6.1",
