@@ -13,10 +13,9 @@
     const uid = window.electron.getUid();
     Log.DEBUG('uid', uid);
     localStorage.setItem(USER_COOKIE_ANONYMOUS_ID_NAME, uid);
+    recentRepositories.fetchData();
     loadAnalytics();
   });
-
-  recentRepositories.fetchData();
 </script>
 
 <PartytownSetup />

@@ -82,7 +82,7 @@
         class="w-full whitespace-nowrap"
         size="medium"
         as="a"
-        href="/"
+        href="/new"
         on:click={() => {
           trackEvent('New conversation');
         }}
