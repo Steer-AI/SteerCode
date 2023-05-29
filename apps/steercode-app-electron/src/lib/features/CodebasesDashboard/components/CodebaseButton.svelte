@@ -74,22 +74,34 @@
 </script>
 
 <button
-  class="text-content-secondary border-stroke-secondary hover:bg-backgroun-primaryHover border border-solid px-6 pb-6 pt-5"
+  class="text-content-secondary border-stroke-secondary hover:bg-backgroun-primaryHover h-20 border border-solid px-6 py-1"
   on:click={loadRepo}
 >
+  <FolderIcon class="mr-3 h-8 w-auto" />
+
   <div class="flex items-center">
-    <FolderIcon class="mr-3.5 h-[19.5px] w-[22px]" />
-    <p class="text-xl font-bold">
+    <p class="headline-large">
       <span>{repoFolder}</span>
       <span> / </span>
       <span class="text-content-primary">{repoName}</span>
     </p>
   </div>
+
+  <div />
   {#if repository.last_update}
-    <div class="ml-9 mt-4">
+    <div class="body-small">
       <p class="text-left font-normal">
         {lastEditFormat}
       </p>
     </div>
   {/if}
 </button>
+
+<style lang="postcss">
+  button {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+  }
+</style>

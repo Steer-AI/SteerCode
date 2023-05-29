@@ -6,15 +6,16 @@
   import ArrowDownIcon from '$lib/shared/components/Icons/ArrowDownIcon.svelte';
   import ArrowRightIcon from '$lib/shared/components/Icons/ArrowRightIcon.svelte';
 
-  export let expanded = false;
   export let file: IFileTreeItem;
   export let depth = 1;
-  export let childExpanded = false;
+
+  $: expanded = file.expanded || false;
 
   const dispatch = createEventDispatcher<{ expand: IFileTreeItem }>();
 
   function toggle() {
     expanded = !expanded;
+    file.expanded = expanded;
     if (expanded) {
       dispatch('expand', file);
     }
@@ -63,13 +64,7 @@
       )}
       <li class="flex w-full flex-col items-center">
         {#if f.isDirectory}
-          <svelte:self
-            file={f}
-            depth={depth + 1}
-            on:expand
-            expanded={childExpanded}
-            {childExpanded}
-          />
+          <svelte:self file={f} depth={depth + 1} on:expand />
         {:else}
           <FileItem
             on:click={() => {

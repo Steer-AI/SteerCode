@@ -34,9 +34,7 @@ const config = {
   },
 
   vitePlugin: {
-    experimental: {
-      inspector: true // use cmd + shift to open inspector
-    }
+    inspector: true // use cmd + shift to open inspector
   }
 };
 

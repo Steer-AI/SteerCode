@@ -15,7 +15,7 @@
     <h2 class="text-content-primary mb-6 text-xl font-bold">
       {$_('dashboard.projects')}
     </h2>
-    <section class="grid-cols-auto-400 grid gap-x-12 gap-y-6">
+    <section class="grid gap-x-12 gap-y-6">
       {#each $recentRepositories as repository (repository.url)}
         <CodebaseButton {repository} />
       {:else}
@@ -24,3 +24,9 @@
     </section>
   </div>
 </div>
+
+<style lang="postcss">
+  section.grid {
+    grid-template-columns: repeat(auto-fill, minmax(384px, 1fr));
+  }
+</style>

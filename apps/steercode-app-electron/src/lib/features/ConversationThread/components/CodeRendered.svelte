@@ -83,7 +83,7 @@
     }
   }
 
-  export function getNewVersionFromDiff(diff: string): string {
+  function getNewVersionFromDiff(diff: string): string {
     const change = parse(diff);
 
     const changes = [];

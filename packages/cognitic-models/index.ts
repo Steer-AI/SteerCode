@@ -24,6 +24,7 @@ export interface IFileTreeItem {
   filePath: string;
   isDirectory: boolean;
   children: IFileTreeItem[];
+  expanded?: boolean; // utility property
 }
 
 export interface IFileContentReqParams {

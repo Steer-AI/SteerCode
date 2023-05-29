@@ -2,6 +2,7 @@
   import { browser } from '$app/environment';
   import ConversationsSidebar from '$lib/features/ConversationsSidebar/layout/Sidebar.svelte';
   import CodebaseSidebar from '$lib/features/CodebaseSidebar/layout/Sidebar.svelte';
+  import FilePreviewSidebar from '$lib/features/FilePreviewSidebar/layout/Sidebar.svelte';
 
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
@@ -36,6 +37,7 @@
     </main>
 
     <CodebaseSidebar />
+    <FilePreviewSidebar />
   </div>
 </div>
 

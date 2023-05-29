@@ -123,7 +123,7 @@
 
       <button
         type="submit"
-        class="text-content-tertiary hover:text-content-primary absolute bottom-2 right-8 cursor-pointer rounded-full p-2"
+        class="text-content-tertiary hover:text-content-primary absolute bottom-5 right-8 cursor-pointer rounded-full p-2"
         disabled={loading || submitDisabled || !query}
       >
         <SendIcon class="h-4 w-4" />

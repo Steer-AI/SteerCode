@@ -58,10 +58,7 @@ module.exports = {
             // '--tw-prose-invert-body': '#F0F0F0'
           }
         }
-      }),
-      gridTemplateColumns: {
-        'auto-400': 'repeat(auto-fill, minmax(400px, 1fr))'
-      }
+      })
     }
   },
   plugins: [require('@tailwindcss/typography')]

@@ -25,7 +25,8 @@ function createFilteredFilesStore() {
       fileName: fileTree.fileName,
       filePath: fileTree.filePath,
       children: filteredChildren,
-      isDirectory: fileTree.isDirectory
+      isDirectory: fileTree.isDirectory,
+      expanded: true
     };
   }
 

@@ -49,7 +49,7 @@
   </div>
 
   <div
-    class="flex flex-1 overflow-x-auto whitespace-nowrap"
+    class="mt-1 flex flex-1 overflow-x-auto whitespace-nowrap"
     bind:this={divElement}
   >
     <span class="text-content-secondary ml-2">

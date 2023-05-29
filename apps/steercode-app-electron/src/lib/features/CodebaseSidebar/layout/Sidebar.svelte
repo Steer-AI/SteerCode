@@ -1,3 +1,10 @@
+<script lang="ts" context="module">
+  let _initialFileTreeFile: IFileTreeItem | null = null;
+  const initialFileTreeFile = writable<IFileTreeItem | null>(
+    _initialFileTreeFile
+  );
+</script>
+
 <script lang="ts">
   import Divider from '$lib/shared/components/Divider.svelte';
 
@@ -14,8 +21,7 @@
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
   import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
   import InputField from '$lib/shared/components/InputField.svelte';
-
-  let initialFileTreeFile: IFileTreeItem | null;
+  import { writable } from 'svelte/store';
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
     if (!item.isDirectory) return;
@@ -24,7 +30,7 @@
     try {
       const fileTree = await window.electron.getTree(item.filePath, depth);
       item.children = fileTree;
-      initialFileTreeFile = initialFileTreeFile;
+      initialFileTreeFile.set(_initialFileTreeFile);
     } catch (error: any) {
       Log.ERROR(error.message);
       notificationStore.addNotification({
@@ -37,32 +43,36 @@
 
   function handleUpdate(selectedRepo: RepositoryOption | null) {
     if (!selectedRepo) {
-      initialFileTreeFile = null;
+      initialFileTreeFile.set(null);
       selectedEntities.clear();
       return;
     }
 
-    if (!initialFileTreeFile) {
-      initialFileTreeFile = {
+    if (!_initialFileTreeFile) {
+      _initialFileTreeFile = {
         isDirectory: true,
         fileName: selectedRepo.name,
         filePath: selectedRepo.url,
-        children: []
+        children: [],
+        expanded: true
       };
+      initialFileTreeFile.set(_initialFileTreeFile);
       selectedEntities.clear();
-      fetchFileTreeItem(initialFileTreeFile, -1);
+      fetchFileTreeItem(_initialFileTreeFile, -1);
       return;
     }
 
-    if (selectedRepo.url !== initialFileTreeFile.filePath) {
-      initialFileTreeFile = {
+    if (selectedRepo.url !== _initialFileTreeFile.filePath) {
+      _initialFileTreeFile = {
         isDirectory: true,
         fileName: selectedRepo.name,
         filePath: selectedRepo.url,
-        children: []
+        children: [],
+        expanded: true
       };
+      initialFileTreeFile.set(_initialFileTreeFile);
       selectedEntities.clear();
-      fetchFileTreeItem(initialFileTreeFile, -1);
+      fetchFileTreeItem(_initialFileTreeFile, -1);
       return;
     }
   }
@@ -70,34 +80,32 @@
   $: handleUpdate($selectedRepositoryStore);
 </script>
 
-<aside class="flex" style={$$props.style}>
+<aside class="flex {$$props.class}" style={$$props.style}>
   <Divider vertical />
   <div class="bg-background-primary flex w-[400px] flex-col">
     <div
       class="headline-large text-content-primary flex h-14 items-center px-6"
     >
-      {$_('conversation.cosebaseSidebar.codebaseTitle')}
+      {$_('conversation.codebaseSidebar.codebaseTitle')}
     </div>
 
-    {#if initialFileTreeFile}
+    {#if $initialFileTreeFile}
       <InputField
         class="h-8 w-full px-3 py-2 pr-10 text-sm"
         labelClass="mx-6 mb-3"
         type="text"
         placeholder="Search..."
         on:input={(e) =>
-          filteredFiles.search(e?.target?.value, initialFileTreeFile)}
+          filteredFiles.search(e?.target?.value, $initialFileTreeFile)}
       />
     {/if}
 
     <!-- scrollable file tree -->
     <section class="flex-[2] overflow-y-auto">
-      {#if initialFileTreeFile}
+      {#if $initialFileTreeFile}
         {#if $filteredFiles}
           {#if $filteredFiles.children.length > 0}
             <FileTreeItem
-              expanded={true}
-              childExpanded={true}
               file={$filteredFiles}
               on:expand={(e) => {
                 fetchFileTreeItem(e.detail, 1);
@@ -105,13 +113,12 @@
             />
           {:else}
             <div class="text-content-secondary body-regular flex-1 px-6">
-              {$_('conversation.cosebaseSidebar.emptySearch')}
+              {$_('conversation.codebaseSidebar.emptySearch')}
             </div>
           {/if}
         {:else}
           <FileTreeItem
-            expanded={true}
-            file={initialFileTreeFile}
+            file={$initialFileTreeFile}
             on:expand={(e) => {
               fetchFileTreeItem(e.detail, 1);
             }}
@@ -119,7 +126,7 @@
         {/if}
       {:else}
         <div class="text-content-secondary body-regular flex-1 px-6">
-          {$_('conversation.cosebaseSidebar.noCodebase')}
+          {$_('conversation.codebaseSidebar.noCodebase')}
         </div>
       {/if}
     </section>
@@ -129,20 +136,20 @@
     <div
       class="headline-large text-content-primary flex h-14 items-center px-6"
     >
-      {$_('conversation.cosebaseSidebar.contextTitle')}
+      {$_('conversation.codebaseSidebar.contextTitle')}
     </div>
 
-    {#if $selectedEntities.length === 0 || !initialFileTreeFile}
+    {#if $selectedEntities.length === 0 || !$initialFileTreeFile}
       <div class="text-content-secondary body-regular flex-1 px-6">
-        {$_('conversation.cosebaseSidebar.noContext')}
+        {$_('conversation.codebaseSidebar.noContext')}
       </div>
     {:else}
       <!-- scrollable selected files -->
-      <section class="flex-1 overflow-y-scroll">
+      <section class="flex-1 flex-shrink-0 overflow-y-scroll">
         {#each $selectedEntities as entity (entity.filePath)}
           <SelectedContextItem
             item={entity}
-            prefixPath={initialFileTreeFile.filePath}
+            prefixPath={$initialFileTreeFile.filePath}
           />
         {/each}
       </section>

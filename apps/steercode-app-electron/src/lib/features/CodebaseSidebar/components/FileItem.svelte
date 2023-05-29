@@ -3,6 +3,7 @@
   import type { IFileTreeItem } from 'cognitic-models';
   import { tick } from 'svelte';
   import { getClassWithColor } from 'file-icons-js';
+  import { openFilePreviewSidebar } from '$lib/features/FilePreviewSidebar/layout/Sidebar.svelte';
 
   export let file: IFileTreeItem;
   export let selected: boolean;
@@ -20,6 +21,10 @@
     (
       divElement.querySelector('.checkbox-container input') as HTMLElement
     )?.click();
+  }
+
+  async function handleFileClick() {
+    openFilePreviewSidebar(file.filePath);
   }
 </script>
 
@@ -52,13 +57,14 @@
     {/if}
   </div>
 
-  <span
-    class="body-regular w-full overflow-y-scroll {selected
+  <button
+    on:click|stopPropagation={handleFileClick}
+    class="body-regular w-full overflow-y-scroll text-start hover:underline {selected
       ? 'text-content-primary'
       : 'text-content-primarySub'} mx-2 whitespace-nowrap"
   >
     {file.fileName}
-  </span>
+  </button>
   <Checkbox
     class="bg-background-primary rignt-0 sticky flex cursor-pointer items-center"
     checkboxClass="w-3 h-3 ml-auto flex-shrink-0"
