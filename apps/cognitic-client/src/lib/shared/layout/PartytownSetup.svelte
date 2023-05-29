@@ -2,7 +2,6 @@
   import { partytownSnippet } from '@builder.io/partytown/integration';
   import { onMount } from 'svelte';
   import { init } from '@sentry/svelte';
-  import { PUBLIC_SENTRY_DNS, PUBLIC_SENTRY_ENABLED } from '$env/static/public';
   import { BrowserTracing } from '@sentry/browser';
   import { dev } from '$app/environment';
 
@@ -12,9 +11,9 @@
     scriptEl && (scriptEl.textContent = partytownSnippet());
     // Initialize the Sentry SDK here
     init({
-      enabled: PUBLIC_SENTRY_ENABLED === 'true',
+      enabled: true,
       environment: dev ? 'development' : 'production',
-      dsn: PUBLIC_SENTRY_DNS,
+      dsn: 'https://8a5abef8270b4fd6bfb1379d0642d62d@sentry.dctr.co/10',
       integrations: [new BrowserTracing()],
       ignoreErrors: [
         // Random plugins/extensions

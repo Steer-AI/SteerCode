@@ -74,7 +74,7 @@
 </script>
 
 <button
-  class="text-content-secondary border-stroke-secondary border border-solid px-6 pb-6 pt-5"
+  class="text-content-secondary border-stroke-secondary hover:bg-backgroun-primaryHover border border-solid px-6 pb-6 pt-5"
   on:click={loadRepo}
 >
   <div class="flex items-center">

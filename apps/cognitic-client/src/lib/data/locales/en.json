@@ -25,6 +25,11 @@
         "twitterButton": "Log in with Twitter"
     },
 
+    "dashboard": {
+        "noRecentProjects": "No recent projects",
+        "projects": "Projects"
+    },
+
     "settings": {
         "title": "Settings",
         "save": "Save changes",
@@ -65,9 +70,9 @@
         "message": {
             "me": "Me",
             "loading": "Loading...",
-            "initialMessage": "Welcome to SteerCode Chat, your AI assistant that understands large databases. \n\n Harness the incredible power of AI assistants, like ChatGPT, but for your own codebase. To demonstrate this technology, we present a chat with our favorite LangChain. \n\n Enter your own question about Langchain in the text box, or try one of the examples to get started. \n\n",
+            "initialMessage": "Welcome to SteerCode Chat, your AI assistant that understands large databases. \n\n Harness the incredible power of AI assistants, like ChatGPT, but for your own codebase. To demonstrate this technology, get started by selecting a context files from the right sidebar. Enter your own question about your codebase in the text box, or try one of the examples to get started. \n\n",
             "improveText": "Help us improve. How was this answer?",
-            "example1": "What is an agent?",
+            "example1": "How to start this app?",
             "example2": "Create a tutorial on how to use buffer memory.",
             "example3": "Store pdf in vectore database and chat with it."
         },

@@ -1,6 +1,5 @@
 <script lang="ts">
   import Divider from '$lib/shared/components/Divider.svelte';
-  import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
 
   import { _ } from 'svelte-i18n';
   import { selectedEntities } from '../stores/selection';
@@ -11,10 +10,10 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { Log } from '$lib/core/services/logging';
   import 'file-icons-js/css/style.css';
-  import { onMount } from 'svelte';
   import { filteredFiles } from '../stores/filteredFiles';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
   import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import InputField from '$lib/shared/components/InputField.svelte';
 
   let initialFileTreeFile: IFileTreeItem | null;
 
@@ -84,8 +83,9 @@
     </div>
 
     {#if initialFileTreeFile}
-      <TextAreaField
-        class="search-input mx-4 mb-3 h-8 w-full px-3 py-2 pr-10 text-sm"
+      <InputField
+        class="h-8 w-full px-3 py-2 pr-10 text-sm"
+        labelClass="mx-6 mb-3"
         type="text"
         placeholder="Search..."
         on:input={(e) =>

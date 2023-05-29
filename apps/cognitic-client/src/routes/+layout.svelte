@@ -4,7 +4,6 @@
   import { loadAnalytics } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import { onMount } from 'svelte';
-  import Cookies from 'js-cookie';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
   import { USER_COOKIE_ANONYMOUS_ID_NAME } from '$lib/shared/utils/constants';
 

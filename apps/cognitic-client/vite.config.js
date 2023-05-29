@@ -18,14 +18,15 @@ const config = ({ mode }) => {
       sveltekit(),
   ]
 
+  // deploy to sentry only for production
   if (process.env.VITE_PUBLIC_ENV === 'production') {
     plugins.push(
       sentryVitePlugin({
-        url: `https://${process.env.SENTRY_HOST}/`,
+        url: `https://sentry.dctr.co/`,
         authToken: process.env.SENTRY_AUTH_TOKEN,
         org: 'sentry',
         debug: false,
-        project: process.env.SENTRY_PROJECT_NAME,
+        project: 'steercode-electron',
         // Specify the directory containing build artifacts
         include: ['./.svelte-kit/output/client'],
         setCommits: {

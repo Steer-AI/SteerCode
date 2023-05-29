@@ -3,14 +3,8 @@
   import ActivityFeedIcon from '../components/Icons/ActivityFeedIcon.svelte';
   import LogoIcon from '../components/Icons/LogoIcon.svelte';
   // import { locale, locales } from 'svelte-i18n';
-  import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
-  import Button from '../components/Button.svelte';
   import { _ } from 'svelte-i18n';
-  import GitHubIcon from '../components/Icons/GitHubIcon.svelte';
   import LogoText from '../components/Icons/LogoText.svelte';
-  import { Log } from '$lib/core/services/logging';
-  import { notificationStore } from '$lib/features/Notifications/store/notifications';
-  import { NotificationType, Position } from '$lib/models/enums/notifications';
   import Listbox, { type Option } from '../components/Listbox/Listbox.svelte';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
   import PlusIcon from '../components/Icons/PlusIcon.svelte';
@@ -18,43 +12,10 @@
   import { recentRepositories } from '../stores/recentRepositories';
   import { goto } from '$app/navigation';
   import { selectedRepositoryStore } from '../stores/selectedRepository';
+  import { handleImportRepo } from '$lib/features/CodebasesDashboard/utils';
 
+  export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
-
-  async function handleImportRepo() {
-    if (!window.electron) return;
-    const selection = await window.electron.openDialog('showOpenDialog', {
-      properties: ['openDirectory']
-    });
-
-    try {
-      if (selection.canceled) {
-        Log.WARNING('User cancelled folder selection...');
-        return;
-      }
-      let folder_path = selection.filePaths[0];
-      Log.INFO(`User selected folder ${folder_path}`);
-      if (folder_path.endsWith('/')) folder_path = folder_path.slice(0, -1);
-
-      const repo = {
-        url: folder_path,
-        name: folder_path.split('/').pop() || folder_path
-      };
-
-      goto('/new');
-      selectedRepositoryStore.set(repo);
-      recentRepositories.add(repo);
-    } catch (error: any) {
-      Log.ERROR(
-        `Error occured during the folder selection process ${error.message}`
-      );
-      notificationStore.addNotification({
-        type: NotificationType.GeneralError,
-        message: error.message,
-        position: Position.BottomRight
-      });
-    }
-  }
 
   function handleListboxChange(opt: Option<RepositoryOption>) {
     if (opt.label === 'new-import') {
@@ -162,16 +123,6 @@
             </div>
           {/if}
         </Listbox>
-      {:else}
-        <Button
-          variant="secondary"
-          size="medium"
-          class=""
-          on:click={handleImportRepo}
-        >
-          <GitHubIcon class="mr-2 h-4 w-4" />
-          {$_('header.importRepoButton')}
-        </Button>
       {/if}
     </div>
 
@@ -191,12 +142,14 @@
         })}
       />
     </div> -->
-    <button
-      class="mr-3 block md:hidden"
-      on:click={() => (sidebarOpen = !sidebarOpen)}
-    >
-      <ActivityFeedIcon class="h-8 w-8" />
-    </button>
+    {#if enableMenuButton}
+      <button
+        class="mr-3 block md:hidden"
+        on:click={() => (sidebarOpen = !sidebarOpen)}
+      >
+        <ActivityFeedIcon class="h-8 w-8" />
+      </button>
+    {/if}
   </span>
 
   <Divider />

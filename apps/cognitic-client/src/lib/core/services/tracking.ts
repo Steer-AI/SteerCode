@@ -1,5 +1,4 @@
 import { browser } from '$app/environment';
-import { PUBLIC_ANALYTICS_WRITE_KEY } from '$env/static/public';
 import { AnalyticsBrowser } from '@segment/analytics-next';
 import { Log } from './logging';
 
@@ -8,16 +7,9 @@ let analytics: AnalyticsBrowser | null = null;
 export function loadAnalytics(): void {
   if (!browser) return;
   Log.DEBUG('Load analytics');
-  analytics = AnalyticsBrowser.load(
-    {
-      writeKey: PUBLIC_ANALYTICS_WRITE_KEY
-    }
-    // {
-    //   integrations: {
-    //     'Segment.io': { apiHost: PUBLIC_ANALYTICS_API_HOST }
-    //   }
-    // }
-  );
+  analytics = AnalyticsBrowser.load({
+    writeKey: '4hHTG8sCD3EECRpp9zQSoXeUJNQlDFXG'
+  });
 }
 
 type Properties = {
