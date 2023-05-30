@@ -2,7 +2,6 @@
   const selectedFile = writable<IFileContentItem | null>(null);
 
   export async function openFilePreviewSidebar(filePath: string) {
-    console.log('Opening file preview sidebar for file: ', filePath);
     const contents: [IFileContentItem] = await window.electron.getContents([
       filePath
     ]);

@@ -9,8 +9,6 @@
   $: message = '```\n' + file.fileContent + '```\n';
   $: prefix = $selectedRepositoryStore?.url || '';
   $: paths = file.filePath.replace(prefix, '').split('/');
-
-  $: console.log({ file, message });
 </script>
 
 <div

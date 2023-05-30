@@ -219,7 +219,6 @@
 
   onMount(async () => {
     selectedRepositoryStore.set(conversation.value.repository);
-    recentRepositories.add(conversation.value.repository);
 
     let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
