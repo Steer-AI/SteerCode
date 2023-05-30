@@ -1,3 +1,26 @@
+<script lang="ts" context="module">
+  hljs.registerLanguage('gitconflict', function (hljs) {
+    return {
+      contains: [
+        {
+          className: 'deletion !block',
+          begin: '^<<<<<<< HEAD:.*\n',
+          end: '^===',
+          excludeBegin: false,
+          excludeEnd: true
+        },
+        {
+          className: 'addition !block',
+          begin: '====$',
+          end: '^>>>>>>> .+$',
+          excludeBegin: true,
+          excludeEnd: false
+        }
+      ]
+    };
+  });
+</script>
+
 <script lang="ts">
   import { Log } from '$lib/core/services/logging';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
@@ -15,7 +38,9 @@
   export let lang: string;
   export let text: string;
 
-  const isDiff = isEmptyDiff(text);
+  // const isDiff = isEmptyDiff(text);
+  // TODO: Detect gitconflict format
+  const isDiff = true;
 
   function isEmptyDiff(diff: string): boolean {
     const change = parse(diff);
@@ -30,13 +55,14 @@
 
   function highlight(code: string, lang: string | undefined) {
     if (isDiff) {
-      lang = 'diff';
+      lang = 'gitconflict';
     }
 
     if (lang && hljs.getLanguage(lang)) {
       return hljs.highlight('\n' + code, { language: lang });
     }
     return hljs.highlightAuto('\n' + code, [
+      'gitconflict',
       'typescript',
       'python',
       'bash',
