@@ -4,7 +4,7 @@
       contains: [
         {
           className: 'deletion !block',
-          begin: '^<<<<<<< HEAD:.*\n',
+          begin: '^<<<<<<< HEAD.*\n',
           end: '^===',
           excludeBegin: false,
           excludeEnd: true
