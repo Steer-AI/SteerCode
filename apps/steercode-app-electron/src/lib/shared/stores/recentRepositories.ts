@@ -8,14 +8,16 @@ function createRecentRepositoriesStore() {
   function add(item: RepositoryOption) {
     items.update((items) => {
       const index = items.findIndex((i) => i.url === item.url);
+      let newItem = item;
       if (index !== -1) {
         // Item already exists, move it to the front
+        newItem = items[index];
         items.splice(index, 1);
       } else if (items.length >= 10) {
         // Remove the last item if the list is full
         items.pop();
       }
-      return [item, ...items];
+      return [newItem, ...items];
     });
   }
 
