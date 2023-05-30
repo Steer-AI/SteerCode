@@ -32,7 +32,7 @@
     <span
       class="body-regular flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap"
     >
-      {$agent.title}
+      {$agent.title.replace(/^"(.*)"$/, '$1')}
     </span>
     <div
       class="absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l {selected
