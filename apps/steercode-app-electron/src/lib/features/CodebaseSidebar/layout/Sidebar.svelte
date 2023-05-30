@@ -12,7 +12,6 @@
   import { selectedEntities } from '../stores/selection';
   import SelectedContextItem from '../components/SelectedContextItem.svelte';
   import RefreshIcon from '$lib/shared/components/Icons/RefreshIcon.svelte';
-  import { onMount } from 'svelte';
   import type { IFileTreeItem } from 'cognitic-models';
   import FileTreeItem from '../components/FileTreeItem.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';

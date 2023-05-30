@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 
 const { getContentsForFiles } = require('./lib/data/fileContent.cjs');
 const { getFileTree } = require('./lib/data/fileTree.cjs');
@@ -20,5 +20,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
   getUid: () => {
     return machineIdSync(true);
+  },
+  openExternal: async (url) => {
+    return shell.openExternal(url);
   }
 });

@@ -64,6 +64,10 @@
     fetching = false;
   }
 
+  async function openExternal(url: string) {
+    await window.electron.openExternal(url);
+  }
+
   onMount(() => {
     fetchMoreConversations(false);
   });
@@ -149,6 +153,8 @@
         target="_blank"
         rel="noopener"
         href="https://twitter.com/SteerCode"
+        on:click|preventDefault={() =>
+          openExternal('https://twitter.com/SteerCode')}
         class="hover:text-content-primary"
       >
         <TwitterIcon class="h-5 w-5" />
@@ -158,6 +164,8 @@
         target="_blank"
         rel="noopener"
         href="https://discord.gg/4u6h5Wj6xr"
+        on:click|preventDefault={() =>
+          openExternal('https://discord.gg/4u6h5Wj6xr')}
         class="hover:text-content-primary"
       >
         <DiscordIcon class="h-5 w-5" />
@@ -167,6 +175,8 @@
         target="_blank"
         rel="noopener"
         href="https://github.com/cognitic-ai/cognitic"
+        on:click|preventDefault={() =>
+          openExternal('https://github.com/cognitic-ai/cognitic')}
         class="hover:text-content-primary"
       >
         <GitHubIcon class="h-4 w-4" />
