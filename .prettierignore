@@ -15,3 +15,7 @@ vite.config.js*
 **/~partytown
 
 **/*.json
+
+**/dist
+**/node_modules
+**/build

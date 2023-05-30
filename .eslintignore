@@ -1,6 +1,6 @@
-dist
+**/dist
 node_modules
-build
+**/build
 
 **/~partytown
 **/*.json

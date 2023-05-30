@@ -125,4 +125,3 @@ const applyMergeDiff = async (diff: IMergeMarkersDiff): Promise<void> => {
 //   }
 //   return lines;
 //}
-
