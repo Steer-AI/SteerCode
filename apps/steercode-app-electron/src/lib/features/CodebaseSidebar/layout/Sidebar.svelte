@@ -11,6 +11,8 @@
   import { _ } from 'svelte-i18n';
   import { selectedEntities } from '../stores/selection';
   import SelectedContextItem from '../components/SelectedContextItem.svelte';
+  import RefreshIcon from '$lib/shared/components/Icons/RefreshIcon.svelte';
+  import { onMount } from 'svelte';
   import type { IFileTreeItem } from 'cognitic-models';
   import FileTreeItem from '../components/FileTreeItem.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
@@ -42,13 +44,20 @@
   }
 
   function handleUpdate(selectedRepo: RepositoryOption | null) {
+    const selectedFilePaths = $selectedEntities.map(
+      (entity) => entity.filePath
+    );
+    _initialFileTreeFile = null;
     if (!selectedRepo) {
       initialFileTreeFile.set(null);
       selectedEntities.clear();
       return;
     }
 
-    if (!_initialFileTreeFile) {
+    if (
+      !_initialFileTreeFile ||
+      selectedRepo.url !== _initialFileTreeFile.filePath
+    ) {
       _initialFileTreeFile = {
         isDirectory: true,
         fileName: selectedRepo.name,
@@ -58,23 +67,30 @@
       };
       initialFileTreeFile.set(_initialFileTreeFile);
       selectedEntities.clear();
-      fetchFileTreeItem(_initialFileTreeFile, -1);
-      return;
+      fetchFileTreeItem(_initialFileTreeFile, -1).then(() => {
+        selectedFilePaths.forEach((filePath) => {
+          const entity = findFileTreeItemByPath(
+            _initialFileTreeFile!,
+            filePath
+          );
+          if (entity) selectedEntities.add(entity);
+          return;
+        });
+      });
     }
+  }
 
-    if (selectedRepo.url !== _initialFileTreeFile.filePath) {
-      _initialFileTreeFile = {
-        isDirectory: true,
-        fileName: selectedRepo.name,
-        filePath: selectedRepo.url,
-        children: [],
-        expanded: true
-      };
-      initialFileTreeFile.set(_initialFileTreeFile);
-      selectedEntities.clear();
-      fetchFileTreeItem(_initialFileTreeFile, -1);
-      return;
+  function findFileTreeItemByPath(
+    item: IFileTreeItem,
+    path: string
+  ): IFileTreeItem | null {
+    if (item.filePath === path) return item;
+    console.log(item.children);
+    for (const child of item.children) {
+      const found = findFileTreeItemByPath(child, path);
+      if (found) return found;
     }
+    return null;
   }
 
   $: handleUpdate($selectedRepositoryStore);
@@ -87,6 +103,15 @@
       class="headline-large text-content-primary flex h-14 items-center px-6"
     >
       {$_('conversation.codebaseSidebar.codebaseTitle')}
+
+      <button
+        on:click={() => handleUpdate($selectedRepositoryStore)}
+        class="text-content-primarySub ml-auto"
+      >
+        <RefreshIcon
+          class="text-content-secondary hover:text-content-primary active:text-primary h-4 w-4 transition-colors duration-150"
+        />
+      </button>
     </div>
 
     {#if $initialFileTreeFile}
