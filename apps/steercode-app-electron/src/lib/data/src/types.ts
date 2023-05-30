@@ -3,4 +3,6 @@ export interface IMergeMarkersDiff {
   incoming: string;
   fileName: string;
   branch?: string;
+
+  toMergeFormat(): string;
 }

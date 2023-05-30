@@ -16,7 +16,7 @@
     "lint": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --check . && eslint \"./src\"",
     "format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write .",
     "test": "jest --passWithNoTests",
-    "build-fs-operations": "tsc src/lib/data/src/*.ts --outDir src/lib/data/"
+    "build-fs-operations": "rm src/lib/data/*.cjs && tsc --downlevelIteration src/lib/data/src/*.ts --outDir src/lib/data/ && ./rename_js_to_cjs.sh"
   },
   "devDependencies": {
     "@builder.io/partytown": "^0.7.0",

@@ -1,14 +1,13 @@
 // import { parse } from 'diff2html'; // Update this to your actual imports
 import { promises as fs } from 'fs';
 import { parse } from './conflictParser';
-import { IMergeMarkersDiff } from './types';
+import type { IMergeMarkersDiff } from './types';
 
 export const applyDiff = async (diff: string) => {
   const change = parse(diff);
 
-  for (const file of change) {
-    applyFileDiff(file);
-  }
+  const changePromises = change.map(applyFileDiff);
+  return Promise.all(changePromises);
 };
 
 const applyFileDiff = async (diff: IMergeMarkersDiff) => {
@@ -30,12 +29,34 @@ const applyFileDiff = async (diff: IMergeMarkersDiff) => {
   }
 };
 
+function printStringDifference(string1: string, string2: string): void {
+  const differences: string[] = [];
+
+  [...string1, ...string2].forEach((char, index) => {
+    if (string1[index] !== string2[index]) {
+      differences.push(
+        `Index ${index}: ${string1[index] || '-'} != ${string2[index] || '-'}`
+      );
+    }
+  });
+
+  console.log(
+    differences.length === 0
+      ? 'The strings are identical.'
+      : 'Differences found:'
+  );
+  console.log(differences.join('\n'));
+}
+
 const applyMergeDiff = async (diff: IMergeMarkersDiff): Promise<void> => {
   const content = await fs.readFile(diff.fileName, 'utf-8');
-  const regex = new RegExp(diff.head, 'g');
+  const flexibleHead =
+    '\\s*' + diff.head.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*';
+  const regex = new RegExp(flexibleHead, 'g');
   const firstMatch = regex.exec(content);
 
   if (!firstMatch) {
+    printStringDifference(content, diff.head);
     throw new Error(`The string '${diff.head}' was not found in the file.`);
   }
 
@@ -49,7 +70,7 @@ const applyMergeDiff = async (diff: IMergeMarkersDiff): Promise<void> => {
 
   const newContent =
     content.substring(0, firstMatch.index) +
-    diff.incoming +
+    diff.toMergeFormat() +
     content.substring(firstMatch.index + diff.head.length);
   await fs.writeFile(diff.fileName, newContent, 'utf-8');
 };

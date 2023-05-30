@@ -1,3 +1,39 @@
+import type { IMergeMarkersDiff } from './types';
+
+class MergeMarkersDiff implements IMergeMarkersDiff {
+  head: string;
+  incoming: string;
+  fileName: string;
+  branch?: string;
+
+  constructor(
+    head: string,
+    incoming: string,
+    fileName: string,
+    branch?: string
+  ) {
+    this.head = head;
+    this.incoming = incoming;
+    this.fileName = fileName;
+    this.branch = branch;
+  }
+
+  toMergeFormat(): string {
+    return (
+      '<<<<<<< HEAD' +
+      '\n' +
+      this.head +
+      '\n' +
+      '=======' +
+      '\n' +
+      this.incoming +
+      '\n' +
+      '>>>>>>> ' +
+      this.branch
+    );
+  }
+}
+
 const parseHead = (diff: string): string => {
   const startMarker = /<<<<<<< HEAD:(.*)/;
   const endMarker = /=======/;
@@ -60,18 +96,18 @@ const parseChange = (diff: string) => {
   const fileName = parseFileName(diff);
   const branch = parseBranchName(diff);
 
-  return {
-    head: head,
-    incoming: incoming,
-    fileName: fileName,
-    branch: branch
-  } as IMergeMarkersDiff;
+  return new MergeMarkersDiff(
+    head,
+    incoming,
+    fileName,
+    branch
+  ) as IMergeMarkersDiff;
 };
 
 export const parse = (diff: string): IMergeMarkersDiff[] => {
   const diffPattern = /<<<<<<< HEAD:(.*)[\s\S]*?>>>>>>> (.*)/g;
 
-  const matches = diff.matchAll(diffPattern);
+  const matches = [...diff.matchAll(diffPattern)];
 
   const changes = [];
 
