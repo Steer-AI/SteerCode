@@ -20,7 +20,6 @@ class MergeMarkersDiff implements IMergeMarkersDiff {
 
   toMergeFormat(): string {
     return (
-      '\n' +
       '<<<<<<< HEAD' +
       '\n' +
       this.head +
@@ -106,7 +105,7 @@ const parseChange = (diff: string) => {
 };
 
 export const parse = (diff: string): IMergeMarkersDiff[] => {
-  const diffPattern = /<<<<<<< HEAD.*=======.*>>>>>>>/g;
+  const diffPattern = /<<<<<<< HEAD:(.*)[\s\S]*?>>>>>>> (.*)/g;
 
   const matches = [...diff.matchAll(diffPattern)];
 
