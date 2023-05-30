@@ -1,8 +1,8 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.getFileTree = void 0;
-var ignore_1 = require('ignore');
 var fs = require('fs');
+var ignore_1 = require('ignore');
 var path = require('path');
 var isRelevantFile = function (file) {
   if (file === '.git' || file === '.idea') return false;

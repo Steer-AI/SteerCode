@@ -1,137 +1,148 @@
-import { parse } from 'diff2html'; // Update this to your actual imports
-import type { DiffBlock, DiffFile } from 'diff2html/lib/types';
-import { LineType } from 'diff2html/lib/types';
-import * as fs from 'fs';
+// import { parse } from 'diff2html'; // Update this to your actual imports
+import { promises as fs } from 'fs';
+import { parse } from './conflictParser';
+import type { IMergeMarkersDiff } from './types';
 
-export const applyDiff = (diff: string) => {
+export const applyDiff = async (diff: string) => {
   const change = parse(diff);
 
-  for (const file of change) {
-    applyFileDiff(file);
+  const changePromises = change.map(applyFileDiff);
+  return Promise.all(changePromises);
+};
+
+const applyFileDiff = async (diff: IMergeMarkersDiff) => {
+  let isNewFile = false;
+  try {
+    await fs.access(diff.fileName, fs.constants.F_OK);
+  } catch (err) {
+    isNewFile = true;
+  }
+
+  if (isNewFile) {
+    if (diff.head)
+      throw new Error(
+        'There is existing content for file that is supposed to be new, LLM probably used wrong file name'
+      );
+    await fs.writeFile(diff.fileName, diff.incoming, 'utf-8');
+  } else {
+    await applyMergeDiff(diff);
   }
 };
 
-export function applyFileDiff(diff: DiffFile) {
-  const oldFilePath = diff.oldName;
-  const newFilePath = diff.newName;
+function printStringDifference(string1: string, string2: string): void {
+  const differences: string[] = [];
 
-  // check if the file is new
-  const isNew = oldFilePath === '/dev/null';
-  // check if the file has been renamed
-  const isRenamed = oldFilePath !== newFilePath && oldFilePath !== '/dev/null';
-  // check if the file has been deleted
-  const isDeleted = newFilePath === '/dev/null';
-
-  if (isDeleted && deleteFile(oldFilePath)) {
-    return; // No need to apply diff to a deleted file
-  }
-
-  if (isRenamed && !renameFile(oldFilePath, newFilePath)) {
-    return;
-  }
-
-  let lines: string[] = [];
-  if (!isNew) {
-    // Read the current file
-    let fileContent = '';
-    try {
-      fileContent = fs.readFileSync(newFilePath, 'utf8');
-    } catch (err) {
-      console.error(`Error reading file ${newFilePath}: ${err}`);
-      return;
+  [...string1, ...string2].forEach((char, index) => {
+    if (string1[index] !== string2[index]) {
+      differences.push(
+        `Index ${index}: ${string1[index] || '-'} != ${string2[index] || '-'}`
+      );
     }
-    lines = fileContent.split('\n');
-  }
+  });
 
-  let insertOffset = 0;
-  for (const block of diff.blocks) {
-    if (isNew) {
-      lines = lines.concat(applyBlockChangesToNewFile(block));
-    } else {
-      const o = applyBlockChangesToExistingFile(lines, block, insertOffset);
-      lines = o.lines;
-      insertOffset = o.insertOffset;
-    }
-  }
-
-  // Write the modified content back to the file
-  try {
-    fs.writeFileSync(newFilePath, lines.join('\n'));
-  } catch (err) {
-    console.error(`Error writing to file ${newFilePath}: ${err}`);
-  }
+  console.log(
+    differences.length === 0
+      ? 'The strings are identical.'
+      : 'Differences found:'
+  );
+  console.log(differences.join('\n'));
 }
 
-function renameFile(oldFilePath: string, newFilePath: string) {
-  try {
-    fs.renameSync(oldFilePath, newFilePath);
-  } catch (err) {
-    console.error(
-      `Error renaming file from ${oldFilePath} to ${newFilePath}: ${err}`
+const applyMergeDiff = async (diff: IMergeMarkersDiff): Promise<void> => {
+  const content = await fs.readFile(diff.fileName, 'utf-8');
+  const flexibleHead =
+    '\\s*' + diff.head.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*';
+  const regex = new RegExp(flexibleHead, 'g');
+  const firstMatch = regex.exec(content);
+
+  if (!firstMatch) {
+    printStringDifference(content, diff.head);
+    throw new Error(`The string '${diff.head}' was not found in the file.`);
+  }
+
+  const secondMatch = regex.exec(content);
+
+  if (secondMatch) {
+    throw new Error(
+      `There is more than one occurrence of the string '${diff.head}' in the file.`
     );
-    return false;
   }
-  return true;
-}
 
-function deleteFile(filePath: string) {
-  try {
-    fs.unlinkSync(filePath);
-  } catch (err) {
-    console.error(`Error deleting file ${filePath}: ${err}`);
-    return false;
-  }
-  return true;
-}
+  const newContent =
+    content.substring(0, firstMatch.index) +
+    diff.toMergeFormat() +
+    content.substring(firstMatch.index + diff.head.length);
+  await fs.writeFile(diff.fileName, newContent, 'utf-8');
+};
 
-export function applyBlockChangesToExistingFile(
-  lines: string[],
-  block: DiffBlock,
-  insertOffset: number
-) {
-  for (const diffLine of block.lines) {
-    if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
-      const adjustedLine = block.newStartLine + insertOffset - 1;
-      if (lines[adjustedLine] !== diffLine.content.slice(1)) {
-        if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
-          block.newStartLine++;
-        } else if (
-          adjustedLine > 0 &&
-          lines[adjustedLine - 1] === diffLine.content.slice(1)
-        ) {
-          block.newStartLine--;
-        } else {
-          console.error(
-            `Error: Cannot find matching context line at ${adjustedLine} for file`
-          );
-          return { lines: lines, insertOffset: insertOffset };
-        }
-      }
-    }
+// function renameFile(oldFilePath: string, newFilePath: string) {
+//   try {
+//     fs.renameSync(oldFilePath, newFilePath);
+//   } catch (err) {
+//     console.error(
+//       `Error renaming file from ${oldFilePath} to ${newFilePath}: ${err}`
+//     );
+//     return false;
+//   }
+//   return true;
+// }
 
-    const adjustedLine = block.newStartLine + insertOffset - 1;
-    if (diffLine.type === LineType.INSERT) {
-      lines.splice(adjustedLine, 0, diffLine.content.slice(1));
-      insertOffset++;
-    } else if (diffLine.type === LineType.DELETE) {
-      lines.splice(adjustedLine, 1);
-    } else if (diffLine.type === LineType.CONTEXT) {
-      insertOffset++;
-    }
+// function deleteFile(filePath: string) {
+//   try {
+//     fs.unlinkSync(filePath);
+//   } catch (err) {
+//     console.error(`Error deleting file ${filePath}: ${err}`);
+//     return false;
+//   }
+//   return true;
+// }
 
-    // For LineType.CONTEXT, do nothing because the line is unchanged
-  }
-  return { lines: lines, insertOffset: insertOffset };
-}
+// export function applyBlockChangesToExistingFile(
+//   lines: string[],
+//   block: DiffBlock,
+//   insertOffset: number
+// ) {
+//   for (const diffLine of block.lines) {
+//     if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
+//       const adjustedLine = block.newStartLine + insertOffset - 1;
+//       if (lines[adjustedLine] !== diffLine.content.slice(1)) {
+//         if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
+//           block.newStartLine++;
+//         } else if (
+//           adjustedLine > 0 &&
+//           lines[adjustedLine - 1] === diffLine.content.slice(1)
+//         ) {
+//           block.newStartLine--;
+//         } else {
+//           console.error(
+//             `Error: Cannot find matching context line at ${adjustedLine} for file`
+//           );
+//           return { lines: lines, insertOffset: insertOffset };
+//         }
+//       }
+//     }
 
-function applyBlockChangesToNewFile(block: DiffBlock) {
-  const lines: string[] = [];
-  for (const diffLine of block.lines) {
-    if (diffLine.type === LineType.INSERT) {
-      lines.push(diffLine.content.slice(1));
-    } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file
-  }
-  return lines;
-}
+//     const adjustedLine = block.newStartLine + insertOffset - 1;
+//     if (diffLine.type === LineType.INSERT) {
+//       lines.splice(adjustedLine, 0, diffLine.content.slice(1));
+//       insertOffset++;
+//     } else if (diffLine.type === LineType.DELETE) {
+//       lines.splice(adjustedLine, 1);
+//     } else if (diffLine.type === LineType.CONTEXT) {
+//       insertOffset++;
+//     }
 
-export default applyDiff;
+//     // For LineType.CONTEXT, do nothing because the line is unchanged
+//   }
+//   return { lines: lines, insertOffset: insertOffset };
+// }
+
+// function applyBlockChangesToNewFile(block: DiffBlock) {
+//   const lines: string[] = [];
+//   for (const diffLine of block.lines) {
+//     if (diffLine.type === LineType.INSERT) {
+//       lines.push(diffLine.content.slice(1));
+//     } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file
+//   }
+//   return lines;
+//}

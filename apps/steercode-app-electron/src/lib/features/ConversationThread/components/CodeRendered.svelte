@@ -83,10 +83,11 @@
   let applied = false;
 
   function copyToClipboard(text: string): void {
+    // TODO - find out better approach for copying multiple changes to clipboard
     if (navigator.clipboard) {
       navigator.clipboard;
       navigator.clipboard
-        .writeText(isDiff ? getNewVersionFromDiff(text) : text)
+        .writeText(text)
         .then(() => {
           copied = true;
           setTimeout(() => (copied = false), 2000);

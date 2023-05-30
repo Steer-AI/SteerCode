@@ -1,139 +1,364 @@
 'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.applyBlockChangesToExistingFile =
-  exports.applyFileDiff =
-  exports.applyDiff =
-    void 0;
-var diff2html_1 = require('diff2html'); // Update this to your actual imports
-var types_1 = require('diff2html/lib/types');
-var fs = require('fs');
-var applyDiff = function (diff) {
-  var change = (0, diff2html_1.parse)(diff);
-  for (var _i = 0, change_1 = change; _i < change_1.length; _i++) {
-    var file = change_1[_i];
-    applyFileDiff(file);
-  }
-};
-exports.applyDiff = applyDiff;
-function applyFileDiff(diff) {
-  var oldFilePath = diff.oldName;
-  var newFilePath = diff.newName;
-  // check if the file is new
-  var isNew = oldFilePath === '/dev/null';
-  // check if the file has been renamed
-  var isRenamed = oldFilePath !== newFilePath && oldFilePath !== '/dev/null';
-  // check if the file has been deleted
-  var isDeleted = newFilePath === '/dev/null';
-  if (isDeleted && deleteFile(oldFilePath)) {
-    return; // No need to apply diff to a deleted file
-  }
-  if (isRenamed && !renameFile(oldFilePath, newFilePath)) {
-    return;
-  }
-  var lines = [];
-  if (!isNew) {
-    // Read the current file
-    var fileContent = '';
-    try {
-      fileContent = fs.readFileSync(newFilePath, 'utf8');
-    } catch (err) {
-      console.error(
-        'Error reading file '.concat(newFilePath, ': ').concat(err)
-      );
-      return;
+var __awaiter =
+  (this && this.__awaiter) ||
+  function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+      return value instanceof P
+        ? value
+        : new P(function (resolve) {
+            resolve(value);
+          });
     }
-    lines = fileContent.split('\n');
-  }
-  var insertOffset = 0;
-  for (var _i = 0, _a = diff.blocks; _i < _a.length; _i++) {
-    var block = _a[_i];
-    if (isNew) {
-      lines = lines.concat(applyBlockChangesToNewFile(block));
-    } else {
-      var o = applyBlockChangesToExistingFile(lines, block, insertOffset);
-      lines = o.lines;
-      insertOffset = o.insertOffset;
-    }
-  }
-  // Write the modified content back to the file
-  try {
-    fs.writeFileSync(newFilePath, lines.join('\n'));
-  } catch (err) {
-    console.error(
-      'Error writing to file '.concat(newFilePath, ': ').concat(err)
-    );
-  }
-}
-exports.applyFileDiff = applyFileDiff;
-function renameFile(oldFilePath, newFilePath) {
-  try {
-    fs.renameSync(oldFilePath, newFilePath);
-  } catch (err) {
-    console.error(
-      'Error renaming file from '
-        .concat(oldFilePath, ' to ')
-        .concat(newFilePath, ': ')
-        .concat(err)
-    );
-    return false;
-  }
-  return true;
-}
-function deleteFile(filePath) {
-  try {
-    fs.unlinkSync(filePath);
-  } catch (err) {
-    console.error('Error deleting file '.concat(filePath, ': ').concat(err));
-    return false;
-  }
-  return true;
-}
-function applyBlockChangesToExistingFile(lines, block, insertOffset) {
-  for (var _i = 0, _a = block.lines; _i < _a.length; _i++) {
-    var diffLine = _a[_i];
-    if (diffLine.type === types_1.LineType.CONTEXT && insertOffset === 0) {
-      var adjustedLine_1 = block.newStartLine + insertOffset - 1;
-      if (lines[adjustedLine_1] !== diffLine.content.slice(1)) {
-        if (lines[adjustedLine_1 + 1] === diffLine.content.slice(1)) {
-          block.newStartLine++;
-        } else if (
-          adjustedLine_1 > 0 &&
-          lines[adjustedLine_1 - 1] === diffLine.content.slice(1)
-        ) {
-          block.newStartLine--;
-        } else {
-          console.error(
-            'Error: Cannot find matching context line at '.concat(
-              adjustedLine_1,
-              ' for file'
-            )
-          );
-          return { lines: lines, insertOffset: insertOffset };
+    return new (P || (P = Promise))(function (resolve, reject) {
+      function fulfilled(value) {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
         }
       }
+      function rejected(value) {
+        try {
+          step(generator['throw'](value));
+        } catch (e) {
+          reject(e);
+        }
+      }
+      function step(result) {
+        result.done
+          ? resolve(result.value)
+          : adopt(result.value).then(fulfilled, rejected);
+      }
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+  };
+var __generator =
+  (this && this.__generator) ||
+  function (thisArg, body) {
+    var _ = {
+        label: 0,
+        sent: function () {
+          if (t[0] & 1) throw t[1];
+          return t[1];
+        },
+        trys: [],
+        ops: []
+      },
+      f,
+      y,
+      t,
+      g;
+    return (
+      (g = { next: verb(0), throw: verb(1), return: verb(2) }),
+      typeof Symbol === 'function' &&
+        (g[Symbol.iterator] = function () {
+          return this;
+        }),
+      g
+    );
+    function verb(n) {
+      return function (v) {
+        return step([n, v]);
+      };
     }
-    var adjustedLine = block.newStartLine + insertOffset - 1;
-    if (diffLine.type === types_1.LineType.INSERT) {
-      lines.splice(adjustedLine, 0, diffLine.content.slice(1));
-      insertOffset++;
-    } else if (diffLine.type === types_1.LineType.DELETE) {
-      lines.splice(adjustedLine, 1);
-    } else if (diffLine.type === types_1.LineType.CONTEXT) {
-      insertOffset++;
+    function step(op) {
+      if (f) throw new TypeError('Generator is already executing.');
+      while ((g && ((g = 0), op[0] && (_ = 0)), _))
+        try {
+          if (
+            ((f = 1),
+            y &&
+              (t =
+                op[0] & 2
+                  ? y['return']
+                  : op[0]
+                  ? y['throw'] || ((t = y['return']) && t.call(y), 0)
+                  : y.next) &&
+              !(t = t.call(y, op[1])).done)
+          )
+            return t;
+          if (((y = 0), t)) op = [op[0] & 2, t.value];
+          switch (op[0]) {
+            case 0:
+            case 1:
+              t = op;
+              break;
+            case 4:
+              _.label++;
+              return { value: op[1], done: false };
+            case 5:
+              _.label++;
+              y = op[1];
+              op = [0];
+              continue;
+            case 7:
+              op = _.ops.pop();
+              _.trys.pop();
+              continue;
+            default:
+              if (
+                !((t = _.trys), (t = t.length > 0 && t[t.length - 1])) &&
+                (op[0] === 6 || op[0] === 2)
+              ) {
+                _ = 0;
+                continue;
+              }
+              if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                _.label = op[1];
+                break;
+              }
+              if (op[0] === 6 && _.label < t[1]) {
+                _.label = t[1];
+                t = op;
+                break;
+              }
+              if (t && _.label < t[2]) {
+                _.label = t[2];
+                _.ops.push(op);
+                break;
+              }
+              if (t[2]) _.ops.pop();
+              _.trys.pop();
+              continue;
+          }
+          op = body.call(thisArg, _);
+        } catch (e) {
+          op = [6, e];
+          y = 0;
+        } finally {
+          f = t = 0;
+        }
+      if (op[0] & 5) throw op[1];
+      return { value: op[0] ? op[1] : void 0, done: true };
     }
-    // For LineType.CONTEXT, do nothing because the line is unchanged
-  }
-  return { lines: lines, insertOffset: insertOffset };
+  };
+var __read =
+  (this && this.__read) ||
+  function (o, n) {
+    var m = typeof Symbol === 'function' && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+      r,
+      ar = [],
+      e;
+    try {
+      while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+        ar.push(r.value);
+    } catch (error) {
+      e = { error: error };
+    } finally {
+      try {
+        if (r && !r.done && (m = i['return'])) m.call(i);
+      } finally {
+        if (e) throw e.error;
+      }
+    }
+    return ar;
+  };
+var __spreadArray =
+  (this && this.__spreadArray) ||
+  function (to, from, pack) {
+    if (pack || arguments.length === 2)
+      for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+          ar[i] = from[i];
+        }
+      }
+    return to.concat(ar || Array.prototype.slice.call(from));
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.applyDiff = void 0;
+// import { parse } from 'diff2html'; // Update this to your actual imports
+var fs_1 = require('fs');
+var conflictParser_1 = require('./conflictParser.cjs');
+var applyDiff = function (diff) {
+  return __awaiter(void 0, void 0, void 0, function () {
+    var change, changePromises;
+    return __generator(this, function (_a) {
+      change = (0, conflictParser_1.parse)(diff);
+      changePromises = change.map(applyFileDiff);
+      return [2 /*return*/, Promise.all(changePromises)];
+    });
+  });
+};
+exports.applyDiff = applyDiff;
+var applyFileDiff = function (diff) {
+  return __awaiter(void 0, void 0, void 0, function () {
+    var isNewFile, err_1;
+    return __generator(this, function (_a) {
+      switch (_a.label) {
+        case 0:
+          isNewFile = false;
+          _a.label = 1;
+        case 1:
+          _a.trys.push([1, 3, , 4]);
+          return [
+            4 /*yield*/,
+            fs_1.promises.access(diff.fileName, fs_1.promises.constants.F_OK)
+          ];
+        case 2:
+          _a.sent();
+          return [3 /*break*/, 4];
+        case 3:
+          err_1 = _a.sent();
+          isNewFile = true;
+          return [3 /*break*/, 4];
+        case 4:
+          if (!isNewFile) return [3 /*break*/, 6];
+          if (diff.head)
+            throw new Error(
+              'There is existing content for file that is supposed to be new, LLM probably used wrong file name'
+            );
+          return [
+            4 /*yield*/,
+            fs_1.promises.writeFile(diff.fileName, diff.incoming, 'utf-8')
+          ];
+        case 5:
+          _a.sent();
+          return [3 /*break*/, 8];
+        case 6:
+          return [4 /*yield*/, applyMergeDiff(diff)];
+        case 7:
+          _a.sent();
+          _a.label = 8;
+        case 8:
+          return [2 /*return*/];
+      }
+    });
+  });
+};
+function printStringDifference(string1, string2) {
+  var differences = [];
+  __spreadArray(
+    __spreadArray([], __read(string1), false),
+    __read(string2),
+    false
+  ).forEach(function (char, index) {
+    if (string1[index] !== string2[index]) {
+      differences.push(
+        'Index '
+          .concat(index, ': ')
+          .concat(string1[index] || '-', ' != ')
+          .concat(string2[index] || '-')
+      );
+    }
+  });
+  console.log(
+    differences.length === 0
+      ? 'The strings are identical.'
+      : 'Differences found:'
+  );
+  console.log(differences.join('\n'));
 }
-exports.applyBlockChangesToExistingFile = applyBlockChangesToExistingFile;
-function applyBlockChangesToNewFile(block) {
-  var lines = [];
-  for (var _i = 0, _a = block.lines; _i < _a.length; _i++) {
-    var diffLine = _a[_i];
-    if (diffLine.type === types_1.LineType.INSERT) {
-      lines.push(diffLine.content.slice(1));
-    } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file
-  }
-  return lines;
-}
-exports.default = exports.applyDiff;
+var applyMergeDiff = function (diff) {
+  return __awaiter(void 0, void 0, void 0, function () {
+    var content, flexibleHead, regex, firstMatch, secondMatch, newContent;
+    return __generator(this, function (_a) {
+      switch (_a.label) {
+        case 0:
+          return [4 /*yield*/, fs_1.promises.readFile(diff.fileName, 'utf-8')];
+        case 1:
+          content = _a.sent();
+          flexibleHead =
+            '\\s*' +
+            diff.head.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+            '\\s*';
+          regex = new RegExp(flexibleHead, 'g');
+          firstMatch = regex.exec(content);
+          if (!firstMatch) {
+            printStringDifference(content, diff.head);
+            throw new Error(
+              "The string '".concat(diff.head, "' was not found in the file.")
+            );
+          }
+          secondMatch = regex.exec(content);
+          if (secondMatch) {
+            throw new Error(
+              "There is more than one occurrence of the string '".concat(
+                diff.head,
+                "' in the file."
+              )
+            );
+          }
+          newContent =
+            content.substring(0, firstMatch.index) +
+            diff.toMergeFormat() +
+            content.substring(firstMatch.index + diff.head.length);
+          return [
+            4 /*yield*/,
+            fs_1.promises.writeFile(diff.fileName, newContent, 'utf-8')
+          ];
+        case 2:
+          _a.sent();
+          return [2 /*return*/];
+      }
+    });
+  });
+};
+// function renameFile(oldFilePath: string, newFilePath: string) {
+//   try {
+//     fs.renameSync(oldFilePath, newFilePath);
+//   } catch (err) {
+//     console.error(
+//       `Error renaming file from ${oldFilePath} to ${newFilePath}: ${err}`
+//     );
+//     return false;
+//   }
+//   return true;
+// }
+// function deleteFile(filePath: string) {
+//   try {
+//     fs.unlinkSync(filePath);
+//   } catch (err) {
+//     console.error(`Error deleting file ${filePath}: ${err}`);
+//     return false;
+//   }
+//   return true;
+// }
+// export function applyBlockChangesToExistingFile(
+//   lines: string[],
+//   block: DiffBlock,
+//   insertOffset: number
+// ) {
+//   for (const diffLine of block.lines) {
+//     if (diffLine.type === LineType.CONTEXT && insertOffset === 0) {
+//       const adjustedLine = block.newStartLine + insertOffset - 1;
+//       if (lines[adjustedLine] !== diffLine.content.slice(1)) {
+//         if (lines[adjustedLine + 1] === diffLine.content.slice(1)) {
+//           block.newStartLine++;
+//         } else if (
+//           adjustedLine > 0 &&
+//           lines[adjustedLine - 1] === diffLine.content.slice(1)
+//         ) {
+//           block.newStartLine--;
+//         } else {
+//           console.error(
+//             `Error: Cannot find matching context line at ${adjustedLine} for file`
+//           );
+//           return { lines: lines, insertOffset: insertOffset };
+//         }
+//       }
+//     }
+//     const adjustedLine = block.newStartLine + insertOffset - 1;
+//     if (diffLine.type === LineType.INSERT) {
+//       lines.splice(adjustedLine, 0, diffLine.content.slice(1));
+//       insertOffset++;
+//     } else if (diffLine.type === LineType.DELETE) {
+//       lines.splice(adjustedLine, 1);
+//     } else if (diffLine.type === LineType.CONTEXT) {
+//       insertOffset++;
+//     }
+//     // For LineType.CONTEXT, do nothing because the line is unchanged
+//   }
+//   return { lines: lines, insertOffset: insertOffset };
+// }
+// function applyBlockChangesToNewFile(block: DiffBlock) {
+//   const lines: string[] = [];
+//   for (const diffLine of block.lines) {
+//     if (diffLine.type === LineType.INSERT) {
+//       lines.push(diffLine.content.slice(1));
+//     } // For LineType.DELETE and LineType.CONTEXT, do nothing because there's no content in a new file
+//   }
+//   return lines;
+//}
