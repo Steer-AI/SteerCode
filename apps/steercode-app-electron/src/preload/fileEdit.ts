@@ -33,7 +33,7 @@ const applyFileDiff = async (diff: IMergeMarkersDiff) => {
 function printStringDifference(string1: string, string2: string): void {
   const differences: string[] = [];
 
-  [...string1, ...string2].forEach((char, index) => {
+  [...string1, ...string2].forEach((_, index) => {
     if (string1[index] !== string2[index]) {
       differences.push(
         `Index ${index}: ${string1[index] || '-'} != ${string2[index] || '-'}`

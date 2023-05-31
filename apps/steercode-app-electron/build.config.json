@@ -2,16 +2,13 @@
 	"appId": "com.steercode.electron.app",
 	"productName": "SteerCode",
 	"directories": {
-		"output": "dist"
+		"buildResources": "resources"
 	},
 	"files": [
-		"src/**/*.cjs",
-		{
-			"from": "build",
-			"to": ""
-		}
+		"out/**/*",
+		"resources"
 	],
-	"afterSign": "resources/notarize.cjs",
+	"afterSign": "resources/notarize.js",
 	"mac": {
 		"hardenedRuntime": true,
 		"entitlements": "resources/entitlements.mac.plist",

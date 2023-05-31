@@ -1,6 +1,12 @@
 import { withSentryConfig } from '@sentry/svelte';
 import adapter from '@sveltejs/adapter-static';
+import path from 'path';
 import preprocess from 'svelte-preprocess';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const buildDir = path.join(__dirname, '..', '..', 'out', 'renderer');
 
 const config = {
   compilerOptions: {
@@ -23,7 +29,9 @@ const config = {
   },
   kit: {
     adapter: adapter({
-      fallback: 'index.html'
+      fallback: 'index.html',
+      pages: buildDir,
+      assets: buildDir
     }),
     // prerender: { entries: [] },
     alias: {

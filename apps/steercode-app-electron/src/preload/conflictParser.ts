@@ -111,7 +111,7 @@ export const parse = (diff: string): IMergeMarkersDiff[] => {
 
   const matches = [...diff.matchAll(diffPattern)];
 
-  const changes = [];
+  const changes: IMergeMarkersDiff[] = [];
 
   for (const match of matches) {
     const change = parseChange(match[0]);

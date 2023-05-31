@@ -1,79 +1,56 @@
-## Code Structure
+# How it works?
 
-sveltekit documentation: https://kit.svelte.dev/docs/introduction
+Template utilizes [electron-vite](https://github.com/alex8088/electron-vite) for its ability to bundle & compile node.js (main & renderer files) to V8 Bytecode.
+Template doesn't use `renderer` part of [electron-vite](https://github.com/alex8088/electron-vite), but rather embeds [SvelteKit](https://kit.svelte.dev/) into the project as sub-project in `src/renderer` directory with it's own dependencies. SvelteKit is configured with [adapter-static](https://kit.svelte.dev/docs/adapter-static) to build SPA (Single Page Application) with static HTML/CSS/JS.
+Esentially it gives the best of both worlds:
 
-```term
-├── src
-│   ├── lib
-│   │   ├── core
-│   │   │   └── services            // core app services
-│   │   │       └── auth
-│   │   ├── data                    // data used in app (e.g. mocked data for storybook, contract Abis for quickbuy, ...)
-│   │   │   └── mockData
-│   │   ├── features
-│   │   │   └── XYZ
-│   │   │       ├── components      // components for feature XYZ (e.g. card, menu button, countdown, ...)
-│   │   │       ├── layouts         // layout for feature XYZ (e.g. table, sidebar, menu, ...)
-│   │   │       ├── stores          // stores for feature XYZ (e.g. agent store, agent store, ...)
-│   │   │       └── utils           // utility functions for feature XYZ
-│   │   ├── models
-│   │   │   ├── classes             // ORM classes (e.g. User model, Agent model, ...)
-│   │   │   ├── enums               // enums (e.g. Status, Phase, ...)
-│   │   │   ├── interfaces          // interfaces (e.g. IUser interface, IAgent interface, ...)
-│   │   │   └── types               // Data types (e.g. User, Settings, Agent, ...)
-│   │   ├── shared
-│   │   │   ├── components          // shared app components (e.g. button, input, tooltip, ...)
-│   │   │   ├── layouts             // shared app layout (e.g. header, footer, ...)
-│   │   │   ├── stores              // shared app stores (e.g. user store, settings store, ...)
-│   │   │   └── utils               // shared utility functions
-│   ├── routes
-│   │   ├── XYZ
-│   │   └── api
-│   │       └── XYZ
-│   └── styles                      // Project CSS classes definitions
-├── static
+- Electron (backend) from [electron-vite](https://github.com/alex8088/electron-vite)
+- Anything you can think of with SvelteKit (within the limits of [adapter-static](https://kit.svelte.dev/docs/adapter-static))
+
+## Recommended IDE Setup
+
+- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+## Project Setup
+
+### Install
+
+```bash
+yarn install # installs dependencies of `electron-vite`
+cd src/renderer && yarn install # installs dependencies of SvelteKit
+cd ../../ # gets back to the source directory
 ```
 
-https://stackoverflow.com/questions/37233735/interfaces-vs-types-in-typescript
+## Development
 
-## Tech stack
+### Quick start:
 
-- [Svelte](https://svelte.dev/)
-- [Sveltekit](https://kit.svelte.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-
-### TODO:
-
-- Auth/login
-- get conversations from backend
-- get conversation history from backend
-- send new message to backend
-- new home screen ... show new conversation
-
-## local build and deploy to vercel
-
-```
-vercel build --prod
-vercel deploy --prebuilt --prod
+```bash
+yarn dev # command starts 2 subcommands in parallel using `concurrently` npm package
 ```
 
-# local deploy
+### If you need new dependencies for SvelteKit:
 
-1. update your env variables in `.env` file
-2. run following commands
-
-```
-yarn install
-cd apps/cognitic-website
-yarn dev
+```bash
+cd src/renderer # navigate to SvelteKit directory & do things from there
 ```
 
-3. open http://localhost:5173
-4. open browser dev tools and enter following command `localStorage.DEBUG_LOGGING = true`
+(!!!) Don't forget to go back to source directory with `cd ../../` after you installed necessary dependencies.
 
-   - for additional dev options see `apps/cognitic-website/src/lib/shared/utils/constants.ts`
+## Build
 
-## local build with code signing
+```bash
+# For windows
+yarn build:win
+
+# For macOS
+yarn build:mac
+
+# For Linux
+yarn build:linux
+```
+
+## local build with code signing requirements
 
 1. setup your APPLE_ID and APPLE_ID_PASSWORD env variables
 
@@ -87,7 +64,7 @@ yarn dev
 
    - mor more info follow https://www.electron.build/code-signing
 
-3. run build `yarn build`
+3. run build `yarn build:{platform}`
 
    - it will run a svelte build then electron build
    - after both builds are complete. Electron-builder will bundle all build outputs

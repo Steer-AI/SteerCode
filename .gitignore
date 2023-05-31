@@ -12,6 +12,7 @@ coverage
 .next/
 out/
 build
+.svelte-kit
 
 **/dist
 **/.env
@@ -42,7 +43,4 @@ yarn-error.log*
 storybook-static
 build-storybook.log
 .vercel
-
-
-.vscode
 .idea
