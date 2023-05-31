@@ -79,7 +79,7 @@ var MergeMarkersDiff = /** @class */ (function () {
   return MergeMarkersDiff;
 })();
 var parseHead = function (diff) {
-  var startMarker = /<<<<<<< HEAD:(.*)/;
+  var startMarker = /<<<<<<< HEAD:(.*)\n/;
   var endMarker = /=======/;
   var startMatch = diff.match(startMarker);
   var endMatch = diff.match(endMarker);
@@ -91,7 +91,7 @@ var parseHead = function (diff) {
   return '';
 };
 var parseIncoming = function (diff) {
-  var startMarker = /=======/;
+  var startMarker = /=======\n/;
   var endMarker = />>>>>>> (.*)/;
   var startMatch = diff.match(startMarker);
   var endMatch = diff.match(endMarker);

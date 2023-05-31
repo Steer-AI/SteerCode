@@ -198,6 +198,7 @@ var applyDiff = function (diff) {
       switch (_b.label) {
         case 0:
           changes = (0, conflictParser_1.parse)(diff);
+          console.log(changes);
           _b.label = 1;
         case 1:
           _b.trys.push([1, 6, 7, 8]);

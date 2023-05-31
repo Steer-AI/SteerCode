@@ -5,6 +5,7 @@ import type { IMergeMarkersDiff } from './types';
 
 export const applyDiff = async (diff: string) => {
   const changes = parse(diff);
+  console.log(changes);
   for (const change of changes) {
     await applyFileDiff(change);
   }

@@ -36,7 +36,7 @@ class MergeMarkersDiff implements IMergeMarkersDiff {
 }
 
 const parseHead = (diff: string): string => {
-  const startMarker = /<<<<<<< HEAD:(.*)/;
+  const startMarker = /<<<<<<< HEAD:(.*)\n/;
   const endMarker = /=======/;
 
   const startMatch = diff.match(startMarker);
@@ -52,7 +52,7 @@ const parseHead = (diff: string): string => {
 };
 
 const parseIncoming = (diff: string): string => {
-  const startMarker = /=======/;
+  const startMarker = /=======\n/;
   const endMarker = />>>>>>> (.*)/;
 
   const startMatch = diff.match(startMarker);
