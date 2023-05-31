@@ -4,10 +4,10 @@ import { parse } from './conflictParser';
 import type { IMergeMarkersDiff } from './types';
 
 export const applyDiff = async (diff: string) => {
-  const change = parse(diff);
-
-  const changePromises = change.map(applyFileDiff);
-  return Promise.all(changePromises);
+  const changes = parse(diff);
+  for (const change of changes) {
+    await applyFileDiff(change);
+  }
 };
 
 const applyFileDiff = async (diff: IMergeMarkersDiff) => {
@@ -51,7 +51,12 @@ function printStringDifference(string1: string, string2: string): void {
 const applyMergeDiff = async (diff: IMergeMarkersDiff): Promise<void> => {
   const content = await fs.readFile(diff.fileName, 'utf-8');
   const flexibleHead =
-    '\\s*' + diff.head.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*';
+    '\\s*' +
+    diff.head
+      .trim()
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      .replace(/\s+/g, '\\s+') +
+    '\\s*';
   const regex = new RegExp(flexibleHead, 'g');
   const firstMatch = regex.exec(content);
 

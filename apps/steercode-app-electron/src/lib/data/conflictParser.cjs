@@ -63,6 +63,7 @@ var MergeMarkersDiff = /** @class */ (function () {
   }
   MergeMarkersDiff.prototype.toMergeFormat = function () {
     return (
+      '\n' +
       '<<<<<<< HEAD' +
       '\n' +
       this.head +
@@ -85,7 +86,7 @@ var parseHead = function (diff) {
   if (startMatch && endMatch) {
     var startIndex = diff.indexOf(startMatch[0]) + startMatch[0].length;
     var endIndex = diff.indexOf(endMatch[0]);
-    return diff.substring(startIndex, endIndex).trim();
+    return diff.substring(startIndex, endIndex);
   }
   return '';
 };
@@ -97,7 +98,7 @@ var parseIncoming = function (diff) {
   if (startMatch && endMatch) {
     var startIndex = diff.indexOf(startMatch[0]) + startMatch[0].length;
     var endIndex = diff.indexOf(endMatch[0]);
-    return diff.substring(startIndex, endIndex).trim();
+    return diff.substring(startIndex, endIndex);
   }
   return '';
 };
@@ -126,7 +127,7 @@ var parseChange = function (diff) {
 };
 var parse = function (diff) {
   var e_1, _a;
-  var diffPattern = /<<<<<<< HEAD:(.*)[\s\S]*?>>>>>>> (.*)/g;
+  var diffPattern = /<<<<<<< HEAD(.*?)?\n[\s\S]*?=======\n[\s\S]*?>>>>>>> .*?/g;
   var matches = __spreadArray([], __read(diff.matchAll(diffPattern)), false);
   var changes = [];
   try {

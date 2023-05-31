@@ -132,6 +132,24 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+var __values =
+  (this && this.__values) ||
+  function (o) {
+    var s = typeof Symbol === 'function' && Symbol.iterator,
+      m = s && o[s],
+      i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === 'number')
+      return {
+        next: function () {
+          if (o && i >= o.length) o = void 0;
+          return { value: o && o[i++], done: !o };
+        }
+      };
+    throw new TypeError(
+      s ? 'Object is not iterable.' : 'Symbol.iterator is not defined.'
+    );
+  };
 var __read =
   (this && this.__read) ||
   function (o, n) {
@@ -174,11 +192,44 @@ var fs_1 = require('fs');
 var conflictParser_1 = require('./conflictParser.cjs');
 var applyDiff = function (diff) {
   return __awaiter(void 0, void 0, void 0, function () {
-    var change, changePromises;
-    return __generator(this, function (_a) {
-      change = (0, conflictParser_1.parse)(diff);
-      changePromises = change.map(applyFileDiff);
-      return [2 /*return*/, Promise.all(changePromises)];
+    var changes, changes_1, changes_1_1, change, e_1_1;
+    var e_1, _a;
+    return __generator(this, function (_b) {
+      switch (_b.label) {
+        case 0:
+          changes = (0, conflictParser_1.parse)(diff);
+          _b.label = 1;
+        case 1:
+          _b.trys.push([1, 6, 7, 8]);
+          (changes_1 = __values(changes)), (changes_1_1 = changes_1.next());
+          _b.label = 2;
+        case 2:
+          if (!!changes_1_1.done) return [3 /*break*/, 5];
+          change = changes_1_1.value;
+          return [4 /*yield*/, applyFileDiff(change)];
+        case 3:
+          _b.sent();
+          _b.label = 4;
+        case 4:
+          changes_1_1 = changes_1.next();
+          return [3 /*break*/, 2];
+        case 5:
+          return [3 /*break*/, 8];
+        case 6:
+          e_1_1 = _b.sent();
+          e_1 = { error: e_1_1 };
+          return [3 /*break*/, 8];
+        case 7:
+          try {
+            if (changes_1_1 && !changes_1_1.done && (_a = changes_1.return))
+              _a.call(changes_1);
+          } finally {
+            if (e_1) throw e_1.error;
+          }
+          return [7 /*endfinally*/];
+        case 8:
+          return [2 /*return*/];
+      }
     });
   });
 };
@@ -262,7 +313,10 @@ var applyMergeDiff = function (diff) {
           content = _a.sent();
           flexibleHead =
             '\\s*' +
-            diff.head.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+            diff.head
+              .trim()
+              .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+              .replace(/\s+/g, '\\s+') +
             '\\s*';
           regex = new RegExp(flexibleHead, 'g');
           firstMatch = regex.exec(content);
