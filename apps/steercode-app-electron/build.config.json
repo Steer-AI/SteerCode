@@ -1,5 +1,5 @@
 {
-	"appId": "com.example.app",
+	"appId": "com.steercode.electron.app",
 	"productName": "SteerCode",
 	"directories": {
 		"output": "dist"
@@ -10,5 +10,13 @@
 			"from": "build",
 			"to": ""
 		}
-	]
+	],
+	"afterSign": "resources/notarize.cjs",
+	"mac": {
+		"hardenedRuntime": true,
+		"entitlements": "resources/entitlements.mac.plist",
+		"entitlementsInherit": "resources/entitlements.mac.plist",
+		"gatekeeperAssess": false,
+		"category": "public.app-category.productivity"
+	  }
 }

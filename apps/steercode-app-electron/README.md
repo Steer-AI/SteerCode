@@ -71,4 +71,27 @@ yarn dev
 3. open http://localhost:5173
 4. open browser dev tools and enter following command `localStorage.DEBUG_LOGGING = true`
 
-- for additional dev options see `apps/cognitic-website/src/lib/shared/utils/constants.ts`
+   - for additional dev options see `apps/cognitic-website/src/lib/shared/utils/constants.ts`
+
+## local build with code signing
+
+1. setup your APPLE_ID and APPLE_ID_PASSWORD env variables
+
+   - Sign in to appleid.apple.com to get an App-Specific password
+   - Click on App-Specific passwords
+   - Click on Plus icon and follow the instructions to get an App specific password.
+   - Copy the App specific password and put it in the APPLE_ID_PASSWORD env variable
+   - set APPLE_ID to your apple ID
+
+2. get a signing certificates (.p12 files) and install them on your system
+
+   - mor more info follow https://www.electron.build/code-signing
+
+3. run build `yarn build`
+
+   - it will run a svelte build then electron build
+   - after both builds are complete. Electron-builder will bundle all build outputs
+   - Electron-builder will try to locate a Developer ID Application certificate and Developer ID InstInstaller certificate on your system and use them to sign the application
+   - signed application will be uploaded to apple's server for notarization (this might take 5-10 mins)
+
+- for more detail see https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/

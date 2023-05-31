@@ -8,8 +8,9 @@
     "dev": "concurrently -n=svelte,electron -c='#ff3e00',blue \"yarn dev:svelte\" \"yarn dev:electron\"",
     "dev:svelte": "vite dev",
     "dev:electron": "electron src/electron.cjs",
-    "build": "cross-env NODE_ENV=production yarn build:svelte && yarn build:electron",
+    "build": "cross-env NODE_ENV=production yarn build:svelte && yarn build:electron:mac",
     "build:svelte": "yarn partytown && vite build",
+    "build:electron:mac": "electron-builder --mac --config build.config.json",
     "build:electron": "electron-builder -mwl --config build.config.json",
     "partytown": "partytown copylib static/~partytown",
     "format:changes": "git diff --cached --name-only --diff-filter=ACM | grep '\\.\\(js\\|ts\\|svelte\\|css\\|html\\)$' | sed 's/apps\\/cognitic-client/./g' | xargs prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write",
@@ -43,6 +44,7 @@
     "electron": "23.2.0",
     "electron-builder": "23.6.0",
     "electron-connect": "^0.6.3",
+    "electron-notarize": "^1.2.2",
     "electron-packager": "^17.1.1",
     "electron-updater": "^5.3.0",
     "eslint-config-custom": "*",
@@ -60,8 +62,6 @@
     "vite": "^4.3.1"
   },
   "dependencies": {
-    "uuid": "^9.0.0",
-    "node-machine-id": "^1.1.12",
     "diff2html": "^3.4.35",
     "electron-context-menu": "^3.6.1",
     "electron-reloader": "^1.2.3",
@@ -70,8 +70,10 @@
     "file-icons-js": "websemantics/file-icons-js",
     "highlight.js": "^11.7.0",
     "ignore": "^5.2.4",
+    "node-machine-id": "^1.1.12",
     "sse.js": "^0.6.1",
     "svelte-i18n": "^3.6.0",
-    "svelte-markdown": "^0.2.3"
+    "svelte-markdown": "^0.2.3",
+    "uuid": "^9.0.0"
   }
 }
