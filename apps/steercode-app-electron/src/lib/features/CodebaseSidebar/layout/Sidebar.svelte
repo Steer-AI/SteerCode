@@ -105,7 +105,7 @@
 
       <button
         on:click={() => handleUpdate($selectedRepositoryStore)}
-        class="text-content-primarySub ml-auto"
+        class="text-content-primarySub ml-4"
       >
         <RefreshIcon
           class="text-content-secondary hover:text-content-primary active:text-primary h-4 w-4 transition-colors duration-150"
