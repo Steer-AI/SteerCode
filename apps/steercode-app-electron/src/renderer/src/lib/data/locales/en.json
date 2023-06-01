@@ -63,18 +63,18 @@
 
     "conversation": {
         "messageInput": {
-            "placeholder": "Ask the codebase..."
+            "placeholder": "Describe your task..."
         },
         "sendButton": "Send",
         "loadingMessage": "Loading...",
         "message": {
             "me": "Me",
             "loading": "Loading...",
-            "initialMessage": "Welcome to SteerCode Chat, your AI assistant that understands large databases. \n\n Harness the incredible power of AI assistants, like ChatGPT, but for your own codebase. To demonstrate this technology, get started by selecting a context files from the right sidebar. Enter your own question about your codebase in the text box, or try one of the examples to get started. \n\n",
+            "initialMessage": "Welcome to **SteerCode**, your AI assistant that helps you coding. \n\n #### How to use it? \n 🎯 describe what you want to achive 👇 \n \n  📜 select files that are relevant for the given task 👉 \n \n  🧠 submit your task to **SteerCode** and get suggestions how to change your files to achive your task  ✅  \n #### Here are some example tasks you can try:",
             "improveText": "Help us improve. How was this answer?",
-            "example1": "How to start this app?",
-            "example2": "Create a tutorial on how to use buffer memory.",
-            "example3": "Store pdf in vectore database and chat with it."
+            "example1": "Extend .gitignore file to ignore .pdf files",
+            "example2": "How to start this respository?",
+            "example3": "Add code structure to README"
         },
         "copy": "Copy",
         "copied": "Copied",

@@ -12,12 +12,29 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile, selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
+  import type { IFileTreeItem } from 'cognitic-models';
 
   // form variables
   let pendingRequest = false;
 
   let pendingContent = '';
+
+  async function addFileToContext(fileName: string) {
+    let item: IFileTreeItem | null = null;
+
+    $initialFileTreeFile?.children?.forEach((child) => {
+      if (child.fileName.toLowerCase().endsWith(fileName.toLowerCase())) {
+        item = child;
+      }
+    });
+
+    if (item) {
+      selectedEntities.add(item);
+      return;
+    }
+  }
 
   async function handleSubmit(query: string) {
     const settings = get(settingsStore);
@@ -64,11 +81,13 @@
     type="system"
     message={$_('conversation.message.initialMessage')}
   >
-    <div class="flex flex-col flex-wrap items-center gap-3 lg:flex-row">
+    <div class="flex flex-col flex-wrap items-center gap-3 lg:flex-row mt-20">
       <Button
         variant="tertiary"
         size="medium"
+        class="mt-3"
         on:click={() => {
+          addFileToContext('.gitignore');
           handleSubmit($_('conversation.message.example1'));
         }}
       >
@@ -79,23 +98,14 @@
       <Button
         variant="tertiary"
         size="medium"
+        class="mt-3"
         on:click={() => {
+          addFileToContext('README.md');
           handleSubmit($_('conversation.message.example2'));
         }}
       >
         <span class="bod-small-plus text-content-primary">
           {$_('conversation.message.example2')}
-        </span>
-      </Button>
-      <Button
-        variant="tertiary"
-        size="medium"
-        on:click={() => {
-          handleSubmit($_('conversation.message.example3'));
-        }}
-      >
-        <span class="bod-small-plus text-content-primary">
-          {$_('conversation.message.example3')}
         </span>
       </Button>
     </div>

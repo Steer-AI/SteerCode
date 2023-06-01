@@ -126,7 +126,7 @@
         if (completionResponse.done) {
           if (completionResponse.id) {
             conversation.addMessage(
-              { role: 'assistant', content: answer },
+              { role: 'assistant', content: content },
               completionResponse.id
             );
           }
