@@ -18,7 +18,10 @@
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import {
+    initialFileTreeFile,
+    selectedRepositoryStore
+  } from '$lib/shared/stores/selectedRepository';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -103,7 +106,11 @@
 
     const sseOptions: SSEOptions = {
       headers: headers,
-      payload: JSON.stringify({ ...conversation.value, documents: documents })
+      payload: JSON.stringify({
+        ...conversation.value,
+        documents: documents,
+        root_directory: $initialFileTreeFile
+      })
     };
     eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
 

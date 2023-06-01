@@ -1,8 +1,5 @@
 <script lang="ts" context="module">
   let _initialFileTreeFile: IFileTreeItem | null = null;
-  const initialFileTreeFile = writable<IFileTreeItem | null>(
-    _initialFileTreeFile
-  );
 </script>
 
 <script lang="ts">
@@ -20,9 +17,11 @@
   import 'file-icons-js/css/style.css';
   import { filteredFiles } from '../stores/filteredFiles';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import {
+    initialFileTreeFile,
+    selectedRepositoryStore
+  } from '$lib/shared/stores/selectedRepository';
   import InputField from '$lib/shared/components/InputField.svelte';
-  import { writable } from 'svelte/store';
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
     if (!item.isDirectory) return;
