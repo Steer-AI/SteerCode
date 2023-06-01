@@ -64,11 +64,19 @@ yarn build:linux
 
    - mor more info follow https://www.electron.build/code-signing
 
-3. run build `yarn build:{platform}`
+3. get Apple Worldwide Developer Relations Certification Authority and Developer ID Certification Authority certificates
+
+   - (Mac only) easiest way is do open an XCode > settings > accounts tab
+     - add your developer accout
+     - under your account select a team and click on "manage certificates"
+     - XCode should automatically add missing certificates to your keychain
+
+4. run build `yarn build:{platform}`
 
    - it will run a svelte build then electron build
    - after both builds are complete. Electron-builder will bundle all build outputs
    - Electron-builder will try to locate a Developer ID Application certificate and Developer ID InstInstaller certificate on your system and use them to sign the application
+     - you might be prompted to enter the keychain password
    - signed application will be uploaded to apple's server for notarization (this might take 5-10 mins)
 
 - for more detail see https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/
