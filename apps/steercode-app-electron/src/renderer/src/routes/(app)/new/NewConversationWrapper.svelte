@@ -12,7 +12,10 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
-  import { initialFileTreeFile, selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import {
+    initialFileTreeFile,
+    selectedRepositoryStore
+  } from '$lib/shared/stores/selectedRepository';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileTreeItem } from 'cognitic-models';
 
@@ -81,7 +84,7 @@
     type="system"
     message={$_('conversation.message.initialMessage')}
   >
-    <div class="flex flex-col flex-wrap items-center gap-3 lg:flex-row mt-20">
+    <div class="mt-20 flex flex-col flex-wrap items-center gap-3 lg:flex-row">
       <Button
         variant="tertiary"
         size="medium"

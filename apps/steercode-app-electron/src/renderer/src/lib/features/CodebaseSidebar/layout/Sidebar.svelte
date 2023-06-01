@@ -22,6 +22,7 @@
     selectedRepositoryStore
   } from '$lib/shared/stores/selectedRepository';
   import InputField from '$lib/shared/components/InputField.svelte';
+  import Button from '$lib/shared/components/Button.svelte';
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
     if (!item.isDirectory) return;
@@ -45,7 +46,6 @@
     const selectedFilePaths = $selectedEntities.map(
       (entity) => entity.filePath
     );
-    _initialFileTreeFile = null;
     if (!selectedRepo) {
       initialFileTreeFile.set(null);
       selectedEntities.clear();
@@ -156,10 +156,19 @@
 
     <Divider />
 
-    <div
-      class="headline-large text-content-primary flex h-14 items-center px-6"
-    >
-      {$_('conversation.codebaseSidebar.contextTitle')}
+    <div class="flex h-14 items-center justify-between px-6">
+      <div class="headline-large text-content-primary">
+        {$_('conversation.codebaseSidebar.contextTitle')}
+      </div>
+      {#if $selectedEntities.length > 0}
+        <Button
+          variant="tertiary"
+          size="small"
+          on:click={() => selectedEntities.clear()}
+        >
+          Clear
+        </Button>
+      {/if}
     </div>
 
     {#if $selectedEntities.length === 0 || !$initialFileTreeFile}
