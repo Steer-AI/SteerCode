@@ -80,3 +80,9 @@ yarn build:linux
    - signed application will be uploaded to apple's server for notarization (this might take 5-10 mins)
 
 - for more detail see https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/
+
+## local publish
+
+1. add GH_TOKEN env variable. Follow https://github.com/settings/tokens/new
+2. update package version (if needed)
+3. run `yarn release`
