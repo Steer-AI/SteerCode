@@ -98,6 +98,7 @@
           {$_('conversation.message.example1')}
         </span>
       </Button>
+
       <Button
         variant="tertiary"
         size="medium"
@@ -109,6 +110,20 @@
       >
         <span class="bod-small-plus text-content-primary">
           {$_('conversation.message.example2')}
+        </span>
+      </Button>
+
+      <Button
+        variant="tertiary"
+        size="medium"
+        class="mt-3"
+        on:click={() => {
+          addFileToContext('README.md');
+          handleSubmit($_('conversation.message.example3'));
+        }}
+      >
+        <span class="bod-small-plus text-content-primary">
+          {$_('conversation.message.example3')}
         </span>
       </Button>
     </div>
