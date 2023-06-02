@@ -54,6 +54,8 @@
   }
 
   function highlight(code: string, lang: string | undefined) {
+    code = code.split("\\`").join('`');
+    
     if (isDiff) {
       lang = 'gitconflict';
     }
@@ -84,6 +86,8 @@
 
   function copyToClipboard(text: string): void {
     // TODO - find out better approach for copying multiple changes to clipboard
+    text = text.split("\\`").join('`');
+
     if (navigator.clipboard) {
       navigator.clipboard;
       navigator.clipboard
@@ -149,6 +153,8 @@
   }
 
   function applyChange(diff: string): void {
+    diff = diff.split("\\`").join('`');
+
     window.electron
       .applyDiff(diff)
       .then(() => {
