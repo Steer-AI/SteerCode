@@ -19,6 +19,8 @@
       ]
     };
   });
+
+  hljs.unregisterLanguage('git');
 </script>
 
 <script lang="ts">
@@ -53,17 +55,40 @@
     return change.length > 0;
   }
 
+  function applyGitignoreFormat(value: string): string {
+    console.log(value);
+    let replaceDeletion = function (matched) {
+      return `${matched}<span class="!block" style='background-color: rgba(255, 0, 0, 0.2)'>`;
+    };
+
+    let replaceDelimiter = function (matched) {
+      return `</span>${matched}<span class="!block" style='background-color: rgba(0, 255, 0, 0.2)'>`;
+    };
+
+    let replaceEnd = function (matched) {
+      return `</span>${matched}`;
+    };
+
+    const headPattern = /&lt;&lt;&lt;&lt;&lt;&lt;&lt;.*HEAD.*\n/gm;
+    const delimiterPattern = /^=======.*\n/gm;
+    const endPattern = /&gt;&gt;&gt;&gt;&gt;&gt;&gt;/gm;
+
+    value = value.replace(headPattern, replaceDeletion);
+    value = value.replace(delimiterPattern, replaceDelimiter);
+    value = value.replace(endPattern, replaceEnd);
+
+    return value;
+  }
+
   function highlight(code: string, lang: string | undefined) {
-    code = code.split("\\`").join('`');
-    
-    if (isDiff) {
-      lang = 'gitconflict';
-    }
+    code = code.split('\\`').join('`');
+
+    let result;
 
     if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight('\n' + code, { language: lang });
+      result = hljs.highlight('\n' + code, { language: lang });
     }
-    return hljs.highlightAuto('\n' + code, [
+    result = hljs.highlightAuto('\n' + code, [
       'gitconflict',
       'typescript',
       'python',
@@ -77,6 +102,9 @@
       'rust',
       'html'
     ]);
+
+    result.value = applyGitignoreFormat(result.value);
+    return result;
   }
 
   $: highlighted = highlight(text, lang);
@@ -86,7 +114,7 @@
 
   function copyToClipboard(text: string): void {
     // TODO - find out better approach for copying multiple changes to clipboard
-    text = text.split("\\`").join('`');
+    text = text.split('\\`').join('`');
 
     if (navigator.clipboard) {
       navigator.clipboard;
@@ -153,7 +181,7 @@
   }
 
   function applyChange(diff: string): void {
-    diff = diff.split("\\`").join('`');
+    diff = diff.split('\\`').join('`');
 
     window.electron
       .applyDiff(diff)
