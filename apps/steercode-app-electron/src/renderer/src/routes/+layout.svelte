@@ -1,5 +1,6 @@
 <script lang="ts">
   import NotificationWrapper from '$lib/features/Notifications/layout/NotificationWrapper.svelte';
+  import SubscribeModal from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
   import PartytownSetup from '../lib/shared/layout/PartytownSetup.svelte';
   import { loadAnalytics } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
@@ -37,3 +38,4 @@
 
 <SettingsModal />
 <NotificationWrapper />
+<SubscribeModal />
