@@ -14,7 +14,6 @@
   import { selectedRepositoryStore } from '../stores/selectedRepository';
   import { handleImportRepo } from '$lib/features/CodebasesDashboard/utils';
   import { user } from '$lib/shared/stores/user';
-  import { isPremium } from '$lib/models/types/user.type';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -66,7 +65,7 @@
 
   $: recentRepositoriesOptions = createOptions($recentRepositories);
 
-  $: subscriptionTier = $user && isPremium($user) ? 'PREMIUM' : 'FREE';
+  $: subscriptionTier = $user && user.isPremium($user) ? 'PREMIUM' : 'FREE';
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
