@@ -16,7 +16,7 @@
   import { user } from '$lib/shared/stores/user';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
   import Button from '../components/Button.svelte';
-  import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
+  import { remoteConfig } from '../stores/remoteConfig';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -163,7 +163,16 @@
         variant="primary"
         size="medium"
         on:click={() => {
-          openModal();
+          if ($user) {
+            window.open(
+              $remoteConfig.stripe_checkout_url +
+                '?client_reference_id=' +
+                $user.uid,
+              '_blank'
+            );
+            return;
+          }
+          window.open('https://steercode.com/auth-steercode');
         }}
       >
         {$_('header.subscribeButton')}
