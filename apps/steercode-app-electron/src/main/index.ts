@@ -156,8 +156,17 @@ app.on('window-all-closed', () => {
 
 function handleDeepLink(url: string) {
   console.log(`handleDeepLink ${url}`);
-  mainWindow.webContents.send(
-    'open-page',
-    `/subscription?success=true&deeplink=${url}`
-  );
+
+  if (url.startsWith('steercode://auth')) {
+    const urlParams = new URLSearchParams(url.replace('steercode://auth?', ''));
+    const credential = urlParams.get('credential');
+    const providerId = urlParams.get('providerId');
+    if (credential && providerId) {
+      mainWindow.webContents.send('auth', credential, providerId);
+    }
+    return;
+  }
+
+  const _url = url.replace('steercode://', '');
+  mainWindow.webContents.send('open-page', _url);
 }

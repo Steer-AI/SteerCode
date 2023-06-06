@@ -4,7 +4,6 @@
   import CodebaseSidebar from '$lib/features/CodebaseSidebar/layout/Sidebar.svelte';
   import FilePreviewSidebar from '$lib/features/FilePreviewSidebar/layout/Sidebar.svelte';
 
-  import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import { onDestroy, onMount } from 'svelte';
@@ -40,8 +39,6 @@
     <FilePreviewSidebar />
   </div>
 </div>
-
-<SettingsModal />
 
 <style lang="postcss">
   .main-template {

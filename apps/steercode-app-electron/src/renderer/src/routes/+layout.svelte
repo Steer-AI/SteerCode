@@ -9,6 +9,7 @@
   import { goto } from '$app/navigation';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
   import { user } from '$lib/shared/stores/user';
+  import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
 
   onMount(() => {
     if (!window.electron) return;
@@ -18,7 +19,8 @@
     user.fetchUserInfo(uid);
     loadAnalytics();
     remoteConfig.fetchData();
-    window.electron.openPage((_, value: string) => {
+
+    window.electron.ipcRenderer.on('open-page', (value: string) => {
       console.log('openPage', { value });
       goto(value);
     });
@@ -33,4 +35,5 @@
 
 <slot />
 
+<SettingsModal />
 <NotificationWrapper />

@@ -14,6 +14,9 @@
   import { selectedRepositoryStore } from '../stores/selectedRepository';
   import { handleImportRepo } from '$lib/features/CodebasesDashboard/utils';
   import { user } from '$lib/shared/stores/user';
+  import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
+  import Button from '../components/Button.svelte';
+  import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -65,7 +68,7 @@
 
   $: recentRepositoriesOptions = createOptions($recentRepositories);
 
-  $: subscriptionTier = user.isPremium($user) ? 'PREMIUM' : 'FREE';
+  $: isPremium = user.isPremium($user);
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
@@ -80,7 +83,7 @@
       class="bg-background-secondaryActive text-content-primarySub label-small-plus mx-2.5 flex h-5 items-center px-2.5"
       style="font-size: 11px;"
     >
-      {subscriptionTier}
+      {$user ? (isPremium ? 'PREMIUM' : 'FREE') : 'BETA'}
     </div>
 
     <div class="group flex items-center">
@@ -153,6 +156,20 @@
         <ActivityFeedIcon class="h-8 w-8" />
       </button>
     {/if}
+
+    {#if !isPremium}
+      <Button
+        class="mr-4 hidden md:block"
+        variant="primary"
+        size="medium"
+        on:click={() => {
+          openModal();
+        }}
+      >
+        {$_('header.subscribeButton')}
+      </Button>
+    {/if}
+    <AuthButton />
   </span>
 
   <Divider />

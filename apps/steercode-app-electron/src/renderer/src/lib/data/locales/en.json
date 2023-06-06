@@ -14,8 +14,10 @@
         "title": "SteerCode",
         "importRepoButton": "Open local codebase",
         "logIn": "Log in",
+        "logInPending": "Continue in browser...",
         "logOut": "Log out",
-        "settings": "Settings"
+        "settings": "Settings",
+        "subscribeButton": "Upgrade to premium"
     },
     "auth": {
         "title": "Welcome to SteerCode Chat",
@@ -64,6 +66,7 @@
         "subscription": {
             "tab": "Subscription",
             "description": "Subscription settings.",
+            "noUserDescription": "You need to be logged in to manage your subscription.",
             "subscribe": {
                 "button": "Subscribe",
                 "description": "Subscribe to SteerCode to get access to more features. And unlimited number of messages.",

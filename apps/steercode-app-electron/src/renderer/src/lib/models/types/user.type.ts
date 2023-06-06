@@ -6,8 +6,15 @@ export type StripeInfo = {
   subscribed_until: string | null;
 };
 
-export type User = {
+export type UserInfo = {
   id: string;
   projects: RepositoryOption[];
   stripe: StripeInfo | null;
+};
+
+export type User = UserInfo & {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
 };

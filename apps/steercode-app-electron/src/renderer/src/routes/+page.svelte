@@ -3,12 +3,7 @@
   import ImportCodebaseButton from '$lib/features/CodebasesDashboard/components/ImportCodebaseButton.svelte';
   import Header from '$lib/shared/layout/Header.svelte';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
-  import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
-
-  onMount(() => {
-    recentRepositories.fetchData();
-  });
 </script>
 
 <Header style="max-width: 100vw" sidebarOpen={false} enableMenuButton={false} />
