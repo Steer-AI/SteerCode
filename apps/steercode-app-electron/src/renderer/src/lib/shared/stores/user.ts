@@ -20,7 +20,8 @@ function createUserStore() {
     }
   }
 
-  function isPremium(user: User): boolean {
+  function isPremium(user: User | null): boolean {
+    if (!user) return false;
     return (
       user.stripe !== null &&
       user.stripe.subscribed_until !== null &&

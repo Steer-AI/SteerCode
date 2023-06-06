@@ -1,10 +1,11 @@
 <script lang="ts">
   import Button from '$lib/shared/components/Button.svelte';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
+  import { user } from '$lib/shared/stores/user';
   import { _ } from 'svelte-i18n';
 
   // TODO: implement from the user store https://github.com/cognitic-ai/cognitic/pull/14
-  let isPremium: boolean = true;
+  $: isPremium = user.isPremium($user);
 </script>
 
 <div class="text-content-secondary body-regular flex flex-col gap-6">

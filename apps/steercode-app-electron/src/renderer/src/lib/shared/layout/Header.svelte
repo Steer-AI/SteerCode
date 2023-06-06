@@ -65,7 +65,7 @@
 
   $: recentRepositoriesOptions = createOptions($recentRepositories);
 
-  $: subscriptionTier = $user && user.isPremium($user) ? 'PREMIUM' : 'FREE';
+  $: subscriptionTier = user.isPremium($user) ? 'PREMIUM' : 'FREE';
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
