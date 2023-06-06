@@ -20,13 +20,12 @@ function createUserStore() {
     }
   }
 
-
   function isPremium(user: User): boolean {
-      return (
+    return (
       user.stripe !== null &&
       user.stripe.subscribed_until !== null &&
       Date.now() < new Date(user.stripe.subscribed_until).getTime()
-      );
+    );
   }
 
   return {
