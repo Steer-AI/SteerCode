@@ -22,5 +22,6 @@ contextBridge.exposeInMainWorld('electron', {
   },
   openExternal: async (url: string) => {
     return shell.openExternal(url);
-  }
+  },
+  openPage: (callback) => ipcRenderer.on('open-page', callback)
 });
