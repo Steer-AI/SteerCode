@@ -28,6 +28,8 @@
   import AdvancedSettings from '../components/AdvancedSettings.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import FilterIcon from '$lib/shared/components/Icons/FilterIcon.svelte';
+  import SubscriptionSettings from '../components/SubscriptionSettings.svelte';
+  import CrownIcon from '$lib/shared/components/Icons/CrownIcon.svelte';
 
   let dialogEl: HTMLDialogElement;
 
@@ -91,7 +93,7 @@
             : 'tab text-content-primarySub hover:text-content-primary hover:bg-background-secondaryHover'}
       >
         <SettingsIcon class="mr-2 h-4 w-4" />
-        General
+        {$_('settings.general.tab')}
       </Tab>
       <Divider />
       <Tab
@@ -101,7 +103,16 @@
             : 'tab text-content-primarySub hover:text-content-primary hover:bg-background-secondaryHover'}
       >
         <FilterIcon class="mr-2 h-4 w-4" />
-        Advanced
+        {$_('settings.advanced.tab')}
+      </Tab>
+      <Tab
+        class={({ selected }) =>
+          selected
+            ? 'tab text-content-primary body-regular-plus bg-background-secondaryActive'
+            : 'tab text-content-primarySub hover:text-content-primary hover:bg-background-secondaryHover'}
+      >
+        <CrownIcon class="mr-2 h-4 w-4" />
+        {$_('settings.subscription.tab')}
       </Tab>
     </TabList>
 
@@ -111,6 +122,9 @@
       </TabPanel>
       <TabPanel class="h-96">
         <AdvancedSettings {settingOptions} />
+      </TabPanel>
+      <TabPanel class="h-96">
+        <SubscriptionSettings />
       </TabPanel>
     </TabPanels>
   </TabGroup>

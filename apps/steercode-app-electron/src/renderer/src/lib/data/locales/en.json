@@ -35,6 +35,7 @@
         "save": "Save changes",
 
         "general": {
+            "tab": "General",
             "description": "General settings.",
             "apiKeyInput": {
                 "label": "API Key",
@@ -48,6 +49,7 @@
             }
         },
         "advanced": {
+            "tab": "Advanced",
             "description": "Advanced settings.",
             "useLocalBackend": {
                 "label": "Use local backend",
@@ -58,7 +60,20 @@
                     "placeholder": "Local backend URL. E.g. http://127.0.0.1:8081",
                     "helperText": "Enter the URL of your local backend. If you are running the app's backend locally, e.g. http://127.0.0.1:8081."
                 }
-        }        
+        },
+        "subscription": {
+            "tab": "Subscription",
+            "description": "Subscription settings.",
+            "subscribe": {
+                "button": "Subscribe",
+                "description": "Subscribe to SteerCode to get access to more features. And unlimited number of messages.",
+                "subscriber": "You are already a subscriber. Thank you for your support!"
+            },
+            "manageSubscription": {
+                "button": "manage your subscription",
+                "description": "Want to cancel your subscription? Click on the following link to"
+            }
+        }     
     },
 
     "conversation": {
