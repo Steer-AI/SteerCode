@@ -108,7 +108,7 @@
 {:else}
   <Button
     as="a"
-    href="/login"
+    href="https://steercode.com/auth-steercode"
     target="_blank"
     variant="secondary"
     size="medium"

@@ -110,6 +110,11 @@
             "hidePreview": "Hide"
         }
     }, 
+    "afterSubPage": {
+        "title": "Thank you for subscribing!",
+        "description": "You are now a subscriber. Thank you for your support! <br/> Enjoy the app without any limitations",
+        "leaveButton": "Go back to the app"
+    },
 
     "notifications": {
         "failedCopyClipboard": "Failed to copy to clipboard",

@@ -76,6 +76,7 @@ function createWindow() {
   } else {
     // mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
     serveURL(mainWindow);
+    mainWindow.webContents.openDevTools();
   }
 }
 

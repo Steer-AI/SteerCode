@@ -2,7 +2,6 @@ import { auth } from '$lib/core/services/firebase';
 import { Log } from '$lib/core/services/logging';
 import { notificationStore } from '$lib/features/Notifications/store/notifications';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
-import { USER_COOKIE_ID_NAME } from '$lib/shared/utils/constants';
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -10,7 +9,6 @@ import {
   signOut as firebaseSignOut,
   signInWithPopup
 } from 'firebase/auth';
-import Cookies from 'js-cookie';
 
 export function signOut() {
   return firebaseSignOut(auth);
@@ -24,8 +22,7 @@ export function loginGoogle() {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Google', { credential, result });
-      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
-      return true;
+      return { credential, result };
     })
     .catch((error) => {
       // Handle Errors here.
@@ -38,7 +35,7 @@ export function loginGoogle() {
         removeAfter: 5000,
         position: Position.BottomRight
       });
-      return false;
+      return null;
     });
 }
 
@@ -49,8 +46,7 @@ export function loginGitHub() {
       // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       const credential = GithubAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Github', { credential, result });
-      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
-      return true;
+      return { credential, result };
     })
     .catch((error) => {
       // Handle Errors here.
@@ -63,7 +59,7 @@ export function loginGitHub() {
         removeAfter: 5000,
         position: Position.BottomRight
       });
-      return false;
+      return null;
     });
 }
 
@@ -75,8 +71,7 @@ export function loginTwitter() {
       // This gives you a Twitter Access Token. You can use it to access the Twitter API.
       const credential = TwitterAuthProvider.credentialFromResult(result);
       Log.DEBUG('SignIn Twitter', { credential, result });
-      Cookies.set(USER_COOKIE_ID_NAME, result.user.uid);
-      return true;
+      return { credential, result };
     })
     .catch((error) => {
       // Handle Errors here.
@@ -89,6 +84,6 @@ export function loginTwitter() {
         removeAfter: 5000,
         position: Position.BottomRight
       });
-      return false;
+      return null;
     });
 }

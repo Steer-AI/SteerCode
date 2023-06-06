@@ -22,7 +22,7 @@
 
     window.electron.ipcRenderer.on('open-page', (value: string) => {
       console.log('openPage', { value });
-      goto(value);
+      goto('/' + value);
     });
   });
 </script>

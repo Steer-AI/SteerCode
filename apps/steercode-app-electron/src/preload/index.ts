@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld('electron', {
   },
   ipcRenderer: {
     on: (channel: string, callback: any) => {
-      ipcRenderer.on(channel, (event, ...args) => callback(...args));
+      ipcRenderer.on(channel, (_, ...args) => callback(...args));
     }
   }
 });

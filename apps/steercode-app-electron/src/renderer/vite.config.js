@@ -2,6 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 import { defineConfig, loadEnv } from 'vite';
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import path from 'path';
 
 
 // HTTPS + http/2 on dev server?
@@ -10,7 +11,9 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 // https://vitejs.dev/config/server-options.html#server-https
 
 const config = ({ mode }) => {
-  const env = loadEnv(mode, process.cwd());
+  const root = path.join(process.cwd(), '../..')
+  const env = loadEnv(mode, root);
+  // const env2 = loadEnv(mode, process.cwd());
     // Extends 'process.env.*' with VITE_*-variables from '.env.(mode=production|development)'
   process.env = { ...process.env, ...env };
 
@@ -51,6 +54,9 @@ const config = ({ mode }) => {
     resolve: {
       preserveSymlinks: true
     },
+    server: {
+      port: process.env.WEB_PORT || 5173,
+    }
   });
 };
 
