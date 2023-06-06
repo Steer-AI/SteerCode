@@ -17,6 +17,7 @@
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
   import Button from '../components/Button.svelte';
   import { remoteConfig } from '../stores/remoteConfig';
+  import { trackEvent } from '$lib/core/services/tracking';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -163,6 +164,7 @@
         variant="primary"
         size="medium"
         on:click={() => {
+          trackEvent('subscribe', { from: 'header' });
           if ($user) {
             window.open(
               $remoteConfig.stripe_checkout_url +

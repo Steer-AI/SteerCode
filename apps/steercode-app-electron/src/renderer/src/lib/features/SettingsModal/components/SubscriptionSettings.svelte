@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { trackEvent } from '$lib/core/services/tracking';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
@@ -28,6 +29,9 @@
         href={$remoteConfig.stripe_checkout_url +
           '?client_reference_id=' +
           $user.uid}
+        on:click={() => {
+          trackEvent('subscribe', { from: 'settings' });
+        }}
         target="_blank"
         rel="noopener noreferrer"
         variant="tertiary"
@@ -50,6 +54,9 @@
         </p>
         <a
           href={$remoteConfig.stripe_user_portal_url}
+          on:click={() => {
+            trackEvent('Manage subscription');
+          }}
           target="_blank"
           rel="noopener noreferrer"
           class="text-content-primarySub hover:text-content-primary body-small inline-block hover:underline"
