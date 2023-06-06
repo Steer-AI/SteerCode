@@ -13,6 +13,7 @@
   import { goto } from '$app/navigation';
   import { selectedRepositoryStore } from '../stores/selectedRepository';
   import { handleImportRepo } from '$lib/features/CodebasesDashboard/utils';
+  import { user } from '$lib/shared/stores/user';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -63,6 +64,8 @@
   }
 
   $: recentRepositoriesOptions = createOptions($recentRepositories);
+
+  $: subscriptionTier = $user && user.isPremium($user) ? 'PREMIUM' : 'FREE';
 </script>
 
 <svelte:window on:resize={() => (sidebarOpen = window.innerWidth > 768)} />
@@ -77,7 +80,7 @@
       class="bg-background-secondaryActive text-content-primarySub label-small-plus mx-2.5 flex h-5 items-center px-2.5"
       style="font-size: 11px;"
     >
-      BETA
+      {subscriptionTier}
     </div>
 
     <div class="group flex items-center">
