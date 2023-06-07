@@ -6,7 +6,6 @@
   import { user } from '$lib/shared/stores/user';
   import { _ } from 'svelte-i18n';
 
-  // TODO: implement from the user store https://github.com/cognitic-ai/cognitic/pull/14
   $: isPremium = user.isPremium($user);
 </script>
 

@@ -10,7 +10,7 @@
   import Dialog from '$lib/shared/layout/Dialog.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { trackEvent } from '$lib/core/services/tracking';
-  import { get, writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
   import { user } from '$lib/shared/stores/user';
@@ -28,7 +28,7 @@
   class="max-h-[75vh] w-full max-w-2xl "
 >
   <h3 slot="title" class="headline-large text-content-primary mb-6 text-center">
-    You've Maxed Out Your Free Requests!
+    {$_('subscribeModal.title')}
   </h3>
 
   <div
@@ -36,12 +36,10 @@
     class="body-regular text-content-primarySub mx-auto max-w-sm pb-6 pt-2 text-center"
   >
     <p class="mb-6">
-      It looks like you've reached the limit of requests for the free tier this
-      month. But don't worry - we've got you covered.
+      {@html $_('subscribeModal.description1')}
     </p>
     <p>
-      By upgrading to our premium subscription, you will get <strong>100</strong
-      > extra requests per day.
+      {@html $_('subscribeModal.description2')}
     </p>
   </div>
 
@@ -64,7 +62,7 @@
           window.open('https://steercode.com/auth-steercode');
         }}
       >
-        Upgrade to Premium
+        {$_('subscribeModal.subscribeButton')}
       </Button>
     {/if}
   </div>
