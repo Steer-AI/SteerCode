@@ -5,7 +5,6 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
-  import { SSE, type SSEOptions } from 'sse.js';
   import { fetchEventSource } from '@microsoft/fetch-event-source';
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
@@ -18,21 +17,18 @@
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
-  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
+
   import {
     initialFileTreeFile,
     selectedRepositoryStore
   } from '$lib/shared/stores/selectedRepository';
   import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
-  // import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
 
   export let conversation: Conversation;
   let loading: boolean = false;
   let answer: string = '';
   let wrapContainer: ConversationWrapper;
-  let eventSource: SSE | null = null;
-  const streamController = new AbortController();
-  const signal = streamController.signal;
+  let streamController: AbortController;
 
   type CompletionResponse = {
     msg: string;
@@ -42,6 +38,7 @@
   };
 
   async function handleSubmit(query: string) {
+    closeEventSource();
     trackEvent('New message', {
       message: query,
       conversationId: conversation.value.id
@@ -49,6 +46,8 @@
     answer = '';
     loading = true;
     const settings = get(settingsStore);
+    streamController = new AbortController();
+    const signal = streamController.signal;
 
     // Prepare the request options
     const headers: Record<string, string> = {};
@@ -95,8 +94,7 @@
         async onopen(res) {
           if (res.status === 429) {
             openModal();
-            closeEventSource();
-            return;
+            throw new Error('Rate limit exceeded');
           }
         },
         onmessage(event) {
@@ -107,13 +105,18 @@
         },
         onerror(err) {
           handleError(err);
+          throw err;
         },
         signal: signal
       });
     }
 
     // Initialize the event stream with the URL and the data you want to post
-    await stream(getBackendUrl() + '/chat/stream', body);
+    try {
+      await stream(getBackendUrl() + '/chat/stream', body);
+    } catch {
+      // Do nothing
+    }
   }
 
   function onMessage(e) {
@@ -146,8 +149,9 @@
   }
 
   function closeEventSource() {
-    streamController.abort();
+    streamController?.abort();
     answer = '';
+    loading = false;
   }
 
   function scrollToBottom(force: boolean = false) {
