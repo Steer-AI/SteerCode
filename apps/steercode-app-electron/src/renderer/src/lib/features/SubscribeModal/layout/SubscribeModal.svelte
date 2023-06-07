@@ -1,25 +1,71 @@
 <script lang="ts" context="module">
-  let dialogEl: HTMLDialogElement;
+  const modalOpen = writable(false);
 
   export function openModal() {
-    dialogEl.showModal();
+    modalOpen.set(true);
   }
 </script>
 
 <script lang="ts">
   import Dialog from '$lib/shared/layout/Dialog.svelte';
+  import Button from '$lib/shared/components/Button.svelte';
   import { trackEvent } from '$lib/core/services/tracking';
+  import { get, writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
+  import { remoteConfig } from '$lib/shared/stores/remoteConfig';
+  import { user } from '$lib/shared/stores/user';
+
+  let dialogEl: HTMLDialogElement;
+
+  $: if (dialogEl && $modalOpen) {
+    dialogEl.showModal();
+  }
 </script>
 
 <Dialog
   bind:dialogEl
-  on:close={() => dialogEl.close()}
-  class="max-h-[75vh] w-full max-w-3xl "
+  on:close={() => modalOpen.set(false)}
+  class="max-h-[75vh] w-full max-w-2xl "
 >
-  <h3 slot="title" class="headline-small text-content-primary mb-6" />
+  <h3 slot="title" class="headline-large text-content-primary mb-6 text-center">
+    You've Maxed Out Your Free Requests!
+  </h3>
 
-  <div slot="description" />
+  <div
+    slot="description"
+    class="body-regular text-content-primarySub mx-auto max-w-sm pb-6 pt-2 text-center"
+  >
+    <p class="mb-6">
+      It looks like you've reached the limit of requests for the free tier this
+      month. But don't worry - we've got you covered.
+    </p>
+    <p>
+      By upgrading to our premium subscription, you will get <strong>100</strong
+      > extra requests per day.
+    </p>
+  </div>
 
-  <div slot="action" />
+  <div slot="action" class="flex justify-center">
+    {#if $remoteConfig}
+      <Button
+        variant="primary"
+        size="medium"
+        on:click={() => {
+          trackEvent('subscribe', { from: 'popup' });
+          if ($user) {
+            window.open(
+              $remoteConfig.stripe_checkout_url +
+                '?client_reference_id=' +
+                $user.uid,
+              '_blank'
+            );
+            return;
+          }
+          window.open('https://steercode.com/auth-steercode');
+        }}
+      >
+        Upgrade to Premium
+      </Button>
+    {/if}
+  </div>
 </Dialog>

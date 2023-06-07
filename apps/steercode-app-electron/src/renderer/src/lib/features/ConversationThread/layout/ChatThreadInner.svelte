@@ -5,7 +5,7 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
-  import { SSE, type SSEOptions } from 'sse.js';
+  import { fetchEventSource } from '@microsoft/fetch-event-source';
   import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
@@ -17,17 +17,18 @@
   import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
-  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
+
   import {
     initialFileTreeFile,
     selectedRepositoryStore
   } from '$lib/shared/stores/selectedRepository';
+  import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
 
   export let conversation: Conversation;
   let loading: boolean = false;
   let answer: string = '';
   let wrapContainer: ConversationWrapper;
-  let eventSource: SSE | null = null;
+  let streamController: AbortController;
 
   type CompletionResponse = {
     msg: string;
@@ -37,6 +38,7 @@
   };
 
   async function handleSubmit(query: string) {
+    closeEventSource();
     trackEvent('New message', {
       message: query,
       conversationId: conversation.value.id
@@ -44,11 +46,14 @@
     answer = '';
     loading = true;
     const settings = get(settingsStore);
+    streamController = new AbortController();
+    const signal = streamController.signal;
 
     // Prepare the request options
     const headers: Record<string, string> = {};
     headers['Content-Type'] = 'application/json';
     headers['X-UID'] = getUIDHeader();
+    headers['Accept'] = 'text/event-stream';
 
     // update header options
     const vst = window.localStorage.getItem('X_VECTOR_STORE_TYPE');
@@ -62,35 +67,6 @@
     if (llm) {
       headers['x-llm-type'] = llm;
     }
-    // ------------------------------
-    // Mocking vvvvv
-    // const selections = [
-    //   {
-    //     fileName: 'example_1.txt',
-    //     filePath: '/path/to/example_1.txt',
-    //     isDirectory: false,
-    //     children: []
-    //   },
-    //   {
-    //     fileName: 'example_2.txt',
-    //     filePath: '/path/to/example_2.txt',
-    //     isDirectory: false,
-    //     children: []
-    //   }
-    // ];
-
-    // TODO - fetch contents from api
-    // const contents = selections.map((selection) => {
-    //   return {
-    //     filePath: selection.filePath,
-    //     fileName: selection.fileName,
-    //     fileContent: `This is the content of ${selection.fileName}`
-    //   };
-    // });
-
-    // Mocking ^^^^^
-    // ------------------------------
-
     const selections = $selectedEntities;
     const contents: [IFileContentItem] = await window.electron.getContents(
       selections.map((selection) => selection.filePath)
@@ -104,61 +80,78 @@
       };
     });
 
-    const sseOptions: SSEOptions = {
-      headers: headers,
-      payload: JSON.stringify({
-        ...conversation.value,
-        documents: documents,
-        root_directory: $initialFileTreeFile
-      })
+    const body = {
+      ...conversation.value,
+      documents: documents,
+      root_directory: $initialFileTreeFile
     };
-    eventSource = new SSE(getBackendUrl() + '/chat/stream', sseOptions);
 
-    eventSource.addEventListener('error', (e) => handleError(e));
-
-    eventSource.addEventListener('message', (e) => {
-      scrollToBottom();
-      try {
-        loading = false;
-        const completionResponse = JSON.parse(e.data) as CompletionResponse;
-        const content = completionResponse.msg;
-
-        if (completionResponse.done) {
-          if (completionResponse.id) {
-            conversation.addMessage(
-              { role: 'assistant', content: content },
-              completionResponse.id
-            );
+    async function stream(url: string, body: any) {
+      await fetchEventSource(url, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: headers,
+        async onopen(res) {
+          if (res.status === 429) {
+            openModal();
+            throw new Error('Rate limit exceeded');
           }
+        },
+        onmessage(event) {
+          onMessage(event);
+        },
+        onclose() {
           closeEventSource();
-          return;
-        }
+        },
+        onerror(err) {
+          handleError(err);
+          throw err;
+        },
+        signal: signal
+      });
+    }
 
-        if (completionResponse.error) {
-          throw new Error(content);
-        }
+    // Initialize the event stream with the URL and the data you want to post
+    try {
+      await stream(getBackendUrl() + '/chat/stream', body);
+    } catch {
+      // Do nothing
+    }
+  }
 
-        if (content) {
-          answer = (answer ?? '') + content;
-        }
-      } catch (err) {
-        handleError(err);
-      }
-    });
-    eventSource.stream();
+  function onMessage(e) {
     scrollToBottom();
+    try {
+      loading = false;
+      const completionResponse = JSON.parse(e.data) as CompletionResponse;
+      const content = completionResponse.msg;
+
+      if (completionResponse.done) {
+        if (completionResponse.id) {
+          conversation.addMessage(
+            { role: 'assistant', content: content },
+            completionResponse.id
+          );
+        }
+        return;
+      }
+
+      if (completionResponse.error) {
+        throw new Error(content);
+      }
+
+      if (content) {
+        answer = (answer ?? '') + content;
+      }
+    } catch (err) {
+      handleError(err);
+    }
   }
 
   function closeEventSource() {
-    if (eventSource) {
-      setTimeout(() => {
-        if (eventSource) {
-          eventSource.close();
-          eventSource = null;
-        }
-      }, 0);
-      answer = '';
-    }
+    streamController?.abort();
+    answer = '';
+    loading = false;
   }
 
   function scrollToBottom(force: boolean = false) {

@@ -12,18 +12,12 @@
   export let submitDisabled: boolean = false;
   export let messages: ChatMessageDTO[] = [];
 
-  let currentScrollTimeoutRef: ReturnType<typeof setTimeout> | null = null;
   export function scrollToBottom(force: boolean = false) {
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
-    if (currentScrollTimeoutRef) return;
-
     const offsetDiff =
       scrollToDiv.offsetTop - list.getOffset() - list.getClientSize();
     if (offsetDiff < 20 || force) {
-      currentScrollTimeoutRef = setTimeout(() => {
-        list.scrollToBottom();
-        currentScrollTimeoutRef = null;
-      }, 100);
+      list.scrollToBottom();
     }
   }
 
