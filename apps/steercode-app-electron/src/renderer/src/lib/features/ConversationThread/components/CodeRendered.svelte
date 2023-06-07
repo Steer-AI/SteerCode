@@ -32,39 +32,23 @@
   import DoneIcon from '$lib/shared/components/Icons/DoneIcon.svelte';
   import hljs from 'highlight.js';
   import { _ } from 'svelte-i18n';
-  import { parse } from 'diff2html';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
-  import { LineType, type DiffBlock } from 'diff2html/lib/types';
 
   let fileName: string = '';
   export let lang: string;
   export let text: string;
 
-  // const isDiff = isEmptyDiff(text);
-  // TODO: Detect gitconflict format
-  const isDiff = true;
-
-  function isEmptyDiff(diff: string): boolean {
-    const change = parse(diff);
-    if (change.length > 0) {
-      fileName = change[0].newName;
-      if ($selectedRepositoryStore) {
-        fileName = fileName.replace($selectedRepositoryStore?.url, '');
-      }
-    }
-    return change.length > 0;
-  }
+  $: isDiff = /<<<<<<<\s+HEAD(.|\n)+=======(.|\n)+>>>>>>>(.*\n*)/gm.test(text);
 
   function applyGitignoreFormat(value: string): string {
-    let replaceDeletion = function (matched) {
+    let replaceDeletion = function (matched: string) {
       return `${matched}<span class="!block" style='background-color: rgba(255, 0, 0, 0.2)'>`;
     };
 
-    let replaceDelimiter = function (matched) {
+    let replaceDelimiter = function (matched: string) {
       return `</span>${matched}<span class="!block" style='background-color: rgba(0, 255, 0, 0.2)'>`;
     };
 
-    let replaceEnd = function (matched) {
+    let replaceEnd = function (matched: string) {
       return `</span>${matched}`;
     };
 
@@ -141,44 +125,6 @@
     }
   }
 
-  function getNewVersionFromDiff(diff: string): string {
-    const change = parse(diff);
-
-    const changes = [];
-    for (const file of change) {
-      for (const block of file.blocks) {
-        const blockChangesNew = [];
-        const blockChangesOld = [];
-        for (const diffLine of block.lines) {
-          if (diffLine.type === LineType.CONTEXT) {
-            blockChangesNew.push(diffLine.content.slice(1));
-            blockChangesOld.push(diffLine.content.slice(1));
-          }
-          if (diffLine.type === LineType.INSERT) {
-            blockChangesNew.push(diffLine.content.slice(1));
-          }
-          if (diffLine.type === LineType.DELETE) {
-            blockChangesOld.push(diffLine.content.slice(1));
-          }
-        }
-        const blockChangeNew = blockChangesNew.join('\n');
-        const blockChangeOld = blockChangesOld.join('\n');
-
-        const blockChange =
-          '<<<<<<<  HEAD\n' +
-          blockChangeOld +
-          '\n=======\n' +
-          blockChangeNew +
-          '\n>>>>>>>  updeted version\n';
-
-        changes.push(blockChange);
-      }
-    }
-
-    const newVersion = changes.join('\n\n\n\n\n');
-    return newVersion;
-  }
-
   function applyChange(diff: string): void {
     diff = diff.split('\\`').join('`');
 
@@ -204,11 +150,7 @@
   <div
     class="bg-background-primary flex h-10 items-center justify-between px-3"
   >
-    {#if isDiff}
-      <span class="text-xs font-bold text-white">{fileName}</span>
-    {:else}
-      <span class="text-xs font-bold text-white">{highlighted.language}</span>
-    {/if}
+    <span class="text-xs font-bold text-white">{highlighted.language}</span>
 
     <div class="flex items-center justify-between space-x-2">
       <Button

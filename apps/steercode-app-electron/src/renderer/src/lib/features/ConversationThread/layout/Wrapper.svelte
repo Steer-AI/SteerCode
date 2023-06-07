@@ -15,8 +15,11 @@
   export function scrollToBottom(force: boolean = false) {
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
     const offsetDiff =
-      scrollToDiv.offsetTop - list.getOffset() - list.getClientSize();
-    if (offsetDiff < 20 || force) {
+      scrollToDiv.offsetTop +
+      scrollToDiv.clientHeight -
+      list.getOffset() -
+      list.getClientSize();
+    if (offsetDiff < 2 || force) {
       list.scrollToBottom();
     }
   }
@@ -62,9 +65,11 @@
               message={$_('conversation.message.loading')}
             />
           {/if}
-          <div role="separator" style="height: {formHeight}px;">
-            <div class="" bind:this={scrollToDiv} />
-          </div>
+          <div
+            role="separator"
+            style="height: {formHeight}px;"
+            bind:this={scrollToDiv}
+          />
         </div></VirtualScroll
       >
     {/if}
