@@ -11,12 +11,9 @@ const port = process.env.WEB_PORT || 5173;
 const dev = !app.isPackaged;
 let mainWindow: BrowserWindow;
 
-// Handle the protocol. In this case, we choose to show an Error Box.
-app.on('open-url', (_, url) => {
-  handleDeepLink(url);
-});
-
 function createWindow() {
+  if (mainWindow) return mainWindow;
+
   const windowState = windowStateManager({
     defaultWidth: 1024,
     defaultHeight: 600
@@ -76,8 +73,9 @@ function createWindow() {
   } else {
     // mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
     serveURL(mainWindow);
-    mainWindow.webContents.openDevTools();
   }
+
+  return mainWindow;
 }
 
 function loadVite() {
@@ -94,11 +92,25 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
+  // Handle the protocol
+  app.on('open-url', (_, url) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    } else {
+      createWindow();
+    }
+
+    handleDeepLink(url);
+  });
+
   app.on('second-instance', (_, commandLine, __) => {
     // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
+    } else {
+      createWindow();
     }
     // the commandLine is array of strings in which last element is deep link url
     // the url str ends with /
