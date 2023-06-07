@@ -56,7 +56,6 @@
   }
 
   function applyGitignoreFormat(value: string): string {
-    console.log(value);
     let replaceDeletion = function (matched) {
       return `${matched}<span class="!block" style='background-color: rgba(255, 0, 0, 0.2)'>`;
     };
