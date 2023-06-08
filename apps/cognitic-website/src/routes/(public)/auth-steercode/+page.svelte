@@ -15,6 +15,8 @@
     loginGoogle,
     loginTwitter
   } from '$lib/features/Auth/utils/authHelpers';
+  import { page } from '$app/stores';
+
   async function handleLogin(providerId: string) {
     let resp: {
       credential: OAuthCredential | null;
@@ -35,7 +37,10 @@
 
     const credential = resp.credential.toJSON();
 
-    window.location.href = `steercode://auth?credential=${encodeURIComponent(
+    const deepLinkProtocol =
+      new URLSearchParams($page.url.search).get('deepLinkProtocol') ||
+      'steercode';
+    window.location.href = `${deepLinkProtocol}://auth?credential=${encodeURIComponent(
       JSON.stringify(credential)
     )}&providerId=${providerId}`;
     return true;
