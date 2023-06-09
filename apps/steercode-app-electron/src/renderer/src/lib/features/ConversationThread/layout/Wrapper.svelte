@@ -44,9 +44,6 @@
 
   let chatOptions: Option<ChatMode>[] = [];
   let defaultValueFromLS = localStorage.getItem('cognitic.chatModeOption');
-  let chatMode: Option<ChatMode> = defaultValueFromLS
-    ? JSON.parse(defaultValueFromLS)
-    : chatOptions[0];
 
   $: chatOptions = [
     { label: $_('conversation.chatMode.optionChat'), value: 'chat' },
@@ -54,6 +51,9 @@
     { label: $_('conversation.chatMode.optionDebug'), value: 'debug' },
     { label: $_('conversation.chatMode.optionExplain'), value: 'explain' }
   ];
+  $: chatMode = defaultValueFromLS
+    ? JSON.parse(defaultValueFromLS)
+    : chatOptions[0];
   $: chatModeValue = chatMode.value;
 </script>
 
