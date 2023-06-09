@@ -60,7 +60,7 @@
             "customBackendUrlInput": {
                     "label": "Local backend URL",
                     "placeholder": "Local backend URL. E.g. http://127.0.0.1:8081",
-                    "helperText": "Enter the URL of your local backend. If you are running the app's backend locally, e.g. http://127.0.0.1:8081."
+                    "helperText": "Enter the URL of your local backend. If you are running the app's backend locally, e.g. http://127.0.0.1:8081"
                 }
         },
         "subscription": {
@@ -82,6 +82,13 @@
     "conversation": {
         "messageInput": {
             "placeholder": "Describe your task..."
+        },
+        "chatMode": {
+            "label": "Chat mode:",
+            "optionCode": "Code",
+            "optionChat": "Chat",
+            "optionDebug": "Debug",
+            "optionExplain": "Explain"
         },
         "sendButton": "Send",
         "loadingMessage": "Loading...",

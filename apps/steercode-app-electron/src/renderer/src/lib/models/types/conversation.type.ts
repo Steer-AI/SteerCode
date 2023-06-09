@@ -29,3 +29,5 @@ export type ChatMessageDTO = {
   created_at: string; // datetime string;
   user_feedback: string | null;
 };
+
+export type ChatMode = 'chat' | 'code' | 'debug' | 'explain';

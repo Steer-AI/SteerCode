@@ -14,7 +14,10 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
   import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
-  import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import type {
+    ChatMessageDTO,
+    ChatMode
+  } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
 
@@ -29,6 +32,7 @@
   let answer: string = '';
   let wrapContainer: ConversationWrapper;
   let streamController: AbortController;
+  let chatModeValue: ChatMode;
 
   type CompletionResponse = {
     msg: string;
@@ -41,7 +45,8 @@
     closeEventSource();
     trackEvent('New message', {
       message: query,
-      conversationId: conversation.value.id
+      conversationId: conversation.value.id,
+      chatMode: chatModeValue
     });
     answer = '';
     loading = true;
@@ -83,7 +88,8 @@
     const body = {
       ...conversation.value,
       documents: documents,
-      root_directory: $initialFileTreeFile
+      root_directory: $initialFileTreeFile,
+      chat_mode: chatModeValue
     };
 
     async function stream(url: string, body: any) {
@@ -234,9 +240,10 @@
 </script>
 
 <ConversationWrapper
+  bind:chatModeValue
   on:submit={(e) => {
     conversation.addMessage({ role: 'user', content: e.detail });
-    handleSubmit(e.detail);
+    handleSubmit(e.detail.query, e.detail.chatMode);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;

@@ -5,12 +5,20 @@
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
   import VirtualScroll from 'svelte-virtual-scroll-list';
-  import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import type {
+    ChatMessageDTO,
+    ChatMode
+  } from '$lib/models/types/conversation.type';
   import { browser } from '$app/environment';
+  import Divider from '$lib/shared/components/Divider.svelte';
+  import Listbox, {
+    type Option
+  } from '$lib/shared/components/Listbox/Listbox.svelte';
 
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
   export let messages: ChatMessageDTO[] = [];
+  export let chatModeValue: ChatMode = 'chat';
 
   export function scrollToBottom(force: boolean = false) {
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
@@ -19,7 +27,7 @@
       scrollToDiv.clientHeight -
       list.getOffset() -
       list.getClientSize();
-    if (offsetDiff < 2 || force) {
+    if (offsetDiff < 10 || force) {
       list.scrollToBottom();
     }
   }
@@ -33,12 +41,44 @@
   let list: VirtualScroll;
 
   let formHeight: number = 0;
+
+  let chatOptions: Option<ChatMode>[] = [];
+  let defaultValueFromLS = localStorage.getItem('cognitic.chatModeOption');
+  let chatMode: Option<ChatMode> = defaultValueFromLS
+    ? JSON.parse(defaultValueFromLS)
+    : chatOptions[0];
+
+  $: chatOptions = [
+    { label: $_('conversation.chatMode.optionChat'), value: 'chat' },
+    { label: $_('conversation.chatMode.optionCode'), value: 'code' },
+    { label: $_('conversation.chatMode.optionDebug'), value: 'debug' },
+    { label: $_('conversation.chatMode.optionExplain'), value: 'explain' }
+  ];
+  $: chatModeValue = chatMode.value;
 </script>
 
 <section class="relative flex h-full w-full flex-col items-center">
-  <slot name="title" />
+  <div
+    class="bg-background-primary flex h-14 w-full flex-shrink-0 items-center px-6"
+  >
+    <Listbox
+      bind:selected={chatMode}
+      on:change={(e) => {
+        localStorage.setItem(
+          'cognitic.chatModeOption',
+          JSON.stringify(e.detail)
+        );
+      }}
+      options={chatOptions}
+    >
+      <div slot="label" class="label-small text-content-secondary mr-4">
+        {$_('conversation.chatMode.label')}
+      </div>
+    </Listbox>
+  </div>
+  <Divider class="w-full" />
 
-  <div class="h-full w-full">
+  <div class="h-full w-full" style="max-height: calc(100% - 57px)">
     {#if browser}
       <VirtualScroll bind:this={list} data={messages} key="id" let:data>
         <ChatMessage

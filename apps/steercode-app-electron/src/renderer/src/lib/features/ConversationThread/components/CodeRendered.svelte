@@ -33,7 +33,6 @@
   import hljs from 'highlight.js';
   import { _ } from 'svelte-i18n';
 
-  let fileName: string = '';
   export let lang: string;
   export let text: string;
 
@@ -70,21 +69,22 @@
 
     if (lang && hljs.getLanguage(lang)) {
       result = hljs.highlight('\n' + code, { language: lang });
+    } else {
+      result = hljs.highlightAuto('\n' + code, [
+        'gitconflict',
+        'typescript',
+        'python',
+        'bash',
+        'java',
+        'cpp',
+        'javascript',
+        'go',
+        'ruby',
+        'dart',
+        'rust',
+        'html'
+      ]);
     }
-    result = hljs.highlightAuto('\n' + code, [
-      'gitconflict',
-      'typescript',
-      'python',
-      'bash',
-      'java',
-      'cpp',
-      'javascript',
-      'go',
-      'ruby',
-      'dart',
-      'rust',
-      'html'
-    ]);
 
     result.value = applyGitignoreFormat(result.value);
     return result;
