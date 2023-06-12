@@ -1,8 +1,23 @@
 "use client";
 
 import Button from "@/components/Button";
+import { useEffect } from "react";
 
 export default function RedirectPage() {
+
+    function openDeepLink() {
+        // get current url param called 'redirect' and 'protocol'
+        const urlParams = new URLSearchParams(window.location.search)
+        const redirect = urlParams.get('redirect') || ''
+        const protocol = urlParams.get('protocol') || 'steer'
+        setTimeout(() => {
+            window.location.href = `${protocol}://${redirect}`
+        }, 250)
+    }
+
+    useEffect(() => {
+        openDeepLink()
+    }, [])
 
     return (
         <main className="flex-1 flex flex-col items-center justify-center mb-40">
@@ -21,15 +36,7 @@ export default function RedirectPage() {
                 <div role='separator' className='h-px w-full bg-background-secondary mb-6' />
 
                 <Button
-                    onClick={() => {
-                        // get current url param called 'redirect' and 'protocol'
-                        const urlParams = new URLSearchParams(window.location.search)
-                        const redirect = urlParams.get('redirect') || ''
-                        const protocol = urlParams.get('protocol') || 'steer'
-                        setTimeout(() => {
-                            window.location.href = `${protocol}://${redirect}`
-                        }, 250)
-                    }}
+                    onClick={openDeepLink}
                     variant='primary'
                 >
                     Open App
