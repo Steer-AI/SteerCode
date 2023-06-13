@@ -45,10 +45,43 @@
   }
 
   $: highlighted = highlight(text, lang);
+
+  $: newLinesBlocks = highlighted.value.split('\n');
+
+  let scrollOffset: number = 0;
+  let el1: HTMLElement;
+  let el2: HTMLElement;
 </script>
 
-<div class="not-prose h-full w-full" style="min-width: 256px">
-  <pre class="{highlighted.language} hljs bg h-full p-3">
-      <code class="mono-regular">{@html highlighted.value}</code>
-    </pre>
+<div class="not-prose flex h-full w-full" style="min-width: 256px">
+  <div
+    bind:this={el1}
+    class="bg-background-primaryHover hide-scrollbar w-14 overflow-x-auto p-3"
+    on:scroll={(e) => {
+      if (e.target.scrollTop === scrollOffset) return;
+      scrollOffset = e.target.scrollTop;
+      el2.scrollTop = scrollOffset;
+    }}
+  >
+    {#each newLinesBlocks as _, index}
+      <span
+        class="text-content-secondary mono-small flex w-full items-center justify-end"
+        style="height: 20px">{index + 1}</span
+      >
+    {/each}
+  </div>
+  <div
+    bind:this={el2}
+    class="{highlighted.language} hljs mono-regular w-full p-3"
+    style="white-space-collapse: preserve"
+    on:scroll={(e) => {
+      if (e.target.scrollTop === scrollOffset) return;
+      scrollOffset = e.target.scrollTop;
+      el1.scrollTop = scrollOffset;
+    }}
+  >
+    {#each newLinesBlocks as line}
+      <span class="block w-full" style="height: 20px">{@html line}</span>
+    {/each}
+  </div>
 </div>

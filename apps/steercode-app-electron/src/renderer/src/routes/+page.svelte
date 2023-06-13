@@ -6,7 +6,12 @@
   import { _ } from 'svelte-i18n';
 </script>
 
-<Header style="max-width: 100vw" sidebarOpen={false} enableMenuButton={false} />
+<Header
+  style="max-width: 100vw"
+  sidebarOpen={false}
+  enableMenuButton={false}
+  hideListbox
+/>
 <div>
   <div class="px-6">
     <section class="mb-12 mt-6 w-full">

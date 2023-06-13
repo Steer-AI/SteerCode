@@ -12,7 +12,7 @@
 </script>
 
 <div
-  class="bg-background-primaryActive label-mini flex h-7 w-full items-center overflow-x-scroll px-3"
+  class="bg-background-primaryActive label-mini sticky top-0 flex h-7 w-full items-center overflow-x-scroll px-3"
 >
   {#each paths.slice(0, -1) as path}
     <span class="text-content-secondary">{path}</span>

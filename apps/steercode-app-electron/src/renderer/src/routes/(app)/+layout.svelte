@@ -26,7 +26,7 @@
 </script>
 
 <div class="main-template">
-  <Header style="max-width: 100vw" bind:sidebarOpen />
+  <Header style="max-width: 100vw" bind:sidebarOpen logoOnly />
 
   <div class="relative isolate flex overflow-hidden">
     <ConversationsSidebar open={sidebarOpen} />

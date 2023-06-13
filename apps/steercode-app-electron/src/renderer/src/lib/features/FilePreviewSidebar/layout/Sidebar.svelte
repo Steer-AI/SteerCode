@@ -47,7 +47,7 @@
 
     <Divider vertical />
 
-    <div class="h-full w-full overflow-scroll">
+    <div class="h-full w-full">
       <FilePreview file={$selectedFile} />
     </div>
   </section>
