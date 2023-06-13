@@ -44,7 +44,7 @@ function createUserStore() {
     if (firebase_id === null) {
       fetchResp = customFetch(`/user`);
     } else {
-      fetchResp = customFetch(`/user/asociate-device`, {
+      fetchResp = customFetch(`/user/associate-device`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
