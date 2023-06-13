@@ -5,19 +5,17 @@
   import { loadAnalytics } from '$lib/core/services/tracking';
   import { _ } from 'svelte-i18n';
   import { onMount } from 'svelte';
-  import { USER_COOKIE_ANONYMOUS_ID_NAME } from '$lib/shared/utils/constants';
   import { Log } from '$lib/core/services/logging';
   import { goto } from '$app/navigation';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
-  import { user } from '$lib/shared/stores/user';
+  import { getOrCreateAnonymousUID, user } from '$lib/shared/stores/user';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
 
   onMount(() => {
     if (!window.electron) return;
-    const uid = window.electron.getUid();
+    const uid = getOrCreateAnonymousUID();
     Log.DEBUG('uid', uid);
-    localStorage.setItem(USER_COOKIE_ANONYMOUS_ID_NAME, uid);
-    user.fetchUserInfo(uid);
+    user.fetchUserInfo(uid, null);
     loadAnalytics();
     remoteConfig.fetchData();
 

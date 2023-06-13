@@ -6,12 +6,24 @@ import type { User, UserInfo } from '$lib/models/types/user.type';
 import * as Sentry from '@sentry/svelte';
 import { onAuthStateChanged } from 'firebase/auth';
 import { writable } from 'svelte/store';
-import { USER_COOKIE_ID_NAME } from '../utils/constants';
+import {
+  USER_COOKIE_ANONYMOUS_ID_NAME,
+  USER_COOKIE_ID_NAME
+} from '../utils/constants';
 
 import {
   customFetch,
   responseWithErrorHandeling
 } from '$lib/core/services/request';
+
+export function getOrCreateAnonymousUID(): string {
+  let auid = localStorage.getItem(USER_COOKIE_ANONYMOUS_ID_NAME);
+  if (!auid) {
+    auid = window.electron.getUid() as string;
+    localStorage.setItem(USER_COOKIE_ANONYMOUS_ID_NAME, auid);
+  }
+  return auid;
+}
 
 function getUserFromLocalStorage(): User | null {
   if (!browser) return null;
@@ -26,16 +38,28 @@ function getUserFromLocalStorage(): User | null {
 function createUserStore() {
   const _user = writable<User | null>(getUserFromLocalStorage());
 
-  async function fetchUserInfo(uid: string) {
-    Log.DEBUG('fetchUserInfo', uid);
-    const userInfo = await responseWithErrorHandeling<UserInfo>(
-      customFetch(`/user`),
-      {
-        id: uid,
-        projects: [],
-        stripe: null
-      }
-    );
+  async function fetchUserInfo(uid: string, firebase_id: string | null) {
+    Log.DEBUG('fetchUserInfo', { uid, firebase_id });
+    let fetchResp: Promise<Response>;
+    if (firebase_id === null) {
+      fetchResp = customFetch(`/user`);
+    } else {
+      fetchResp = customFetch(`/user/asociate-device`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          uid: uid,
+          firebase_id: firebase_id
+        })
+      });
+    }
+    const userInfo = await responseWithErrorHandeling<UserInfo>(fetchResp, {
+      id: uid,
+      projects: [],
+      stripe: null
+    });
     return userInfo;
   }
 
@@ -52,16 +76,16 @@ function createUserStore() {
         email: user.email || undefined,
         username: user.displayName || undefined
       });
-      window.localStorage.setItem(USER_COOKIE_ID_NAME, user.uid);
 
-      fetchUserInfo(user.uid).then((_ui) => {
+      fetchUserInfo(getOrCreateAnonymousUID(), user.uid).then((_ui) => {
         const _u: User = {
-          uid: user.uid,
+          uid: _ui.id,
           email: user.email,
           displayName: user.displayName,
           photoURL: user.photoURL,
           ..._ui
         };
+        window.localStorage.setItem(USER_COOKIE_ID_NAME, _u.uid);
         window.localStorage.setItem('cognitic.user', JSON.stringify(_u));
         _user.set(_u);
       });
