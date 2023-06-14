@@ -51,9 +51,10 @@
     { label: $_('conversation.chatMode.optionDebug'), value: 'debug' },
     { label: $_('conversation.chatMode.optionExplain'), value: 'explain' }
   ];
-  let chatMode = defaultValueFromLS
+  $: chatMode = defaultValueFromLS
     ? JSON.parse(defaultValueFromLS)
     : chatOptions[0];
+
   $: chatModeValue = chatMode.value;
 </script>
 
@@ -62,12 +63,13 @@
     class="bg-background-primary flex h-14 w-full flex-shrink-0 items-center px-6"
   >
     <Listbox
-      bind:selected={chatMode}
+      selected={chatMode}
       on:change={(e) => {
         localStorage.setItem(
           'cognitic.chatModeOption',
           JSON.stringify(e.detail)
         );
+        chatMode = e.detail;
       }}
       options={chatOptions}
     >
