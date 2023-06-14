@@ -88,7 +88,7 @@
 
     <ListboxOptions
       style="{inverted ? 'bottom: calc(100% + 8px)' : 'top: calc(100% + 8px)'};"
-      class="bg-background-secondary absolute right-0 w-full"
+      class="bg-background-secondary absolute right-0 min-w-full"
     >
       {#each options as opt (opt.value)}
         <ListboxOption

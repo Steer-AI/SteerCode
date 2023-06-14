@@ -53,13 +53,15 @@ function createUserStore() {
   onAuthStateChanged(auth, (user) => {
     Log.DEBUG('user', user);
     if (user) {
-      trackIdentify(user.uid, {
+      trackIdentify(getOrCreateAnonymousUID(), {
+        authId: user.uid,
         email: user.email,
         username: user.displayName,
         avatar: user.photoURL
       });
       Sentry.setUser({
-        id: user.uid,
+        id: getOrCreateAnonymousUID(),
+        authId: user.uid,
         email: user.email || undefined,
         username: user.displayName || undefined
       });
@@ -68,7 +70,10 @@ function createUserStore() {
       refetchSubscription(user);
     } else {
       resetAnalytics();
-      Sentry.setUser(null);
+      trackIdentify(getOrCreateAnonymousUID());
+      Sentry.setUser({
+        id: getOrCreateAnonymousUID()
+      });
       window.localStorage.removeItem(USER_COOKIE_ID_NAME);
       window.localStorage.removeItem('cognitic.user');
       _user.set(null);

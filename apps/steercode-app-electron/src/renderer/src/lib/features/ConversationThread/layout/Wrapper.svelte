@@ -51,7 +51,7 @@
     { label: $_('conversation.chatMode.optionDebug'), value: 'debug' },
     { label: $_('conversation.chatMode.optionExplain'), value: 'explain' }
   ];
-  $: chatMode = defaultValueFromLS
+  let chatMode = defaultValueFromLS
     ? JSON.parse(defaultValueFromLS)
     : chatOptions[0];
   $: chatModeValue = chatMode.value;
