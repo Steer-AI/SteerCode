@@ -43,11 +43,15 @@
 
   /* LABEL */
   .label-small,
-  .label-small-plus {
+  .label-small-plus,
+  .label-regular,
+  .label-regular-plus {
     @apply font-basier uppercase;
   }
   .label-mini-plus,
-  .label-small-plus {
+  .label-small-plus,
+  .label-regular,
+  .label-regular-plus {
     @apply font-semibold;
   }
 
@@ -79,7 +83,9 @@
     line-height: 16px;
   }
   .mono-regular,
-  .mono-regular-plus {
+  .mono-regular-plus,
+  .label-regular,
+  .label-regular-plus {
     font-size: 14px;
     line-height: 20px;
   }

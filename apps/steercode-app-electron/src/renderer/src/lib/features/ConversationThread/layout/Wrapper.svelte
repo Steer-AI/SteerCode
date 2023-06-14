@@ -19,6 +19,7 @@
   export let submitDisabled: boolean = false;
   export let messages: ChatMessageDTO[] = [];
   export let chatModeValue: ChatMode = 'chat';
+  export let techStackValue: string = '';
 
   export function scrollToBottom(force: boolean = false) {
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
@@ -77,6 +78,19 @@
         {$_('conversation.chatMode.label')}
       </div>
     </Listbox>
+    <Divider vertical class="h-full" />
+    <div class="label-small text-content-secondary mx-4">
+      {$_('conversation.techStack.label')}
+    </div>
+    <div class="flex-grow">
+      <TextAreaField class="my-8 align-bottom pt-1 px-2 normal-case w-full label-regular " 
+      style="height: 26px; max-width: 500px; text-transform: none; font-size: 14px;"
+      bind:value={techStackValue}
+      >
+    </TextAreaField>
+    </div>
+
+  
   </div>
   <Divider class="w-full" />
 

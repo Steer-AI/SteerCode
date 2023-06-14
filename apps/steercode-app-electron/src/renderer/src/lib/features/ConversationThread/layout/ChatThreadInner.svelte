@@ -37,6 +37,7 @@
   let wrapContainer: ConversationWrapper;
   let streamController: AbortController;
   let chatModeValue: ChatMode;
+  let techStackValue: string;
 
   type CompletionResponse = {
     msg: string;
@@ -94,6 +95,7 @@
       ...conversation.value,
       documents: documents,
       root_directory: $initialFileTreeFile,
+      technology_description: techStackValue,
       chat_mode: chatModeValue
     };
 
@@ -247,6 +249,7 @@
 
 <ConversationWrapper
   bind:chatModeValue
+  bind:techStackValue
   on:submit={(e) => {
     conversation.addMessage({ role: 'user', content: e.detail });
     handleSubmit(e.detail.query, e.detail.chatMode);

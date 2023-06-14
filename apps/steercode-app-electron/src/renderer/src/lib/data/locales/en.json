@@ -90,6 +90,9 @@
             "optionDebug": "Debug",
             "optionExplain": "Explain"
         },
+        "techStack": {
+            "label": "Technology:"
+        },
         "sendButton": "Send",
         "loadingMessage": "Loading...",
         "message": {
