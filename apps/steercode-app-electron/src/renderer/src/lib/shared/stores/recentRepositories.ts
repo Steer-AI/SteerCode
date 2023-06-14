@@ -1,4 +1,7 @@
-import { customFetch } from '$lib/core/services/request';
+import {
+  customFetch,
+  responseWithErrorHandeling
+} from '$lib/core/services/request';
 import type { RepositoryOption } from '$lib/models/types/conversation.type';
 import { writable } from 'svelte/store';
 
@@ -31,14 +34,17 @@ function createRecentRepositoriesStore() {
     });
   }
 
-  function fetchData() {
-    customFetch('/chat/recent-projects', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((resp) => resp.json())
-      .then((data) => items.set(data['data'] as RepositoryOption[]));
+  async function fetchData() {
+    const data = await responseWithErrorHandeling<RepositoryOption[]>(
+      customFetch('/user/recent-projects', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }),
+      [],
+      'Failed to fetch recent repositories'
+    );
+    items.set(data);
   }
 
   return {

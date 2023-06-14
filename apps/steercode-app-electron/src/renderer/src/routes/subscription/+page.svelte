@@ -1,6 +1,7 @@
 <script>
   import { afterNavigate, goto } from '$app/navigation';
   import Button from '$lib/shared/components/Button.svelte';
+  import { user } from '$lib/shared/stores/user';
   import { _ } from 'svelte-i18n';
 
   let previousPage = '/';
@@ -14,6 +15,7 @@
   });
 
   function handleGoBack() {
+    user.refetchSubscription();
     goto(previousPage, { replaceState: true });
   }
 </script>

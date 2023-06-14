@@ -13,7 +13,6 @@
   import { login, signOut } from '../utils/authHelpers';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
-  import { goto } from '$app/navigation';
   import Spinner from '$lib/shared/components/Spinner.svelte';
   import { onMount } from 'svelte/internal';
 
@@ -24,9 +23,7 @@
       'auth',
       (credentials: string, providerId: string) => {
         trackEvent('login');
-        login(credentials, providerId).then(() => {
-          goto('/', { invalidateAll: true });
-        });
+        login(credentials, providerId);
       }
     );
   });
@@ -82,7 +79,6 @@
             class="text-error hover:bg-background-secondaryHover flex h-14 items-center px-6 after:mx-0"
             on:click={() => {
               signOut();
-              goto('/', { invalidateAll: true });
               trackEvent('logout');
             }}
           >

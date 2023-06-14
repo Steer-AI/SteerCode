@@ -16,11 +16,10 @@ const returnFallbackAndLog = <T>(
 };
 
 export function getUIDHeader(): string {
-  return (
-    localStorage.getItem(USER_COOKIE_ID_NAME) ||
-    localStorage.getItem(USER_COOKIE_ANONYMOUS_ID_NAME) ||
-    ''
-  );
+  return localStorage.getItem(USER_COOKIE_ANONYMOUS_ID_NAME) || '';
+}
+export function getAuthUIDHeader(): string {
+  return localStorage.getItem(USER_COOKIE_ID_NAME) || '';
 }
 
 export function getBackendUrl(version: string = 'v2'): string {

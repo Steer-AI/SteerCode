@@ -13,7 +13,11 @@
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
-  import { getBackendUrl, getUIDHeader } from '$lib/core/services/request';
+  import {
+    getAuthUIDHeader,
+    getBackendUrl,
+    getUIDHeader
+  } from '$lib/core/services/request';
   import type {
     ChatMessageDTO,
     ChatMode
@@ -58,6 +62,7 @@
     const headers: Record<string, string> = {};
     headers['Content-Type'] = 'application/json';
     headers['X-UID'] = getUIDHeader();
+    headers['X-AUTH-UID'] = getAuthUIDHeader();
     headers['Accept'] = 'text/event-stream';
 
     // update header options

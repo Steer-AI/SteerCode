@@ -8,14 +8,13 @@
   import { Log } from '$lib/core/services/logging';
   import { goto } from '$app/navigation';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
-  import { getOrCreateAnonymousUID, user } from '$lib/shared/stores/user';
+  import { getOrCreateAnonymousUID } from '$lib/shared/stores/user';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
 
   onMount(() => {
     if (!window.electron) return;
     const uid = getOrCreateAnonymousUID();
     Log.DEBUG('uid', uid);
-    user.fetchUserInfo(uid, null);
     loadAnalytics();
     remoteConfig.fetchData();
 
