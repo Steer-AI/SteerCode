@@ -42,7 +42,7 @@
     }
   }
 
-  function handleUpdate(selectedRepo: RepositoryOption | null) {
+  function handleUpdate(selectedRepo: RepositoryOption | null, forceUpdate: boolean = false) {
     const selectedFilePaths = $selectedEntities.map(
       (entity) => entity.filePath
     );
@@ -54,7 +54,8 @@
 
     if (
       !_initialFileTreeFile ||
-      selectedRepo.url !== _initialFileTreeFile.filePath
+      selectedRepo.url !== _initialFileTreeFile.filePath ||
+      forceUpdate
     ) {
       _initialFileTreeFile = {
         isDirectory: true,
@@ -103,7 +104,7 @@
       {$_('conversation.codebaseSidebar.codebaseTitle')}
 
       <button
-        on:click={() => handleUpdate($selectedRepositoryStore)}
+        on:click={() => handleUpdate($selectedRepositoryStore, true)}
         class="text-content-primarySub ml-4"
       >
         <RefreshIcon
