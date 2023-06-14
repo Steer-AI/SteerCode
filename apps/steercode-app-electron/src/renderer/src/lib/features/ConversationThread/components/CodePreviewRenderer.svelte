@@ -65,14 +65,14 @@
   >
     {#each newLinesBlocks as _, index}
       <span
-        class="text-content-secondary mono-small flex w-full items-center justify-end"
+        class="text-content-secondary mono-small flex w-full items-start justify-end"
         style="height: 20px">{index + 1}</span
       >
     {/each}
   </div>
   <div
     bind:this={el2}
-    class="{highlighted.language} hljs mono-regular w-full p-3"
+    class="{highlighted.language} hljs mono-regular w-full whitespace-nowrap p-3"
     style="white-space-collapse: preserve"
     on:scroll={(e) => {
       if (e.target.scrollTop === scrollOffset) return;
@@ -80,8 +80,8 @@
       el1.scrollTop = scrollOffset;
     }}
   >
-    {#each newLinesBlocks as line}
-      <span class="block w-full" style="height: 20px">{@html line}</span>
+    {#each newLinesBlocks as line, index}
+      <span class="block w-full" style="min-height: 20px">{@html line}</span>
     {/each}
   </div>
 </div>

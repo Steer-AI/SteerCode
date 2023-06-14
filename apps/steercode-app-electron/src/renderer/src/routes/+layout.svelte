@@ -34,6 +34,10 @@
         removeAfter: undefined
       });
     });
+
+    window.electron.ipcRenderer.on('log', (...value: string[]) => {
+      console.log('electron: ', ...value);
+    });
   });
 </script>
 

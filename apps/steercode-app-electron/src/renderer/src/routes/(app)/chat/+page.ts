@@ -4,7 +4,7 @@ import {
   selectedConversationId
 } from '$lib/shared/stores/conversations';
 
-export function load({ url, params }) {
+export function load({ url }) {
   const searchParams = new URLSearchParams(url.search);
   const id = searchParams.get('id');
   if (!id) throw new Error('Missing conversation id');

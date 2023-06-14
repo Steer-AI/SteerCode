@@ -9,8 +9,13 @@ import initUpdater from './updater';
 
 const serveURL = serve({ directory: join(__dirname, '..', 'renderer') });
 const port = process.env.WEB_PORT || 5173;
-const dev = !app.isPackaged;
+const dev = is.dev && process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
+
+function logBoth(...args: any[]) {
+  console.log(...args);
+  mainWindow && mainWindow.webContents.send('log', ...args);
+}
 
 function createWindow() {
   if (mainWindow) return mainWindow;
@@ -35,7 +40,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: true,
       spellcheck: false,
-      devTools: true || dev, // TODO: Remove this
+      devTools: true,
       preload: join(__dirname, '../preload/index.js')
     },
     x: windowState.x,
@@ -60,14 +65,15 @@ function createWindow() {
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    console.log('open handler', details);
+    logBoth('open handler', details);
     shell.openExternal(details.url);
     return { action: 'deny' };
   });
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev) {
+  logBoth('dev', dev);
+  if (dev) {
     loadVite();
     mainWindow.webContents.openDevTools();
     // mainWindow.loadURL(import.meta.env.MAIN_VITE_ELECTRON_RENDERER_URL)
@@ -76,13 +82,13 @@ function createWindow() {
     serveURL(mainWindow);
   }
 
-  initUpdater(mainWindow);
+  initUpdater(mainWindow, logBoth);
   return mainWindow;
 }
 
 function loadVite() {
   mainWindow.loadURL(`http://localhost:${port}`).catch((e) => {
-    console.log('Error loading URL, retrying', e);
+    logBoth('Error loading URL, retrying', e.message);
     setTimeout(() => {
       loadVite();
     }, 200);
@@ -170,7 +176,7 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 function handleDeepLink(url: string) {
-  console.log(`handleDeepLink ${url}`);
+  logBoth(`handleDeepLink ${url}`);
 
   if (url.startsWith('steercode://auth')) {
     const urlParams = new URLSearchParams(url.replace('steercode://auth?', ''));
