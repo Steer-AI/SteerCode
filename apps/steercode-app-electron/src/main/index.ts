@@ -5,6 +5,7 @@ import windowStateManager from 'electron-window-state';
 import { join, resolve } from 'path';
 
 import './ipc';
+import initUpdater from './updater';
 
 const serveURL = serve({ directory: join(__dirname, '..', 'renderer') });
 const port = process.env.WEB_PORT || 5173;
@@ -75,6 +76,7 @@ function createWindow() {
     serveURL(mainWindow);
   }
 
+  initUpdater(mainWindow);
   return mainWindow;
 }
 

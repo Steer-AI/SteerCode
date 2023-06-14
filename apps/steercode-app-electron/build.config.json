@@ -28,5 +28,13 @@
 		  "Encoding": "UTF-8",
 		  "MimeType": "x-scheme-handler/deeplink"
 		}
-	  }
+	  },
+	  "publish": [
+		{
+		  "provider": "github",
+		  "owner": "cognitic-ai",
+		  "repo": "cognitic",
+		  "releaseType": "draft"
+		}
+	  ]
 }

@@ -10,6 +10,8 @@
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
   import { getOrCreateAnonymousUID } from '$lib/shared/stores/user';
   import SettingsModal from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
+  import { notificationStore } from '$lib/features/Notifications/store/notifications';
+  import { NotificationType, Position } from '$lib/models/enums/notifications';
 
   onMount(() => {
     if (!window.electron) return;
@@ -21,6 +23,16 @@
     window.electron.ipcRenderer.on('open-page', (value: string) => {
       console.log('openPage', { value });
       goto('/' + value);
+    });
+
+    window.electron.ipcRenderer.on('update-available', (value: string) => {
+      console.log('updateAvailable', { value });
+      notificationStore.addNotification({
+        message: 'Downloading new update...',
+        type: NotificationType.GeneralInfo,
+        position: Position.TopRight,
+        removeAfter: undefined
+      });
     });
   });
 </script>

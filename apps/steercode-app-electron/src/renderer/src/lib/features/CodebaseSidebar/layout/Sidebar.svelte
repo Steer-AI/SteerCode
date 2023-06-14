@@ -42,7 +42,10 @@
     }
   }
 
-  function handleUpdate(selectedRepo: RepositoryOption | null, forceUpdate: boolean = false) {
+  function handleUpdate(
+    selectedRepo: RepositoryOption | null,
+    forceUpdate: boolean = false
+  ) {
     const selectedFilePaths = $selectedEntities.map(
       (entity) => entity.filePath
     );
