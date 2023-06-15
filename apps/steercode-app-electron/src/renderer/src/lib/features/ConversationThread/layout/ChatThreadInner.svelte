@@ -99,6 +99,7 @@
 
     async function stream(url: string, body: any) {
       await fetchEventSource(url, {
+        openWhenHidden: true,
         method: 'POST',
         body: JSON.stringify(body),
         headers: headers,
