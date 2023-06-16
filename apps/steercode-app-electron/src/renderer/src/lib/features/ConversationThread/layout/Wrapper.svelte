@@ -22,9 +22,7 @@
   import type { IFileContentItem } from 'cognitic-models';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
 
-  import {
-    initialFileTreeFile,
-  } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile } from '$lib/shared/stores/selectedRepository';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
 
   export let loading: boolean = false;
@@ -40,72 +38,79 @@
     if (value?.description) {
       techStackValue = value.description;
       return;
-    }
-    else {
+    } else {
       techStackValue = '';
       console.log(value);
-      if (value && (value?.description === null || value?.description === undefined)) {
+      if (
+        value &&
+        (value?.description === null || value?.description === undefined)
+      ) {
         await fetchTechStackDescription(value);
       }
     }
   });
 
-  $: techStackValue && selectedRepositoryStore.update((value) => {
-    if (!value) return null;
-    value.description = techStackValue;
-    return value;
-  });
+  $: techStackValue &&
+    selectedRepositoryStore.update((value) => {
+      if (!value) return null;
+      value.description = techStackValue;
+      return value;
+    });
 
-  $: techStackValue && recentRepositories.changeDescription($selectedRepositoryStore, techStackValue);
+  $: techStackValue &&
+    recentRepositories.changeDescription(
+      $selectedRepositoryStore,
+      techStackValue
+    );
 
   async function fetchTechStackDescription(value: RepositoryOption) {
-      console.log('fetching tech stack description for', {...value});
-      closeEventSource();
-      streamController = new AbortController();
-      
-      const selections = $selectedEntities;
-      const contents: [IFileContentItem] = await window.electron.getContents(
-        selections.map((selection) => selection.filePath)
-      );
-      const documents = contents.map((content) => {
-        return {
-          page_content: content.fileContent,
-          metadata: {
-            file_path: content.filePath
-          }
-        };
-      });
+    console.log('fetching tech stack description for', { ...value });
+    closeEventSource();
+    streamController = new AbortController();
 
-      
-      await fetchStream(
+    const selections = $selectedEntities;
+    const contents: [IFileContentItem] = await window.electron.getContents(
+      selections.map((selection) => selection.filePath)
+    );
+    const documents = contents.map((content) => {
+      return {
+        page_content: content.fileContent,
+        metadata: {
+          file_path: content.filePath
+        }
+      };
+    });
+
+    await fetchStream(
+      {
+        id: 'techStackDescription',
+        uid: 'techStackDescription',
+        title: 'Tech Stack Description',
+        repository: $selectedRepositoryStore!,
+        messages: [
           {
-            id: "techStackDescription",
-            uid: "techStackDescription",
-            title: "Tech Stack Description",
-            repository: $selectedRepositoryStore!,
-            messages: [
-              {
-                id: "techStackDescription",
-                conversation_id: "techStackDescription",
-                content: "Create a list of technologies used in this repository. Only return comma separated values. Do not describe the technologies. Return 4-6 most relevant technologies. Make sure to include the programming language, framework, and database. \n\n An example: Python, Django, PostgreSQL",
-                role: "user",
-                created_at: new Date().toISOString(),
-                user_feedback: null
-              }
-            ],
+            id: 'techStackDescription',
+            conversation_id: 'techStackDescription',
+            content:
+              'Create a list of technologies used in this repository. Only return comma separated values. Do not describe the technologies. Return 4-6 most relevant technologies. Make sure to include the programming language, framework, and database. \n\n An example: Python, Django, PostgreSQL',
+            role: 'user',
             created_at: new Date().toISOString(),
-          },
-          '/chat/generate_description',
-          documents,
-          techStackValue,
-          "tech_stack",
-          $initialFileTreeFile,
-          streamController,
-          (res) => {},
-          onMessage,
-          closeEventSource,
-          (err) => {},
-        );
+            user_feedback: null
+          }
+        ],
+        created_at: new Date().toISOString()
+      },
+      '/chat/generate_description',
+      documents,
+      techStackValue,
+      'tech_stack',
+      $initialFileTreeFile,
+      streamController,
+      (res) => {},
+      onMessage,
+      closeEventSource,
+      (err) => {}
+    );
   }
 
   function closeEventSource() {
@@ -167,8 +172,6 @@
 
   $: chatModeValue = chatMode.value;
 
-
-
   onDestroy(() => {
     closeEventSource();
     unsubscriber && unsubscriber();
@@ -199,14 +202,12 @@
       {$_('conversation.techStack.label')}
     </div>
     <div class="flex-grow">
-      <TextAreaField class="my-8 align-bottom pt-1 px-2 normal-case w-full label-regular " 
-      style="height: 26px; max-width: 500px; text-transform: none; font-size: 14px;"
-      bind:value={techStackValue}
-      >
-    </TextAreaField>
+      <TextAreaField
+        class="label-regular my-8 w-full px-2 pt-1 align-bottom normal-case "
+        style="height: 26px; max-width: 500px; text-transform: none; font-size: 14px;"
+        bind:value={techStackValue}
+      />
     </div>
-
-  
   </div>
   <Divider class="w-full" />
 

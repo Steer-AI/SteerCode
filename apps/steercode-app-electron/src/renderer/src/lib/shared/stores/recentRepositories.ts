@@ -48,7 +48,10 @@ function createRecentRepositoriesStore() {
     items.set(data);
   }
 
-  async function changeDescription(repo: RepositoryOption | null, description: string) {
+  async function changeDescription(
+    repo: RepositoryOption | null,
+    description: string
+  ) {
     if (!repo) return;
 
     items.update((data) => {

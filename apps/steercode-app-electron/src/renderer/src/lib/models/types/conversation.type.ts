@@ -39,4 +39,3 @@ export type CompletionResponse = {
   done?: boolean;
   id?: string;
 };
-

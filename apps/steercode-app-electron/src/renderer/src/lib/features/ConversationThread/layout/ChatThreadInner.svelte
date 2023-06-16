@@ -19,9 +19,7 @@
   import type {
     ChatMessageDTO,
     ChatMode,
-
     CompletionResponse
-
   } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
@@ -65,30 +63,29 @@
       };
     });
 
-    
     await fetchStream(
-        conversation.value,
-        '/chat/stream',
-        documents,
-        techStackValue,
-        chatModeValue,
-        $initialFileTreeFile,
-        streamController,
-        onOpen,
-        onMessage,
-        closeEventSource,
-        onError,
-      );
+      conversation.value,
+      '/chat/stream',
+      documents,
+      techStackValue,
+      chatModeValue,
+      $initialFileTreeFile,
+      streamController,
+      onOpen,
+      onMessage,
+      closeEventSource,
+      onError
+    );
   }
 
-  function onOpen(res: Response){
+  function onOpen(res: Response) {
     if (res.status === 429) {
       openModal();
       throw new Error('Rate limit exceeded');
     }
   }
 
-  function onError(err: any){
+  function onError(err: any) {
     handleError(err);
     throw err;
   }
@@ -194,7 +191,8 @@
   onMount(async () => {
     // when chaning conversation inside the same repository, we dont want to loose the description
     if ($selectedRepositoryStore?.url == conversation.value.repository.url) {
-      conversation.value.repository.description = $selectedRepositoryStore.description;
+      conversation.value.repository.description =
+        $selectedRepositoryStore.description;
     }
     selectedRepositoryStore.set(conversation.value.repository);
 
