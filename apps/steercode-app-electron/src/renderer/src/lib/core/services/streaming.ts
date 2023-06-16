@@ -37,9 +37,6 @@ export async function fetchStream(
     headers['X-AUTH-UID'] = getAuthUIDHeader();
     headers['Accept'] = 'text/event-stream';
 
-    console.log(getAuthUIDHeader());
-    console.log(getUIDHeader());
-
     // update header options
     const vst = window.localStorage.getItem('X_VECTOR_STORE_TYPE');
     if (vst) {

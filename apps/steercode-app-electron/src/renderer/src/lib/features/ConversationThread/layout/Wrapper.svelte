@@ -43,8 +43,8 @@
     }
     else {
       techStackValue = '';
-      console.log('foo');
-      if (value && value?.description === null) {
+      console.log(value);
+      if (value && (value?.description === null || value?.description === undefined)) {
         await fetchTechStackDescription(value);
       }
     }
