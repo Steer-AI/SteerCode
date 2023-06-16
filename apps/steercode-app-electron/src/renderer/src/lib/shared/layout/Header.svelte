@@ -32,7 +32,8 @@
 
     const repo: RepositoryOption = {
       url: opt.value.url,
-      name: opt.value.url.split('/').pop() || opt.value.url
+      name: opt.value.url.split('/').pop() || opt.value.url,
+      description: opt.value.description
     };
     selectedRepositoryStore.set(repo);
 

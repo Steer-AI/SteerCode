@@ -1,25 +1,134 @@
 <script lang="ts">
   import TextAreaField from '$lib/shared/components/TextAreaField.svelte';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onDestroy } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
   import { _ } from 'svelte-i18n';
   import SendIcon from '$lib/shared/components/Icons/SendIcon.svelte';
   import VirtualScroll from 'svelte-virtual-scroll-list';
   import type {
     ChatMessageDTO,
-    ChatMode
+    ChatMode,
+    CompletionResponse,
+    RepositoryOption
   } from '$lib/models/types/conversation.type';
   import { browser } from '$app/environment';
   import Divider from '$lib/shared/components/Divider.svelte';
   import Listbox, {
     type Option
   } from '$lib/shared/components/Listbox/Listbox.svelte';
+  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { fetchStream } from '$lib/core/services/streaming';
+  import type { EventSourceMessage } from '@microsoft/fetch-event-source';
+  import type { IFileContentItem } from 'cognitic-models';
+  import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
+
+  import {
+    initialFileTreeFile,
+  } from '$lib/shared/stores/selectedRepository';
+  import { recentRepositories } from '$lib/shared/stores/recentRepositories';
 
   export let loading: boolean = false;
   export let submitDisabled: boolean = false;
   export let messages: ChatMessageDTO[] = [];
   export let chatModeValue: ChatMode = 'chat';
   export let techStackValue: string = '';
+
+  let streamController: AbortController;
+
+  let unsubscriber = selectedRepositoryStore.subscribe(async (value) => {
+    if (value?.description === techStackValue) return;
+    if (value?.description) {
+      techStackValue = value.description;
+      return;
+    }
+    else {
+      techStackValue = '';
+      console.log('foo');
+      if (value && value?.description === null) {
+        await fetchTechStackDescription(value);
+      }
+    }
+  });
+
+  $: techStackValue && selectedRepositoryStore.update((value) => {
+    if (!value) return null;
+    value.description = techStackValue;
+    return value;
+  });
+
+  $: techStackValue && recentRepositories.changeDescription($selectedRepositoryStore, techStackValue);
+
+  async function fetchTechStackDescription(value: RepositoryOption) {
+      console.log('fetching tech stack description for', {...value});
+      closeEventSource();
+      streamController = new AbortController();
+      
+      const selections = $selectedEntities;
+      const contents: [IFileContentItem] = await window.electron.getContents(
+        selections.map((selection) => selection.filePath)
+      );
+      const documents = contents.map((content) => {
+        return {
+          page_content: content.fileContent,
+          metadata: {
+            file_path: content.filePath
+          }
+        };
+      });
+
+      
+      await fetchStream(
+          {
+            id: "techStackDescription",
+            uid: "techStackDescription",
+            title: "Tech Stack Description",
+            repository: $selectedRepositoryStore!,
+            messages: [
+              {
+                id: "techStackDescription",
+                conversation_id: "techStackDescription",
+                content: "Create a list of technologies used in this repository. Only return comma separated values. Do not describe the technologies. Return 4-6 most relevant technologies. Make sure to include the programming language, framework, and database. \n\n An example: Python, Django, PostgreSQL",
+                role: "user",
+                created_at: new Date().toISOString(),
+                user_feedback: null
+              }
+            ],
+            created_at: new Date().toISOString(),
+          },
+          '/chat/generate_description',
+          documents,
+          techStackValue,
+          "tech_stack",
+          $initialFileTreeFile,
+          streamController,
+          (res) => {},
+          onMessage,
+          closeEventSource,
+          (err) => {},
+        );
+  }
+
+  function closeEventSource() {
+    streamController?.abort();
+  }
+
+  function onMessage(e: EventSourceMessage) {
+    const completionResponse = JSON.parse(e.data) as CompletionResponse;
+    const content = completionResponse.msg;
+
+    if (completionResponse.done) {
+      techStackValue = content;
+      return;
+    }
+
+    if (completionResponse.error) {
+      throw new Error(content);
+    }
+
+    if (content) {
+      techStackValue = (techStackValue ?? '') + content;
+    }
+  }
 
   export function scrollToBottom(force: boolean = false) {
     // we used flex-direction: column-reverse to show the messages in reverse order thus scrollTop is negative
@@ -57,6 +166,13 @@
     : chatOptions[0];
 
   $: chatModeValue = chatMode.value;
+
+
+
+  onDestroy(() => {
+    closeEventSource();
+    unsubscriber && unsubscriber();
+  });
 </script>
 
 <section class="relative flex h-full w-full flex-col items-center">

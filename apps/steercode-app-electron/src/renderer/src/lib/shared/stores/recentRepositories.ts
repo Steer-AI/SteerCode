@@ -44,12 +44,29 @@ function createRecentRepositoriesStore() {
       [],
       'Failed to fetch recent repositories'
     );
+    console.log('Fetched recent repositories', data);
     items.set(data);
+  }
+
+  async function changeDescription(repo: RepositoryOption | null, description: string) {
+    if (!repo) return;
+
+    items.update((data) => {
+      for (const item of data) {
+        if (item.url === repo.url) {
+          if (item.description === description) return data;
+          item.description = description;
+        }
+      }
+
+      return data;
+    });
   }
 
   return {
     subscribe: items.subscribe,
     set: items.set,
+    changeDescription,
     add,
     remove,
     fetchData
