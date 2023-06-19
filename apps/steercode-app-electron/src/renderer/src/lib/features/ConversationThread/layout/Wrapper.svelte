@@ -89,7 +89,13 @@
       body,
       streamController,
       onMessage,
-      onClose: closeEventSource
+      onClose: () => {
+        closeEventSource(),
+          recentRepositories.changeDescription(
+            $selectedRepositoryStore,
+            techStackValue
+          );
+      }
     });
   }
 
@@ -122,7 +128,7 @@
       scrollToDiv.clientHeight -
       list.getOffset() -
       list.getClientSize();
-    if (offsetDiff < 10 || force) {
+    if (offsetDiff < 24 || force) {
       list.scrollToBottom();
     }
   }

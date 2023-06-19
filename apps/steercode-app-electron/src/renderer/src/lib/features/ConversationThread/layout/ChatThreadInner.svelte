@@ -32,7 +32,7 @@
   let wrapContainer: ConversationWrapper;
   let streamController: AbortController;
   let chatModeValue: ChatMode;
-  let techStackValue: string;
+  let techStackValue: string = conversation.value.repository.description || '';
 
   export async function handleSubmit(query: string) {
     closeEventSource();
@@ -59,7 +59,7 @@
     });
 
     const body = {
-      ...conversation,
+      ...conversation.value,
       documents: documents,
       root_directory: $initialFileTreeFile,
       technology_description: techStackValue,
