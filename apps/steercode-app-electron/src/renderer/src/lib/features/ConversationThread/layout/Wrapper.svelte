@@ -211,6 +211,7 @@
         <ChatMessage
           type={data.role}
           message={data.content}
+          metadata={data.metadata}
           messageFeedback={data.user_feedback}
           on:delete={() => {
             dispatch('deleteMessage', data);

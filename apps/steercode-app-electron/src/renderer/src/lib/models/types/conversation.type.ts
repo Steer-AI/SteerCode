@@ -31,6 +31,9 @@ export type ChatMessageDTO = {
   role: 'system' | 'user' | 'assistant';
   created_at: string; // datetime string;
   user_feedback: string | null;
+  metadata?: {
+    files?: string[];
+  };
 };
 
 export type ChatMode = 'chat' | 'code' | 'debug' | 'explain' | 'tech_stack';
@@ -40,4 +43,5 @@ export type CompletionResponse = {
   error: boolean;
   done?: boolean;
   id?: string;
+  metadata?: ChatMessageDTO['metadata'];
 };

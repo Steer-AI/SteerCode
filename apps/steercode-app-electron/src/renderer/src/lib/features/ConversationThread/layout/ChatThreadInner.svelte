@@ -34,7 +34,7 @@
   let chatModeValue: ChatMode;
   let techStackValue: string = conversation.value.repository.description || '';
 
-  export async function handleSubmit(query: string) {
+  export async function handleSubmit(query: string, messageId?: string) {
     closeEventSource();
     trackEvent('New message', {
       message: query,
@@ -45,9 +45,10 @@
     answer = '';
     loading = true;
 
-    const selections = $selectedEntities;
+    conversation.addMessage({ role: 'user', content: query }, messageId);
+
     const contents: [IFileContentItem] = await window.electron.getContents(
-      selections.map((selection) => selection.filePath)
+      $selectedEntities.map((selection) => selection.filePath)
     );
     const documents = contents.map((content) => {
       return {
@@ -97,8 +98,9 @@
 
       if (completionResponse.done) {
         if (completionResponse.id) {
+          const metadata = completionResponse.metadata || undefined;
           conversation.addMessage(
-            { role: 'assistant', content: content },
+            { role: 'assistant', content: content, metadata },
             completionResponse.id
           );
         }
@@ -175,8 +177,7 @@
       conversation.deleteMessage(m);
     }
 
-    conversation.addMessage({ role: message.role, content }, message.id);
-    handleSubmit(content);
+    handleSubmit(content, message.id);
     trackEvent('Edit message', {
       messageId: message.id,
       message: message.content,
@@ -194,10 +195,9 @@
 
     let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
-      handleSubmit(m[m.length - 1].content);
-    } else {
-      scrollToBottom(true);
+      handleSubmit(m[m.length - 1].content, m[m.length - 1].id);
     }
+    scrollToBottom(true);
   });
 
   onDestroy(() => {
@@ -209,8 +209,7 @@
   bind:chatModeValue
   bind:techStackValue
   on:submit={(e) => {
-    conversation.addMessage({ role: 'user', content: e.detail });
-    handleSubmit(e.detail.query);
+    handleSubmit(e.detail);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;

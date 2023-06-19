@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
   import BinIcon from '$lib/shared/components/Icons/BinIcon.svelte';
   import { createEventDispatcher } from 'svelte';
   import SvelteMarkdown from 'svelte-markdown';
@@ -13,12 +12,23 @@
   import MinusCircleIcon from '$lib/shared/components/Icons/MinusCircleIcon.svelte';
   import CreateIcon from '$lib/shared/components/Icons/CreateIcon.svelte';
   import Button from '$lib/shared/components/Button.svelte';
+  import type { ChatMessageDTO } from '$lib/models/types/conversation.type';
+  import Listbox from '$lib/shared/components/Listbox/Listbox.svelte';
+  import FileIcon from '$lib/shared/components/Icons/FileIcon.svelte';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
-  export let type: ChatCompletionRequestMessageRoleEnum;
+  export let type: 'user' | 'system' | 'assistant';
   export let message: string;
+  export let metadata: undefined | ChatMessageDTO['metadata'] = undefined;
   export let deletable: boolean = false;
   export let editable: boolean = false;
   export let messageFeedback: string | null = null;
+
+  $: prefix = $selectedRepositoryStore?.url || '';
+  $: files =
+    metadata && metadata.files
+      ? metadata.files.map((f) => f.replace(prefix, ''))
+      : [];
 
   const dispatch = createEventDispatcher();
 
@@ -123,6 +133,26 @@
           </Button>
         </div>
       {:else}
+        {#if files.length}
+          <Listbox
+            class="h-8"
+            buttonClass="bg-background-primaryHover"
+            selected={{ label: '', value: 'x' }}
+            options={files.map((f) => ({ label: f, value: f }))}
+            let:option
+          >
+            <div slot="selected-option" class="flex items-center p-1">
+              <FileIcon class="mr-2 h-4 w-auto" />
+              Used context of {files.length}
+              {files.length > 1 ? 'files' : 'file'}
+            </div>
+
+            <span class="w-full overflow-auto whitespace-nowrap text-end"
+              >{option.label}</span
+            >
+          </Listbox>
+        {/if}
+
         <SvelteMarkdown
           source={message}
           renderers={{

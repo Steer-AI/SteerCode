@@ -41,17 +41,30 @@ export class Conversation implements Readable<ConversationDTO> {
 
   @withLogger()
   async addMessage(
-    message: Pick<ChatMessageDTO, 'role' | 'content'>,
+    message: Pick<ChatMessageDTO, 'role' | 'content' | 'metadata'>,
     id?: string
   ): Promise<boolean> {
-    this.value.messages.push({
-      ...message,
-      id: id || uuidv4(),
-      conversation_id: this.value.id,
-      created_at: new Date().toISOString(),
-      user_feedback: null
-    });
+    // find message with same id and replace if it exist
+    const index = id ? this.value.messages.findIndex((m) => m.id === id) : -1;
+    if (id && index !== -1) {
+      this.value.messages[index] = {
+        ...message,
+        id: id,
+        conversation_id: this.value.id,
+        created_at: new Date().toISOString(),
+        user_feedback: null
+      };
+    } else {
+      this.value.messages.push({
+        ...message,
+        id: id || uuidv4(),
+        conversation_id: this.value.id,
+        created_at: new Date().toISOString(),
+        user_feedback: null
+      });
+    }
     this.store.set(this.value);
+    console.log({ store: this.value });
     return true;
   }
 
