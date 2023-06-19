@@ -8,7 +8,7 @@
   import { conversationsStore } from '$lib/shared/stores/conversations';
   import { onDestroy, onMount } from 'svelte';
   import type { Unsubscriber } from 'svelte/store';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   let sidebarOpen = browser ? window.innerWidth > 768 : true;
   let unsub: Unsubscriber;

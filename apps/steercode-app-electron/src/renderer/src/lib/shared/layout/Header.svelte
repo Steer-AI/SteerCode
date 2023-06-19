@@ -9,9 +9,11 @@
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
   import PlusIcon from '../components/Icons/PlusIcon.svelte';
   import FolderIcon from '../components/Icons/FolderIcon.svelte';
-  import { recentRepositories } from '../stores/recentRepositories';
+  import {
+    recentRepositories,
+    selectedRepositoryStore
+  } from '../stores/recentRepositories';
   import { goto } from '$app/navigation';
-  import { selectedRepositoryStore } from '../stores/selectedRepository';
   import { handleImportRepo } from '$lib/features/CodebasesDashboard/utils';
   import { user } from '$lib/shared/stores/user';
   import AuthButton from '$lib/features/Auth/components/AuthButton.svelte';
@@ -32,9 +34,10 @@
 
     const repo: RepositoryOption = {
       url: opt.value.url,
-      name: opt.value.url.split('/').pop() || opt.value.url
+      name: opt.value.url.split('/').pop() || opt.value.url,
+      description: opt.value.description
     };
-    selectedRepositoryStore.set(repo);
+    recentRepositories.setSelected(repo);
 
     goto('/new');
   }

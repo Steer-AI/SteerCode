@@ -6,7 +6,6 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { recentRepositories } from '$lib/shared/stores/recentRepositories';
   import { goto } from '$app/navigation';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
   export let repository: RepositoryOption;
 
@@ -56,8 +55,8 @@
   const loadRepo = () => {
     try {
       goto('/new');
-      selectedRepositoryStore.set(repository);
       recentRepositories.add(repository);
+      recentRepositories.setSelected(repository);
     } catch (error: any) {
       Log.ERROR(
         `Error occured during the folder selection process ${error.message}`

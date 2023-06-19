@@ -21,7 +21,7 @@
   import Spinner from '$lib/shared/components/Spinner.svelte';
   import SettingsIcon from '$lib/shared/components/Icons/SettingsIcon.svelte';
   import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   export let open: boolean;
 

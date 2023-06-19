@@ -16,7 +16,7 @@ export default function LoggedUserView({onOpenApp}: LoggedUserViewProps) {
             <p className="text-content-secondary text-center">
                 You have successfully logged in to <strong>Steer account</strong>.
                 <br/>
-                Please continue to the the app.
+                Please continue to the app.
             </p>
 
             <div role='separator' className='h-px w-full bg-background-secondary mb-6' />

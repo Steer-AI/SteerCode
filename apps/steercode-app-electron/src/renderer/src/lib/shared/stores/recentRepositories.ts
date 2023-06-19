@@ -3,7 +3,7 @@ import {
   responseWithErrorHandeling
 } from '$lib/core/services/request';
 import type { RepositoryOption } from '$lib/models/types/conversation.type';
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
 function createRecentRepositoriesStore() {
   const items = writable<RepositoryOption[]>([]);
@@ -47,9 +47,41 @@ function createRecentRepositoriesStore() {
     items.set(data);
   }
 
+  async function changeDescription(
+    repo: RepositoryOption | null,
+    description: string
+  ) {
+    if (!repo) return;
+
+    items.update((data) => {
+      for (const item of data) {
+        if (item.url === repo.url) {
+          if (item.description === description) return data;
+          item.description = description;
+        }
+      }
+
+      return data;
+    });
+  }
+
+  function setSelected(repo: RepositoryOption | null) {
+    items.update((data) => {
+      for (const item of data) {
+        item.selected = false;
+        if (repo && item.url === repo.url) {
+          item.selected = true;
+        }
+      }
+      return data;
+    });
+  }
+
   return {
     subscribe: items.subscribe,
     set: items.set,
+    changeDescription,
+    setSelected,
     add,
     remove,
     fetchData
@@ -57,3 +89,12 @@ function createRecentRepositoriesStore() {
 }
 
 export const recentRepositories = createRecentRepositoriesStore();
+
+export const selectedRepositoryStore = derived(recentRepositories, ($items) => {
+  for (const item of $items) {
+    if (item.selected) {
+      return item;
+    }
+  }
+  return null;
+});

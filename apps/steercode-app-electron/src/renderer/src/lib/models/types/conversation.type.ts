@@ -4,6 +4,8 @@ export type RepositoryOption = {
   version?: string;
   branch?: string;
   last_update?: string; // iso datetime string
+  description?: string;
+  selected?: boolean;
 };
 
 // Model used to create a new agent
@@ -15,6 +17,7 @@ export type NewConversationDTO = {
 // Model retrieved from backend
 export type ConversationDTO = {
   id: string;
+  uid?: string;
   title: string;
   repository: RepositoryOption;
   messages: Array<ChatMessageDTO>;
@@ -30,4 +33,11 @@ export type ChatMessageDTO = {
   user_feedback: string | null;
 };
 
-export type ChatMode = 'chat' | 'code' | 'debug' | 'explain';
+export type ChatMode = 'chat' | 'code' | 'debug' | 'explain' | 'tech_stack';
+
+export type CompletionResponse = {
+  msg: string;
+  error: boolean;
+  done?: boolean;
+  id?: string;
+};

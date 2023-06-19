@@ -1,35 +1,30 @@
 <script lang="ts">
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
-  import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
   import type { Conversation } from '$lib/models/classes/Conversation.class';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
-  import { fetchEventSource } from '@microsoft/fetch-event-source';
-  import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
-  import {
-    getAuthUIDHeader,
-    getBackendUrl,
-    getUIDHeader
-  } from '$lib/core/services/request';
   import type {
     ChatMessageDTO,
-    ChatMode
+    ChatMode,
+    CompletionResponse
   } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
-
-  import {
-    initialFileTreeFile,
-    selectedRepositoryStore
-  } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile } from '$lib/shared/stores/selectedRepository';
   import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
+  import { fetchStream } from '$lib/features/ConversationThread/utils/streaming';
+  import type { EventSourceMessage } from '@microsoft/fetch-event-source';
+  import {
+    recentRepositories,
+    selectedRepositoryStore
+  } from '$lib/shared/stores/recentRepositories';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -37,46 +32,19 @@
   let wrapContainer: ConversationWrapper;
   let streamController: AbortController;
   let chatModeValue: ChatMode;
+  let techStackValue: string = conversation.value.repository.description || '';
 
-  type CompletionResponse = {
-    msg: string;
-    error: boolean;
-    done?: boolean;
-    id?: string;
-  };
-
-  async function handleSubmit(query: string) {
+  export async function handleSubmit(query: string) {
     closeEventSource();
     trackEvent('New message', {
       message: query,
       conversationId: conversation.value.id,
       chatMode: chatModeValue
     });
+    streamController = new AbortController();
     answer = '';
     loading = true;
-    const settings = get(settingsStore);
-    streamController = new AbortController();
-    const signal = streamController.signal;
 
-    // Prepare the request options
-    const headers: Record<string, string> = {};
-    headers['Content-Type'] = 'application/json';
-    headers['X-UID'] = getUIDHeader();
-    headers['X-AUTH-UID'] = getAuthUIDHeader();
-    headers['Accept'] = 'text/event-stream';
-
-    // update header options
-    const vst = window.localStorage.getItem('X_VECTOR_STORE_TYPE');
-    if (vst) {
-      headers['x-vector-store-type'] = vst;
-    }
-    if (settings.openaiAPIKey) {
-      headers['x-openai-api-key'] = settings.openaiAPIKey;
-    }
-    const llm = window.localStorage.getItem('X_LLM_TYPE');
-    if (llm) {
-      headers['x-llm-type'] = llm;
-    }
     const selections = $selectedEntities;
     const contents: [IFileContentItem] = await window.electron.getContents(
       selections.map((selection) => selection.filePath)
@@ -94,44 +62,33 @@
       ...conversation.value,
       documents: documents,
       root_directory: $initialFileTreeFile,
+      technology_description: techStackValue,
       chat_mode: chatModeValue
     };
 
-    async function stream(url: string, body: any) {
-      await fetchEventSource(url, {
-        openWhenHidden: true,
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: headers,
-        async onopen(res) {
-          if (res.status === 429) {
-            openModal();
-            throw new Error('Rate limit exceeded');
-          }
-        },
-        onmessage(event) {
-          onMessage(event);
-        },
-        onclose() {
-          closeEventSource();
-        },
-        onerror(err) {
-          handleError(err);
-          throw err;
-        },
-        signal: signal
-      });
-    }
+    await fetchStream('/chat/stream', {
+      body,
+      streamController,
+      onOpen,
+      onMessage,
+      onClose: closeEventSource,
+      onError
+    });
+  }
 
-    // Initialize the event stream with the URL and the data you want to post
-    try {
-      await stream(getBackendUrl() + '/chat/stream', body);
-    } catch {
-      // Do nothing
+  function onOpen(res: Response) {
+    if (res.status === 429) {
+      openModal();
+      throw new Error('Rate limit exceeded');
     }
   }
 
-  function onMessage(e) {
+  function onError(err: any) {
+    handleError(err);
+    throw err;
+  }
+
+  function onMessage(e: EventSourceMessage) {
     scrollToBottom();
     try {
       loading = false;
@@ -230,7 +187,10 @@
   }
 
   onMount(async () => {
-    selectedRepositoryStore.set(conversation.value.repository);
+    // when chaning conversation inside the same repository, we dont want to loose the description
+    conversation.value.repository.description =
+      $selectedRepositoryStore?.description;
+    recentRepositories.setSelected(conversation.value.repository);
 
     let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
@@ -247,9 +207,10 @@
 
 <ConversationWrapper
   bind:chatModeValue
+  bind:techStackValue
   on:submit={(e) => {
     conversation.addMessage({ role: 'user', content: e.detail });
-    handleSubmit(e.detail.query, e.detail.chatMode);
+    handleSubmit(e.detail.query);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;
