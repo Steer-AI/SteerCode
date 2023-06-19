@@ -27,6 +27,7 @@
   export let buttonClass = 'h-6';
   export let inverted: boolean = false;
   export let expandFirst: boolean = false;
+  export let dropdownRight: boolean = true;
   export let variant: 'primary' | 'secondary' = 'secondary';
 
   const dispatch = createEventDispatcher();
@@ -88,7 +89,9 @@
 
     <ListboxOptions
       style="{inverted ? 'bottom: calc(100% + 8px)' : 'top: calc(100% + 8px)'};"
-      class="bg-background-secondary absolute right-0 min-w-full"
+      class="bg-background-secondary absolute min-w-full {dropdownRight
+        ? 'right-0'
+        : 'left-0'}"
     >
       {#each options as opt (opt.value)}
         <ListboxOption

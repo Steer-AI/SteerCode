@@ -16,6 +16,7 @@
   import Listbox from '$lib/shared/components/Listbox/Listbox.svelte';
   import FileIcon from '$lib/shared/components/Icons/FileIcon.svelte';
   import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
+  import { getClassWithColor } from 'file-icons-js';
 
   export let type: 'user' | 'system' | 'assistant';
   export let message: string;
@@ -27,7 +28,9 @@
   $: prefix = $selectedRepositoryStore?.url || '';
   $: files =
     metadata && metadata.files
-      ? metadata.files.map((f) => f.replace(prefix, ''))
+      ? metadata.files.map(
+          (f) => '.../' + f.replace(prefix, '').split('/').slice(-3).join('/')
+        )
       : [];
 
   const dispatch = createEventDispatcher();
@@ -136,9 +139,14 @@
         {#if files.length}
           <Listbox
             class="h-8"
-            buttonClass="bg-background-primaryHover"
-            selected={{ label: '', value: 'x' }}
-            options={files.map((f) => ({ label: f, value: f }))}
+            buttonClass="bg-background-primary"
+            dropdownRight={false}
+            selected={{ label: '', value: 'x', iconClassName: '' }}
+            options={files.map((f) => ({
+              label: f,
+              value: f,
+              iconClassName: getClassWithColor(f)
+            }))}
             let:option
           >
             <div slot="selected-option" class="flex items-center p-1">
@@ -147,9 +155,12 @@
               {files.length > 1 ? 'files' : 'file'}
             </div>
 
-            <span class="w-full overflow-auto whitespace-nowrap text-end"
-              >{option.label}</span
+            <div
+              class="flex w-full items-center overflow-hidden whitespace-nowrap"
             >
+              <div class="mr-2 w-4 {option.iconClassName}" />
+              {option.label}
+            </div>
           </Listbox>
         {/if}
 
