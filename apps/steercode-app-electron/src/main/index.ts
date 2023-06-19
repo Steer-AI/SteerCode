@@ -10,7 +10,7 @@ import initUpdater from './updater';
 const serveURL = serve({ directory: join(__dirname, '..', 'renderer') });
 const port = process.env.WEB_PORT || 5173;
 const dev = is.dev && process.env.NODE_ENV === 'development';
-let mainWindow: BrowserWindow;
+let mainWindow: BrowserWindow | null = null;
 
 function logBoth(...args: any[]) {
   console.log(...args);
@@ -52,15 +52,18 @@ function createWindow() {
   windowState.manage(mainWindow);
 
   mainWindow.once('ready-to-show', () => {
+    if (!mainWindow) return;
     mainWindow.show();
     mainWindow.focus();
   });
 
   mainWindow.on('close', () => {
+    if (!mainWindow) return;
     windowState.saveState(mainWindow);
   });
 
   mainWindow.on('ready-to-show', () => {
+    if (!mainWindow) return;
     mainWindow.show();
   });
 
@@ -87,6 +90,7 @@ function createWindow() {
 }
 
 function loadVite() {
+  if (!mainWindow) return;
   mainWindow.loadURL(`http://localhost:${port}`).catch((e) => {
     logBoth('Error loading URL, retrying', e.message);
     setTimeout(() => {
@@ -167,6 +171,7 @@ if (!gotTheLock) {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  mainWindow = null;
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -176,6 +181,7 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 function handleDeepLink(url: string) {
+  if (!mainWindow) return;
   logBoth(`handleDeepLink ${url}`);
 
   if (url.startsWith('steercode://auth')) {

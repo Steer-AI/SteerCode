@@ -19,7 +19,7 @@ export default function initUpdater(
 
   autoUpdater.checkForUpdatesAndNotify();
   // Check for updates and notify the user if an update is available
-  autoUpdater.on('update-available', ({ releaseNotes, releaseName }) => {
+  autoUpdater.on('update-available', ({ releaseName }) => {
     logger('update available');
     mainWindow.webContents.send('update-available');
     // Notify the user that an update is available and ask if they want to restart the app
@@ -27,11 +27,7 @@ export default function initUpdater(
       type: 'info',
       buttons: ['Download', 'Ignore'],
       title: 'Update available',
-      message: `A new version (${releaseName}) available for download.`,
-      detail:
-        releaseNotes instanceof Array
-          ? releaseNotes.join('\n\n')
-          : releaseNotes || undefined
+      message: `A new version (${releaseName}) available for download.`
     };
 
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
