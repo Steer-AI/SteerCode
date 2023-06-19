@@ -12,12 +12,10 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { notificationStore } from '$lib/features/Notifications/store/notifications';
   import { NotificationType, Position } from '$lib/models/enums/notifications';
-  import {
-    initialFileTreeFile,
-    selectedRepositoryStore
-  } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile } from '$lib/shared/stores/selectedRepository';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileTreeItem } from 'cognitic-models';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   // form variables
   let pendingRequest = false;

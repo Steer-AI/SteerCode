@@ -4,33 +4,27 @@ import {
   getUIDHeader
 } from '$lib/core/services/request';
 import { settingsStore } from '$lib/features/SettingsModal/stores/settings';
-import type {
-  ChatMode,
-  ConversationDTO
-} from '$lib/models/types/conversation.type';
 import {
   fetchEventSource,
   type EventSourceMessage
 } from '@microsoft/fetch-event-source';
-import type { IFileTreeItem } from 'cognitic-models';
 import { get } from 'svelte/store';
 
 export async function fetchStream(
-  conversation: ConversationDTO,
   path: string,
-  documents: any[],
-  techStackValue: string,
-  chatModeValue: ChatMode,
-  initialFileTree: IFileTreeItem | null,
-  streamController: AbortController,
-
-  onOpen: (res: Response) => void,
-  onMessage: (event: EventSourceMessage) => void,
-  onClose: () => void,
-  onError: (err: any) => void
+  options: {
+    body: object;
+    streamController?: AbortController;
+    onOpen?: (res: Response) => void;
+    onMessage: (event: EventSourceMessage) => void;
+    onClose?: () => void;
+    onError?: (err: any) => void;
+  }
 ) {
+  const { body, streamController, onOpen, onMessage, onClose, onError } =
+    options;
+
   const settings = get(settingsStore);
-  const signal = streamController.signal;
 
   // Prepare the request options
   const headers: Record<string, string> = {};
@@ -52,14 +46,6 @@ export async function fetchStream(
     headers['x-llm-type'] = llm;
   }
 
-  const body = {
-    ...conversation,
-    documents: documents,
-    root_directory: initialFileTree,
-    technology_description: techStackValue,
-    chat_mode: chatModeValue
-  };
-
   async function stream(url: string, body: any) {
     await fetchEventSource(url, {
       openWhenHidden: true,
@@ -67,18 +53,18 @@ export async function fetchStream(
       body: JSON.stringify(body),
       headers: headers,
       async onopen(res) {
-        onOpen(res);
+        onOpen && onOpen(res);
       },
       onmessage(event) {
         onMessage(event);
       },
       onclose() {
-        onClose();
+        onClose && onClose();
       },
       onerror(err) {
-        onError(err);
+        onError && onError(err);
       },
-      signal: signal
+      signal: streamController?.signal
     });
   }
 

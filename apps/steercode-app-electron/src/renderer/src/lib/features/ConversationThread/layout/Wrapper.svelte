@@ -16,8 +16,9 @@
   import Listbox, {
     type Option
   } from '$lib/shared/components/Listbox/Listbox.svelte';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
-  import { fetchStream } from '$lib/core/services/streaming';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
+
+  import { fetchStream } from '$lib/features/ConversationThread/utils/streaming';
   import type { EventSourceMessage } from '@microsoft/fetch-event-source';
   import type { IFileContentItem } from 'cognitic-models';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
@@ -34,34 +35,14 @@
   let streamController: AbortController;
 
   let unsubscriber = selectedRepositoryStore.subscribe(async (value) => {
-    if (value?.description === techStackValue) return;
-    if (value?.description) {
+    if (!value || value.description === techStackValue) return;
+    if (value.description) {
       techStackValue = value.description;
-      return;
     } else {
       techStackValue = '';
-      console.log(value);
-      if (
-        value &&
-        (value?.description === null || value?.description === undefined)
-      ) {
-        await fetchTechStackDescription(value);
-      }
+      await fetchTechStackDescription(value);
     }
   });
-
-  $: techStackValue &&
-    selectedRepositoryStore.update((value) => {
-      if (!value) return null;
-      value.description = techStackValue;
-      return value;
-    });
-
-  $: techStackValue &&
-    recentRepositories.changeDescription(
-      $selectedRepositoryStore,
-      techStackValue
-    );
 
   async function fetchTechStackDescription(value: RepositoryOption) {
     console.log('fetching tech stack description for', { ...value });
@@ -81,36 +62,35 @@
       };
     });
 
-    await fetchStream(
-      {
-        id: 'techStackDescription',
-        uid: 'techStackDescription',
-        title: 'Tech Stack Description',
-        repository: $selectedRepositoryStore!,
-        messages: [
-          {
-            id: 'techStackDescription',
-            conversation_id: 'techStackDescription',
-            content:
-              'Create a list of technologies used in this repository. Only return comma separated values. Do not describe the technologies. Return 4-6 most relevant technologies. Make sure to include the programming language, framework, and database. \n\n An example: Python, Django, PostgreSQL',
-            role: 'user',
-            created_at: new Date().toISOString(),
-            user_feedback: null
-          }
-        ],
-        created_at: new Date().toISOString()
-      },
-      '/chat/generate_description',
+    const body = {
+      id: 'techStackDescription',
+      uid: 'techStackDescription',
+      title: 'Tech Stack Description',
+      repository: $selectedRepositoryStore!,
+      messages: [
+        {
+          id: 'techStackDescription',
+          conversation_id: 'techStackDescription',
+          content:
+            'Create a list of technologies used in this repository. Only return comma separated values. Do not describe the technologies. Return 4-6 most relevant technologies. Make sure to include the programming language, framework, and database. \n\n An example: Python, Django, PostgreSQL',
+          role: 'user',
+          created_at: new Date().toISOString(),
+          user_feedback: null
+        }
+      ],
+      created_at: new Date().toISOString(),
       documents,
-      techStackValue,
-      'tech_stack',
-      $initialFileTreeFile,
+      root_directory: $initialFileTreeFile,
+      technology_description: '',
+      chat_mode: 'tech_stack'
+    };
+
+    await fetchStream('/chat/generate_description', {
+      body,
       streamController,
-      (res) => {},
       onMessage,
-      closeEventSource,
-      (err) => {}
-    );
+      onClose: closeEventSource
+    });
   }
 
   function closeEventSource() {
@@ -197,17 +177,25 @@
         {$_('conversation.chatMode.label')}
       </div>
     </Listbox>
-    <Divider vertical class="h-full" />
-    <div class="label-small text-content-secondary mx-4">
-      {$_('conversation.techStack.label')}
-    </div>
-    <div class="flex-grow">
-      <TextAreaField
-        class="label-regular my-8 w-full px-2 pt-1 align-bottom normal-case "
-        style="height: 26px; max-width: 500px; text-transform: none; font-size: 14px;"
-        bind:value={techStackValue}
-      />
-    </div>
+
+    <Divider vertical class="mx-2 h-8" />
+
+    <TextAreaField
+      labelClass="flex flex-1 justify-end items-center"
+      class="label-regular w-full flex-grow px-2 pt-1 align-bottom normal-case "
+      style="height: 26px; max-width: 500px; text-transform: none; font-size: 14px;"
+      bind:value={techStackValue}
+      on:blur={() => {
+        recentRepositories.changeDescription(
+          $selectedRepositoryStore,
+          techStackValue
+        );
+      }}
+    >
+      <div slot="label" class="label-small text-content-secondary mr-4">
+        {$_('conversation.techStack.label')}
+      </div>
+    </TextAreaField>
   </div>
   <Divider class="w-full" />
 

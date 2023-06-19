@@ -3,7 +3,6 @@ import { Log } from '$lib/core/services/logging';
 import { notificationStore } from '$lib/features/Notifications/store/notifications';
 import { NotificationType, Position } from '$lib/models/enums/notifications';
 import { recentRepositories } from '$lib/shared/stores/recentRepositories';
-import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
 
 export async function handleImportRepo() {
   if (!window.electron) return;
@@ -26,8 +25,8 @@ export async function handleImportRepo() {
     };
 
     goto('/new');
-    selectedRepositoryStore.set(repo);
     recentRepositories.add(repo);
+    recentRepositories.setSelected(repo);
   } catch (error: any) {
     Log.ERROR(
       `Error occured during the folder selection process ${error.message}`

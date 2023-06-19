@@ -15,7 +15,6 @@ class LoadFileError extends Error {
 }
 
 const loadFileContent = async (filePath: string): Promise<IFileContentItem> => {
-  console.log('loadFileContent', filePath);
   // TODO: handle binary files
   if (/\.(png|jpe?g|gif|bmp|webp|svg|mp4|mp3|log|lock|)$/i.test(filePath)) {
     return {

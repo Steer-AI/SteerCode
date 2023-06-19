@@ -2,7 +2,7 @@
   import hljs from 'highlight.js';
   import { _ } from 'svelte-i18n';
   import { parse } from 'diff2html';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   let fileName: string = '';
   export let lang: string;

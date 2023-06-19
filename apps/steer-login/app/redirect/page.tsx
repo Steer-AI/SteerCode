@@ -30,7 +30,7 @@ export default function RedirectPage() {
                 <p className="text-content-secondary text-center">
                     You will be redirected to the app shortly<br/>
                     If you are not redirected, please click the button below  <br />
-                    to continue to the the app.
+                    to continue to the app.
                 </p>
 
                 <div role='separator' className='h-px w-full bg-background-secondary mb-6' />

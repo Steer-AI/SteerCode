@@ -2,7 +2,7 @@
   import SvelteMarkdown from 'svelte-markdown';
   import CodePreviewRenderer from '$lib/features/ConversationThread/components/CodePreviewRenderer.svelte';
   import type { IFileContentItem } from 'cognitic-models';
-  import { selectedRepositoryStore } from '$lib/shared/stores/selectedRepository';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   export let file: IFileContentItem;
 

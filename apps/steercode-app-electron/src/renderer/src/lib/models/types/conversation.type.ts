@@ -5,6 +5,7 @@ export type RepositoryOption = {
   branch?: string;
   last_update?: string; // iso datetime string
   description?: string;
+  selected?: boolean;
 };
 
 // Model used to create a new agent
@@ -16,6 +17,7 @@ export type NewConversationDTO = {
 // Model retrieved from backend
 export type ConversationDTO = {
   id: string;
+  uid?: string;
   title: string;
   repository: RepositoryOption;
   messages: Array<ChatMessageDTO>;

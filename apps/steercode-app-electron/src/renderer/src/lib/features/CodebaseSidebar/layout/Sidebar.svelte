@@ -17,12 +17,10 @@
   import 'file-icons-js/css/style.css';
   import { filteredFiles } from '../stores/filteredFiles';
   import type { RepositoryOption } from '$lib/models/types/conversation.type';
-  import {
-    initialFileTreeFile,
-    selectedRepositoryStore
-  } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile } from '$lib/shared/stores/selectedRepository';
   import InputField from '$lib/shared/components/InputField.svelte';
   import Button from '$lib/shared/components/Button.svelte';
+  import { selectedRepositoryStore } from '$lib/shared/stores/recentRepositories';
 
   async function fetchFileTreeItem(item: IFileTreeItem, depth: number) {
     if (!item.isDirectory) return;
@@ -87,7 +85,6 @@
     path: string
   ): IFileTreeItem | null {
     if (item.filePath === path) return item;
-    console.log(item.children);
     for (const child of item.children) {
       const found = findFileTreeItemByPath(child, path);
       if (found) return found;

@@ -4,18 +4,12 @@
   import { NotificationType, Position } from '$lib/models/enums/notifications';
   import { onDestroy, onMount } from 'svelte';
   import ChatMessage from '../components/ChatMessage.svelte';
-  import { get } from 'svelte/store';
   import { trackEvent } from '$lib/core/services/tracking';
   import * as Sentry from '@sentry/svelte';
   import { _ } from 'svelte-i18n';
   import ConversationWrapper from './Wrapper.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { Log } from '$lib/core/services/logging';
-  import {
-    getAuthUIDHeader,
-    getBackendUrl,
-    getUIDHeader
-  } from '$lib/core/services/request';
   import type {
     ChatMessageDTO,
     ChatMode,
@@ -23,13 +17,14 @@
   } from '$lib/models/types/conversation.type';
   import { selectedEntities } from '$lib/features/CodebaseSidebar/stores/selection';
   import type { IFileContentItem } from 'cognitic-models';
-  import {
-    initialFileTreeFile,
-    selectedRepositoryStore
-  } from '$lib/shared/stores/selectedRepository';
+  import { initialFileTreeFile } from '$lib/shared/stores/selectedRepository';
   import { openModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
-  import { fetchStream } from '$lib/core/services/streaming';
+  import { fetchStream } from '$lib/features/ConversationThread/utils/streaming';
   import type { EventSourceMessage } from '@microsoft/fetch-event-source';
+  import {
+    recentRepositories,
+    selectedRepositoryStore
+  } from '$lib/shared/stores/recentRepositories';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -63,19 +58,22 @@
       };
     });
 
-    await fetchStream(
-      conversation.value,
-      '/chat/stream',
-      documents,
-      techStackValue,
-      chatModeValue,
-      $initialFileTreeFile,
+    const body = {
+      ...conversation,
+      documents: documents,
+      root_directory: $initialFileTreeFile,
+      technology_description: techStackValue,
+      chat_mode: chatModeValue
+    };
+
+    await fetchStream('/chat/stream', {
+      body,
       streamController,
       onOpen,
       onMessage,
-      closeEventSource,
+      onClose: closeEventSource,
       onError
-    );
+    });
   }
 
   function onOpen(res: Response) {
@@ -190,11 +188,9 @@
 
   onMount(async () => {
     // when chaning conversation inside the same repository, we dont want to loose the description
-    if ($selectedRepositoryStore?.url == conversation.value.repository.url) {
-      conversation.value.repository.description =
-        $selectedRepositoryStore.description;
-    }
-    selectedRepositoryStore.set(conversation.value.repository);
+    conversation.value.repository.description =
+      $selectedRepositoryStore?.description;
+    recentRepositories.setSelected(conversation.value.repository);
 
     let m = conversation.value.messages;
     if (m.length > 0 && m[m.length - 1].role === 'user') {
@@ -214,7 +210,7 @@
   bind:techStackValue
   on:submit={(e) => {
     conversation.addMessage({ role: 'user', content: e.detail });
-    handleSubmit(e.detail.query, e.detail.chatMode);
+    handleSubmit(e.detail.query);
   }}
   on:feedback={(e) => {
     const { message, feedback } = e.detail;
