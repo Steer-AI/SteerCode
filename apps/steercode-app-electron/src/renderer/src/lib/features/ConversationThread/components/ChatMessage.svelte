@@ -138,7 +138,7 @@
       {:else}
         {#if files.length}
           <Listbox
-            class="h-8"
+            class="not-prose h-8"
             buttonClass="bg-background-primary"
             dropdownRight={false}
             selected={{ label: '', value: 'x', iconClassName: '' }}

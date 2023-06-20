@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@builder.io/partytown": "^0.7.0",
+    "@floating-ui/dom": "^1.4.1",
     "@metamask/jazzicon": "^2.0.0",
     "@popperjs/core": "^2.11.6",
     "@rgossiaux/svelte-headlessui": "^1.0.2",
