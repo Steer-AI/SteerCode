@@ -54,7 +54,7 @@ export default function LoggedUserSubview({ user, config, children }: UserSubvie
             </p>
 
             <p className="text-content-secondary text-center text-sm">
-                If you want to no longer want to use Steer premium <br />
+                If you no longer want to use Steer premium <br />
 
                 you can
                 <a
