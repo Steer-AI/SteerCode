@@ -20,7 +20,7 @@ type LoggedUserViewProps = {
 // @ts-ignore
 function fetchUserByID({ queryKey }) {
     const [_key, { uid }] = queryKey
-    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`)
+    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${'2gqw1anUzMTj9T57bJwJs0KxXMJ2'}`)
         .then(r => r.json())
         .catch((e) => {
             console.log(e);
@@ -49,7 +49,7 @@ export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserView
                 Welcome to Steer
             </h1>
 
-            {user.data && config.data
+            {user.data?.uid && config.data
                 ?
                 <LoggedUserSubview user={user.data} config={config.data}>
                     <>
