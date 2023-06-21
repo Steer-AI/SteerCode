@@ -20,18 +20,22 @@ type LoggedUserViewProps = {
 // @ts-ignore
 function fetchUserByID({ queryKey }) {
     const [_key, { uid }] = queryKey
-    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`).then(r => r.json()) as Promise<User>
+    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`)
+        .then(r => r.json())
+        .catch((e) => {
+            console.log(e);
+            return null
+        }) as Promise<User | null>
 }
 
 function fetchConfig() {
-    return fetch('https://sidekick-370118.uc.r.appspot.com/stripe/config').then(r => r.json()) as Promise<Config>
+    return fetch('https://sidekick-370118.uc.r.appspot.com/stripe/config')
+        .then(r => r.json()) as Promise<Config>
 }
 
 export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserViewProps) {
     const config = useQuery('config', fetchConfig)
     const user = useQuery(['user', { uid: loginState.result.user.uid }], fetchUserByID)
-    const loaded = user.data && config.data
-
     const isPremium = user.data?.tier === 'premium'
 
     useEffect(() => {
@@ -45,7 +49,7 @@ export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserView
                 Welcome to Steer
             </h1>
 
-            {loaded
+            {user.data && config.data
                 ?
                 <LoggedUserSubview user={user.data} config={config.data}>
                     <>
@@ -64,7 +68,21 @@ export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserView
                         </Button>
                     </>
                 </LoggedUserSubview>
-                : <></>
+                : <>
+                    <p className="text-content-secondary text-center">
+                        Please continue to the app. By clicking this button
+                    </p>
+
+                    <Button
+                        onClick={async () => {
+                            onOpenApp()
+                            return true;
+                        }}
+                        variant='primary'
+                    >
+                        Open App
+                    </Button>
+                </>
             }
         </div>
     )
