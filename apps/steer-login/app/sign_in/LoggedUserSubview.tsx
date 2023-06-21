@@ -21,7 +21,7 @@ export default function LoggedUserSubview({ user, config, children }: UserSubvie
 
                 <Button
                     onClick={async () => {
-                        window.open(`${config.checkout_url}?client_reference_id=${user.uid}`)
+                        window.open(`${config.checkout_url}?client_reference_id=${user.uid}&prefilled_email=${user.email}`)
                     }}
                     variant='secondary'
                 >
@@ -58,7 +58,7 @@ export default function LoggedUserSubview({ user, config, children }: UserSubvie
 
                 you can
                 <a
-                    href={`${config.customer_portal_url}?client_reference_id=${user.uid}`}
+                    href={`${config.customer_portal_url}?client_reference_id=${user.uid}&prefilled_email=${user.email}`}
                     target='_blank'
                     className='ml-1 hover:underline text-content-secondary hover:text-content-primary text-sm'
                 >
