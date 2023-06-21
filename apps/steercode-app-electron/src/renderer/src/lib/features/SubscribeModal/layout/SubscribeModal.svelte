@@ -1,8 +1,14 @@
 <script lang="ts" context="module">
-  const modalOpen = writable(false);
+  const dialogElS = writable<HTMLDialogElement>();
 
   export function openModal() {
-    modalOpen.set(true);
+    const dialog = get(dialogElS);
+    dialog.showModal();
+  }
+
+  export function closeModal() {
+    const dialog = get(dialogElS);
+    dialog.close();
   }
 </script>
 
@@ -10,23 +16,13 @@
   import Dialog from '$lib/shared/layout/Dialog.svelte';
   import Button from '$lib/shared/components/Button.svelte';
   import { trackEvent } from '$lib/core/services/tracking';
-  import { writable } from 'svelte/store';
+  import { get, writable } from 'svelte/store';
   import { _ } from 'svelte-i18n';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
   import { user } from '$lib/shared/stores/user';
-
-  let dialogEl: HTMLDialogElement;
-
-  $: if (dialogEl && $modalOpen) {
-    dialogEl.showModal();
-  }
 </script>
 
-<Dialog
-  bind:dialogEl
-  on:close={() => modalOpen.set(false)}
-  class="max-h-[75vh] w-full max-w-2xl "
->
+<Dialog bind:dialogEl={$dialogElS} class="max-h-[75vh] w-full max-w-2xl ">
   <h3 slot="title" class="headline-large text-content-primary mb-6 text-center">
     {$_('subscribeModal.title')}
   </h3>

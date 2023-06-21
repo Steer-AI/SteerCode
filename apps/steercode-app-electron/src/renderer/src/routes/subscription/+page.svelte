@@ -3,6 +3,14 @@
   import Button from '$lib/shared/components/Button.svelte';
   import { user } from '$lib/shared/stores/user';
   import { _ } from 'svelte-i18n';
+  import { closeModal } from '$lib/features/SubscribeModal/layout/SubscribeModal.svelte';
+  import { onMount } from 'svelte';
+  import { notificationStore } from '$lib/features/Notifications/store/notifications';
+
+  onMount(() => {
+    closeModal();
+    notificationStore.clearNotifications();
+  });
 
   let previousPage = '/';
   afterNavigate(({ from, to }) => {
@@ -10,7 +18,11 @@
     if (to?.url.pathname === from?.url.pathname) {
       previousPage = '/';
     } else {
-      previousPage = from?.url.pathname || previousPage;
+      if (from) {
+        previousPage = from.url.pathname + from.url.search;
+      } else {
+        previousPage = previousPage;
+      }
     }
   });
 
