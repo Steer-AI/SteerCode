@@ -20,8 +20,14 @@ type LoggedUserViewProps = {
 // @ts-ignore
 function fetchUserByID({ queryKey }) {
     const [_key, { uid }] = queryKey
-    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${'2gqw1anUzMTj9T57bJwJs0KxXMJ2'}`)
-        .then(r => r.json())
+    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`)
+        .then(r => {
+            if (!r.ok) {
+                console.error(`Failed to fetch user by id: ${uid}`, r.status)
+                return null
+            }
+            return r.json()
+        })
         .catch((e) => {
             console.log(e);
             return null
