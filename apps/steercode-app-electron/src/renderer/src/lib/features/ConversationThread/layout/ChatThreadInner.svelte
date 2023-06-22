@@ -25,6 +25,7 @@
     recentRepositories,
     selectedRepositoryStore
   } from '$lib/shared/stores/recentRepositories';
+  import { user } from '$lib/shared/stores/user';
 
   export let conversation: Conversation;
   let loading: boolean = false;
@@ -77,10 +78,17 @@
     });
   }
 
-  function onOpen(res: Response) {
+  async function onOpen(res: Response) {
     if (res.status === 429) {
-      openModal();
-      throw new Error('Rate limit exceeded');
+      const retryAfter = res.headers.get('x-rate-limit-reset'); // in seconds
+      if (!isPremium) openModal();
+      if (!retryAfter) throw new Error('Rate limit exceeded.');
+      const nextDate = Date.now() + parseInt(retryAfter) * 1000;
+      throw new Error(
+        `Current limit exceeded. Next request available at: ${new Date(
+          nextDate
+        ).toLocaleString()}`
+      );
     }
   }
 
@@ -203,6 +211,8 @@
   onDestroy(() => {
     closeEventSource();
   });
+
+  $: isPremium = user.isPremium($user);
 </script>
 
 <ConversationWrapper

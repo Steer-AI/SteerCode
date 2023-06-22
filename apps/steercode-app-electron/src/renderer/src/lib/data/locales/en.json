@@ -127,8 +127,8 @@
     },
     "subscribeModal": {
         "title": "You've Maxed Out Your Free Requests!",
-        "description1": "It looks like you've reached the limit of requests for the free tier this month. But don't worry - we've got you covered.",
-        "description2": " By upgrading to our premium subscription, you will get <strong>100</strong> extra requests per day.",
+        "description1": "It looks like you've reached the limit of requests for the free tier today. But don't worry - we've got you covered.",
+        "description2": " By upgrading to our premium subscription, you will get <strong>20</strong> requests per hour and total of 100 requests per day",
         "subscribeButton": "Upgrade to Premium"
     },
 

@@ -15,7 +15,7 @@ export async function fetchStream(
   options: {
     body: object;
     streamController?: AbortController;
-    onOpen?: (res: Response) => void;
+    onOpen?: (res: Response) => Promise<void>;
     onMessage: (event: EventSourceMessage) => void;
     onClose?: () => void;
     onError?: (err: any) => void;
@@ -31,7 +31,7 @@ export async function fetchStream(
   headers['Content-Type'] = 'application/json';
   headers['X-UID'] = getUIDHeader();
   headers['X-AUTH-UID'] = getAuthUIDHeader();
-  headers['Accept'] = 'text/event-stream';
+  headers['Accept'] = 'application/json';
 
   // update header options
   const vst = window.localStorage.getItem('X_VECTOR_STORE_TYPE');
@@ -52,18 +52,10 @@ export async function fetchStream(
       method: 'POST',
       body: JSON.stringify(body),
       headers: headers,
-      async onopen(res) {
-        onOpen && onOpen(res);
-      },
-      onmessage(event) {
-        onMessage(event);
-      },
-      onclose() {
-        onClose && onClose();
-      },
-      onerror(err) {
-        onError && onError(err);
-      },
+      onopen: onOpen,
+      onmessage: onMessage,
+      onclose: onClose,
+      onerror: onError,
       signal: streamController?.signal
     });
   }
