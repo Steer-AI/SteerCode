@@ -54,7 +54,7 @@ export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserView
                 <LoggedUserSubview user={user.data} config={config.data}>
                     <>
                         <p className="text-content-secondary text-center">
-                            Please continue to the app. By clicking this button
+                            Please continue to the app by clicking this button
                         </p>
 
                         <Button
@@ -70,7 +70,7 @@ export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserView
                 </LoggedUserSubview>
                 : <>
                     <p className="text-content-secondary text-center">
-                        Please continue to the app. By clicking this button
+                        Please continue to the app by clicking this button
                     </p>
 
                     <Button
