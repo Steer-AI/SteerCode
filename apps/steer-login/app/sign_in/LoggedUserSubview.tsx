@@ -10,7 +10,7 @@ type UserSubviewProps = {
 };
 
 export default function LoggedUserSubview({ user, config, children }: UserSubviewProps) {
-    if (user.tier === 'free') {
+    if (user.tier === 'free' || user.stripe === null) {
         return (
             <div className="flex flex-col items-center justify-center gap-6">
                 <p className="text-content-secondary text-center">

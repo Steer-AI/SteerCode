@@ -13,14 +13,38 @@ export type LoginState = {
 
 type LoggedUserViewProps = {
     onOpenApp: () => void;
-    loginState: LoginState;
+    userData: UserCredential['user'];
 };
 
 
+function createNewUser(uid: string, email: string) {
+    return fetch('https://sidekick-370118.uc.r.appspot.com/user/', {
+        method: "POST",
+        body: JSON.stringify({
+            uid,
+            email,
+            firebase_auth_uid: uid
+        }),
+        headers: {
+            "content-type": "application/json"
+        }
+    }).then(r => {
+        if (!r.ok) {
+            console.error(`Failed to fetch user by id: ${uid}`, r.status)
+            return null
+        }
+        return r.json()
+    })
+    .catch(e => {
+        console.error("Failed to create new user", e)
+        return null
+    }) as Promise<User | null>
+}
+
 // @ts-ignore
-function fetchUserByID({ queryKey }) {
-    const [_key, { uid }] = queryKey
-    return fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`)
+async function fetchUserByID({ queryKey }) {
+    const [_key, { uid, email }] = queryKey
+    const user = await fetch(`https://sidekick-370118.uc.r.appspot.com/user/${uid}`)
         .then(r => {
             if (!r.ok) {
                 console.error(`Failed to fetch user by id: ${uid}`, r.status)
@@ -32,6 +56,13 @@ function fetchUserByID({ queryKey }) {
             console.log(e);
             return null
         }) as Promise<User | null>
+
+    if (user === null) {
+        console.warn("user does not exist, create new user")
+        return createNewUser(uid, email)
+    }
+
+    return user;
 }
 
 function fetchConfig() {
@@ -39,14 +70,17 @@ function fetchConfig() {
         .then(r => r.json()) as Promise<Config>
 }
 
-export default function LoggedUserView({ onOpenApp, loginState }: LoggedUserViewProps) {
+
+export default function LoggedUserView({ onOpenApp, userData }: LoggedUserViewProps) {
     const config = useQuery('config', fetchConfig)
-    const user = useQuery(['user', { uid: loginState.result.user.uid }], fetchUserByID)
-    const isPremium = user.data?.tier === 'premium'
+    const user = useQuery(['user', { uid: userData.uid, email: userData.email }], fetchUserByID)
+    const isPremium = user.data?.tier === 'premium' 
 
     useEffect(() => {
         if (isPremium) setTimeout(onOpenApp, 500)
     }, [isPremium])
+
+
 
     return (
         <div className="flex flex-col items-center justify-center gap-6">

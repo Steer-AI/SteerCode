@@ -99,7 +99,7 @@ export default function SignInPage() {
                 {loginState === null ? (
                     <NoUserView onLogin={handleLogin} />
                 ) : (
-                    <LoggedUserView loginState={loginState} onOpenApp={openDeepLinkCallback} />
+                    <LoggedUserView userData={loginState.result.user} onOpenApp={openDeepLinkCallback} />
                 )}
             </main>
 
