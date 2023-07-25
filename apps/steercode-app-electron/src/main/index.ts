@@ -186,7 +186,7 @@ function handleDeepLink(url: string) {
 
   if (url.startsWith('steercode://auth')) {
     const urlParams = new URLSearchParams(url.replace('steercode://auth?', ''));
-    const credential = urlParams.get('credential');
+    const credential = urlParams.get('credentials');
     const providerId = urlParams.get('provider');
     if (credential && providerId) {
       mainWindow.webContents.send('auth', credential, providerId);
