@@ -14,6 +14,7 @@ export type LoginState = {
 type LoggedUserViewProps = {
     onOpenApp: () => void;
     userData: UserCredential['user'];
+    showPremiumBanner?: boolean;
 };
 
 
@@ -71,14 +72,14 @@ function fetchConfig() {
 }
 
 
-export default function LoggedUserView({ onOpenApp, userData }: LoggedUserViewProps) {
+export default function LoggedUserView({ onOpenApp, userData, showPremiumBanner=true }: LoggedUserViewProps) {
     const config = useQuery('config', fetchConfig)
     const user = useQuery(['user', { uid: userData.uid, email: userData.email }], fetchUserByID)
     const isPremium = user.data?.tier === 'premium' 
 
     useEffect(() => {
-        if (isPremium) setTimeout(onOpenApp, 500)
-    }, [isPremium])
+        if (isPremium || !showPremiumBanner) setTimeout(onOpenApp, 500)
+    }, [isPremium, showPremiumBanner])
 
 
 
@@ -89,7 +90,7 @@ export default function LoggedUserView({ onOpenApp, userData }: LoggedUserViewPr
                 Welcome to Steer
             </h1>
 
-            {user.data?.uid && config.data
+            {user.data?.uid && config.data && showPremiumBanner 
                 ?
                 <LoggedUserSubview user={user.data} config={config.data}>
                     <>

@@ -15,6 +15,7 @@
   import { openModal } from '$lib/features/SettingsModal/layout/SettingsModal.svelte';
   import Spinner from '$lib/shared/components/Spinner.svelte';
   import { onMount } from 'svelte/internal';
+  import { AUTH_URL } from '$lib/shared/utils/constants';
 
   let loginPending = false;
 
@@ -104,7 +105,7 @@
 {:else}
   <Button
     as="a"
-    href="https://steercode.com/auth-steercode"
+    href={AUTH_URL}
     target="_blank"
     variant="secondary"
     size="medium"

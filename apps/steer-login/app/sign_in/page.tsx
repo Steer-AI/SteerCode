@@ -2,7 +2,7 @@
 "use client";
 
 import type { OAuthCredential, UserCredential } from "firebase/auth";
-import { loginGitHub, loginGoogle } from '@/utils/firebase';
+import { getAuthForProtocol, loginGitHub, loginGoogle } from '@/utils/firebase';
 import { useCallback, useState } from 'react';
 import NoUserView from './NoUserView';
 import LoggedUserView, { type LoginState } from './LoggedUserView';
@@ -28,6 +28,10 @@ export default function SignInPage() {
 
     const [loginState, setLoginState] = useState<LoginState | null>(null)
     const [notification, setNotification] = useState<string | null>(null)
+    const [protocol, _] = useState<string>(() => {
+        const urlParams = new URLSearchParams(window.location.search)
+        return urlParams.get('protocol') || 'steer'
+    })
 
     function openDeepLink(credential: OAuthCredential, providerId: string) {
         // get current url param called 'redirect' and 'protocol'
@@ -47,13 +51,14 @@ export default function SignInPage() {
             result: UserCredential;
         } | null
 
+        const auth = getAuthForProtocol(protocol);
         try {
             switch (provider) {
                 case 'google.com':
-                    resp = await loginGoogle();
+                    resp = await loginGoogle(auth);
                     break;
                 case 'github.com':
-                    resp = await loginGitHub();
+                    resp = await loginGitHub(auth);
                     break;
                 default:
                     throw new Error(`Invalid provider: ${provider}`);
@@ -99,7 +104,7 @@ export default function SignInPage() {
                 {loginState === null ? (
                     <NoUserView onLogin={handleLogin} />
                 ) : (
-                    <LoggedUserView userData={loginState.result.user} onOpenApp={openDeepLinkCallback} />
+                    <LoggedUserView userData={loginState.result.user} onOpenApp={openDeepLinkCallback} showPremiumBanner={protocol==='steer'} />
                 )}
             </main>
 

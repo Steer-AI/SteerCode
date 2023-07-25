@@ -20,6 +20,7 @@
   import Button from '../components/Button.svelte';
   import { remoteConfig } from '../stores/remoteConfig';
   import { trackEvent } from '$lib/core/services/tracking';
+  import { AUTH_URL } from '../utils/constants';
 
   export let enableMenuButton: boolean = true;
   export let sidebarOpen: boolean;
@@ -187,7 +188,7 @@
             );
             return;
           }
-          window.open('https://steercode.com/auth-steercode');
+          window.open(AUTH_URL);
         }}
       >
         {$_('header.subscribeButton')}

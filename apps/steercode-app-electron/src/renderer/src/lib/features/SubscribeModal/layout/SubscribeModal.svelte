@@ -20,6 +20,7 @@
   import { _ } from 'svelte-i18n';
   import { remoteConfig } from '$lib/shared/stores/remoteConfig';
   import { user } from '$lib/shared/stores/user';
+  import { AUTH_URL } from '$lib/shared/utils/constants';
 </script>
 
 <Dialog bind:dialogEl={$dialogElS} class="max-h-[75vh] w-full max-w-2xl ">
@@ -57,7 +58,7 @@
             );
             return;
           }
-          window.open('https://steercode.com/auth-steercode');
+          window.open(AUTH_URL);
         }}
       >
         {$_('subscribeModal.subscribeButton')}

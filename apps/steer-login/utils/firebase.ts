@@ -5,10 +5,11 @@ import {
   GoogleAuthProvider,
   TwitterAuthProvider,
   signOut as firebaseSignOut,
-  signInWithPopup
+  signInWithPopup,
+  type Auth
 } from 'firebase/auth';
 
-const firebaseConfig = {
+const firebaseConfigSteer = {
     apiKey: "AIzaSyCiBLG8uuum5aLfphODrcEbfuO3ISGiI4E",
     authDomain: "steer-bb667.firebaseapp.com",
     projectId: "steer-bb667",
@@ -18,17 +19,39 @@ const firebaseConfig = {
     measurementId: "G-GDRTRENV12"
   };
 
-const app = initializeApp(firebaseConfig);
+const firebaseConfigSteerCode = {
+  apiKey: 'AIzaSyA3VgNr69e4zL5UtozZRrztVYnLdN1TR4s',
+  authDomain: 'cognitic-dbea8.firebaseapp.com',
+  projectId: 'cognitic-dbea8',
+  storageBucket: 'cognitic-dbea8.appspot.com',
+  messagingSenderId: '469757089999',
+  appId: '1:469757089999:web:fb50eead404266407bbfba'
+};
+
+const appSteer = initializeApp(firebaseConfigSteer, 'steer');
+const appSteerCode = initializeApp(firebaseConfigSteerCode, 'steercode');
 
 // Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+const authSteer = getAuth(appSteer);
+const authSteerCode = getAuth(appSteerCode);
+
+export function getAuthForProtocol(protocol: string) {
+  switch (protocol) {
+    case 'steer':
+      return authSteer;
+    case 'steercode':
+      return authSteerCode;
+    default:
+      return authSteer;
+  }
+}
 
 
-export function signOut() {
+export function signOut(auth: Auth) {
   return firebaseSignOut(auth);
 }
 
-export function loginGoogle() {
+export function loginGoogle(auth: Auth) {
   const provider = new GoogleAuthProvider();
 
   return signInWithPopup(auth, provider)
@@ -47,7 +70,7 @@ export function loginGoogle() {
     });
 }
 
-export function loginGitHub() {
+export function loginGitHub(auth: Auth) {
   const provider = new GithubAuthProvider();
   return signInWithPopup(auth, provider)
     .then((result) => {
@@ -65,7 +88,7 @@ export function loginGitHub() {
     });
 }
 
-export function loginTwitter() {
+export function loginTwitter(auth: Auth) {
   const provider = new TwitterAuthProvider();
 
   return signInWithPopup(auth, provider)
