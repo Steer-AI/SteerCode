@@ -29,6 +29,7 @@ export default function SignInPage() {
     const [loginState, setLoginState] = useState<LoginState | null>(null)
     const [notification, setNotification] = useState<string | null>(null)
     const [protocol, _] = useState<string>(() => {
+        if (typeof window === 'undefined') return 'steer'
         const urlParams = new URLSearchParams(window.location.search)
         return urlParams.get('protocol') || 'steer'
     })
