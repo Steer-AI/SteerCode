@@ -2,21 +2,17 @@
 "use client";
 
 import type { OAuthCredential, UserCredential } from "firebase/auth";
-import { loginGitHub, loginGoogle } from '@/utils/firebase';
+import { getAuthForProtocol, loginGitHub, loginGoogle } from '@/utils/firebase';
 import { useCallback, useState } from 'react';
 import NoUserView from './NoUserView';
-import LoggedUserView from './LoggedUserView';
+import LoggedUserView, { type LoginState } from './LoggedUserView';
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-
-type LoginState = {
-    credential: OAuthCredential;
-    provider: string;
-} | null
-
+const queryClient = new QueryClient()
 
 function Notification({ message }: { message: string | null }) {
 
-    if (!message)  return null;
+    if (!message) return null;
 
     return (
         <div className='fixed top-24 right-4 z-50 flex items-center justify-center px-4 py-2 bg-red-400 fade-in'>
@@ -29,9 +25,14 @@ function Notification({ message }: { message: string | null }) {
 
 
 export default function SignInPage() {
-    
+
     const [loginState, setLoginState] = useState<LoginState | null>(null)
     const [notification, setNotification] = useState<string | null>(null)
+    const [protocol, _] = useState<string>(() => {
+        if (typeof window === 'undefined') return 'steer'
+        const urlParams = new URLSearchParams(window.location.search)
+        return urlParams.get('protocol') || 'steer'
+    })
 
     function openDeepLink(credential: OAuthCredential, providerId: string) {
         // get current url param called 'redirect' and 'protocol'
@@ -46,43 +47,49 @@ export default function SignInPage() {
     }
 
     async function handleLogin(provider: string) {
-        let resp : {
+        let resp: {
             credential: OAuthCredential | null;
             result: UserCredential;
         } | null
 
-        switch (provider) {
-          case 'google.com':
-            resp = await loginGoogle();
-            break;
-          case 'github.com':
-            resp = await loginGitHub();
-            break;
-          default:
-            throw new Error(`Invalid provider: ${provider}`);
-        }
+        const auth = getAuthForProtocol(protocol);
+        try {
+            switch (provider) {
+                case 'google.com':
+                    resp = await loginGoogle(auth);
+                    break;
+                case 'github.com':
+                    resp = await loginGitHub(auth);
+                    break;
+                default:
+                    throw new Error(`Invalid provider: ${provider}`);
+            }
+            if (!resp || !resp.credential) {
+                throw new Error("Invalid credentials. Try again")
+            }
 
-        if (!resp || !resp.credential) {
-            console.log("error logging in")
-            setNotification("Error logging in. Please try again.")
-            setTimeout(() => {
-                setNotification(null)
-            }, 5000)
-            return false;
-        }
-
-        if (resp) {
             const { credential, result } = resp;
             console.log(credential, result);
             setLoginState({
                 credential,
+                result,
                 provider
             })
-            openDeepLink(credential, provider)
+            //   openDeepLink(credential, provider)
             return true;
+
+        } catch (e) {
+            console.error(e)
+            if (e instanceof Error) {
+                setNotification(e.message)
+            } else {
+                setNotification("Login failed. Try again")
+            }
+            setTimeout(() => {
+                setNotification(null)
+            }, 5000)
+            return false
         }
-        return false;
-    
     }
 
     const openDeepLinkCallback = useCallback(() => {
@@ -93,16 +100,16 @@ export default function SignInPage() {
 
 
     return (
-        <>
+        <QueryClientProvider client={queryClient}>
             <main className="flex-1 flex flex-col items-center justify-center mb-40">
                 {loginState === null ? (
                     <NoUserView onLogin={handleLogin} />
                 ) : (
-                    <LoggedUserView onOpenApp={openDeepLinkCallback} />
+                    <LoggedUserView userData={loginState.result.user} onOpenApp={openDeepLinkCallback} showPremiumBanner={protocol==='steer'} />
                 )}
             </main>
 
             <Notification message={notification} />
-        </>
+        </QueryClientProvider>
     )
 }
