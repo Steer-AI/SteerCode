@@ -6,12 +6,12 @@
 	"author": "Cognitic AI",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/cognitic-ai/cognitic.git"
+		"url": "git+https://github.com/Steer-AI/SteerCode.git"
 	},
 	"bugs": {
-		"url": "https://github.com/cognitic-ai/cognitic/issues"
+		"url": "https://github.com/Steer-AI/SteerCode/issues"
 	},
-	"homepage": "https://github.com/cognitic-ai/cognitic#readme",
+	"homepage": "https://github.com/Steer-AI/SteerCode#readme",
 	"scripts": {
 		"format": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --write .",
 		"lint": "prettier --ignore-path=../../.prettierignore --config=../../.prettierrc --check . && eslint --ignore-path ../..//.eslintignore \"./src\" --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",

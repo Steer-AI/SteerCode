@@ -174,9 +174,9 @@
       <a
         target="_blank"
         rel="noopener"
-        href="https://github.com/cognitic-ai/cognitic"
+        href="https://github.com/Steer-AI/SteerCode"
         on:click|preventDefault={() =>
-          openExternal('https://github.com/cognitic-ai/cognitic')}
+          openExternal('https://github.com/Steer-AI/SteerCode')}
         class="hover:text-content-primary"
       >
         <GitHubIcon class="h-4 w-4" />
